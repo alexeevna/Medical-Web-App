@@ -6,35 +6,39 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-//@Service
-public class SftpUtils {
+import javax.annotation.PostConstruct;
 
-    private String host = "127.0.0.1";
-    private int port = 5000;
+@Service
+public class SftpClient {
+
+    @Value("${sftp.url}")
+    private String host;
+    @Value("${sftp.port}")
+    private int port;
+    @Value("${sftp.user}")
+    private String user;
+    @Value("${sftp.password}")
+    private String password;
     private Session session = null;
 
-    public SftpUtils() throws JSchException, SftpException {
-        this.connect();
-        this.upload("meme.png", "incoming/meme.png");
-        this.disconnect();
+    public SftpClient() throws JSchException, SftpException {
     }
 
     public void connect() throws JSchException {
         JSch jsch = new JSch();
 
-        // jsch.addIdentity();
-        //session = jsch.getSession(server);
-
-         session = jsch.getSession("medwebuser", host, port);
-         session.setPassword("password");
+         session = jsch.getSession(user, host, port);
+         session.setPassword(password);
 
         session.setConfig("StrictHostKeyChecking", "no");
         session.connect();
     }
 
-    public void upload(String source, String destination) throws JSchException, SftpException {
+    public void saveFile(String source, String destination) throws JSchException, SftpException {
         Channel channel = session.openChannel("sftp");
         channel.connect();
         ChannelSftp sftpChannel = (ChannelSftp) channel;
@@ -42,7 +46,7 @@ public class SftpUtils {
         sftpChannel.exit();
     }
 
-    public void download(String source, String destination) throws JSchException, SftpException {
+    public void getFile(String source, String destination) throws JSchException, SftpException {
         Channel channel = session.openChannel("sftp");
         channel.connect();
         ChannelSftp sftpChannel = (ChannelSftp) channel;

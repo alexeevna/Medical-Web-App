@@ -15,7 +15,7 @@ public class MirfController {
     @PostMapping("/")
     public ResponseEntity<?> receivePipelineResult(@RequestBody final Path pathToFile,
                                                    @RequestBody final String message) {
-        return ResponseEntity.ok("Поездка успешно создана!");
+        return ResponseEntity.ok("Pipeline ended with success");
     }
 
 

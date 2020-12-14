@@ -20,7 +20,7 @@ import java.io.IOException;
 @Slf4j
 public class AuthFilter extends OncePerRequestFilter {
     @Autowired
-    private JwtHelper jwtUtils;
+    private JwtUtils jwtUtils;
 
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
@@ -43,7 +43,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 logger.info(userDetails.getAuthorities().toString());
             }
         } catch (Exception e) {
-            logger.error("Невозможно аутентифицировать пользователя: {}", e);
+            logger.error("Cannot authenticate the user: {}", e);
         }
 
         filterChain.doFilter(request, response);

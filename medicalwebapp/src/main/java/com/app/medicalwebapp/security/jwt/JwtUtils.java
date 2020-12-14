@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.Date;
 
 @Component
-public class JwtHelper {
-    private static final Logger logger = LoggerFactory.getLogger(JwtHelper.class);
+public class JwtUtils {
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     @Value("${medwebapp.jwtSecret}")
     private String jwtSecret;

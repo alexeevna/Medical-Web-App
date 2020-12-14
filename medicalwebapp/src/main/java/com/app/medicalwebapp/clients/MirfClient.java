@@ -9,12 +9,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
 public class MirfClient {
+
+    @Value("${mirf.url.pipeline.start}")
+    private String mirfUrl;
 
     private final static String DEFAULT_PIPELINE = "[\n" +
             "  { \"id\": 0, \"blockType\" : \"ReadDicomImageSeriesAlg\", \"children\": [1, 2] },\n" +
@@ -25,11 +29,11 @@ public class MirfClient {
             "  { \"id\": 5, \"blockType\" : \"SaveReportAlg\", \"children\": [] }\n" +
             "]\n";
 
-    private static CloseableHttpClient httpclient = HttpClients.createDefault();
+    private CloseableHttpClient httpclient = HttpClients.createDefault();
 
-    public static Boolean processPipeline() throws IOException {
+    public Boolean processPipeline() throws IOException {
 
-        HttpPost post = new HttpPost("http://localhost:5010/process");
+        HttpPost post = new HttpPost(mirfUrl);
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 

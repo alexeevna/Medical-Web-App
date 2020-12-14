@@ -8,7 +8,7 @@ import com.app.medicalwebapp.security.data.request.SignInRequest;
 import com.app.medicalwebapp.security.data.request.SignUpRequest;
 import com.app.medicalwebapp.security.data.response.JwtResponse;
 import com.app.medicalwebapp.security.data.response.MessageResponse;
-import com.app.medicalwebapp.security.jwt.JwtHelper;
+import com.app.medicalwebapp.security.jwt.JwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class AuthController {
     PasswordEncoder encoder;
 
     @Autowired
-    JwtHelper jwtHelper;
+    JwtUtils jwtHelper;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody SignInRequest signInRequest) {
