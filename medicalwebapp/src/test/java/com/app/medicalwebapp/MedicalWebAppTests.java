@@ -7,15 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 
-@SpringBootTest
 class MedicalWebAppTests {
 
-    @Autowired
-    MirfClient mirfClient;
-
-    @Test
-    void contextLoads() throws IOException {
-        mirfClient.processPipeline();
-    }
+//    @Test
+//    void contextLoads() throws IOException {
+//    }
 
 }
