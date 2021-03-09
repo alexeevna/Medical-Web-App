@@ -1,4 +1,0 @@
-language: java
-script:
-  - cd medicalwebapp
-  - mvn clean package
