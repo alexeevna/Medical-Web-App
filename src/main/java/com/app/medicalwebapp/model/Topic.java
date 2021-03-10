@@ -33,6 +33,6 @@ public class Topic {
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
 
-    @ManyToMany(mappedBy = "topics", fetch = FetchType.LAZY)
-    private Set<Record> records = new HashSet<>();
+//    @ManyToMany(mappedBy = "topics", fetch = FetchType.EAGER)
+//    private Set<Record> records = new HashSet<>();
 }
