@@ -69,7 +69,7 @@ public class RecordServiceTest {
         Record recordBeforeSave = record(Set.of(topic1, topic2), Set.of(file1, file2), creator, 100);
         recordRepository.save(recordBeforeSave);
         List<Record> allRecords = recordRepository.findAll();
-        Assertions.assertEquals(1, al(recordBeforeSave.getLikes()lRecords.size());
+        Assertions.assertEquals(1, allRecords.size());
         Record recordLoaded = allRecords.get(0);
         Assertions.assertEquals(2, recordLoaded.getAttachments().size());
         Assertions.assertEquals(2, recordLoaded.getTopics().size());
