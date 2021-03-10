@@ -1,6 +1,5 @@
-package com.app.medicalwebapp.clients;
+package com.app.medicalwebapp.clients.mirf;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;

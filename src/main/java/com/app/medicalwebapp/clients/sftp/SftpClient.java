@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.utils;
+package com.app.medicalwebapp.clients.sftp;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -8,10 +8,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 @Service
 @Lazy

@@ -1,5 +1,8 @@
-package com.app.medicalwebapp.pacs;
+package com.app.medicalwebapp.clients.pacs;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -8,23 +11,25 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.AbstractHttpEntity;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 
 @Service
 @Lazy
@@ -41,6 +46,17 @@ public class OrthancInstancesClient {
 
     private CredentialsProvider credentialsProvider;
 
+    /*
+{
+   "ID" : "9cc915b5-45f10448-362710fd-a5c094d9-629b2643",
+   "ParentPatient" : "b6589fc6-ab0dc82c-f12099d1-c2d40ab9-94e8410c",
+   "ParentSeries" : "955c729e-c9eb72b5-9f54451d-e21321c2-bd1c5f5e",
+   "ParentStudy" : "9fcadbc3-58807fe5-05a2969e-ab4aafaa-af735eaa",
+   "Path" : "/instances/9cc915b5-45f10448-362710fd-a5c094d9-629b2643",
+   "Status" : "AlreadyStored"
+}
+     */
+
     @PostConstruct
     public void init() throws IOException {
         credentialsProvider = new BasicCredentialsProvider();
@@ -55,11 +71,15 @@ public class OrthancInstancesClient {
         System.out.println("Ended executing \"getAllAvailableInstances\"");
 
 
-//        System.out.println("Hi! Started executing \"uploadInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-//        ClassLoader classLoader = getClass().getClassLoader();
-//        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/medicalwebapp/src/main/resources/image-000002.dcm");
-//        this.uploadInstance(dicomForUpload);
-//        System.out.println("Ended executing \"uploadInstance\"");
+        System.out.println("Hi! Started executing \"uploadInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
+        ClassLoader classLoader = getClass().getClassLoader();
+        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/image-000002.dcm");
+        this.uploadInstance(dicomForUpload);
+        System.out.println("Ended executing \"uploadInstance\"");
+
+        System.out.println("Hi! Started executing \"getAllAvailableInstances\" \n orthancInstancesUrl=" + orthancInstancesUrl);
+        this.getAllAvailableInstances();
+        System.out.println("Ended executing \"getAllAvailableInstances\"");
 
         //9cc915b5-45f10448-362710fd-a5c094d9-629b2643
 //        System.out.println("Hi! Started executing \"deleteInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
@@ -85,15 +105,16 @@ public class OrthancInstancesClient {
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 // return it as a String
-                String result = EntityUtils.toString(entity);
-                System.out.println(result);
+                String jsonResponse = EntityUtils.toString(entity);
+
             }
         }
     }
 
-    public void uploadInstance(File dicomFile) throws IOException {
+    public String uploadInstance(File dicomFile) throws IOException {
         HttpPost request = new HttpPost(orthancInstancesUrl);
         FileEntity requestEntity = new FileEntity(dicomFile);
+        //InputStreamEntity requestEntity = new BufferedHttpEntity(new BufferedInputStream(new FileInputStream(dicomFile)));
 
         request.setEntity(requestEntity);
         request.setHeader("Accept", "application/dicom");
@@ -105,13 +126,16 @@ public class OrthancInstancesClient {
              CloseableHttpResponse response = httpClient.execute(request)) {
 
             // 401 if wrong user/password
-            System.out.println(response.getStatusLine().getStatusCode());
+            //TODO handle bad status codes
+            //System.out.println(response.getStatusLine().getStatusCode());
 
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity != null) {
                 // return it as a String
-                String result = EntityUtils.toString(responseEntity);
-                System.out.println(result);
+                String json = EntityUtils.toString(responseEntity);
+                return getIdFromResponse(json);
+            } else {
+                throw new RuntimeException("Pacs server response is empty");
             }
         }
     }
@@ -134,6 +158,13 @@ public class OrthancInstancesClient {
                 System.out.println(result);
             }
         }
+    }
+
+    private String getIdFromResponse(String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> resultMap = objectMapper.readValue(json, new TypeReference<Map<String,Object>>(){});
+        //TODO add exception handling
+        return resultMap.get("ID").toString();
     }
 
     /*

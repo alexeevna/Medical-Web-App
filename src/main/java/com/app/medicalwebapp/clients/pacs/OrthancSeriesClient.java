@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.pacs;
+package com.app.medicalwebapp.clients.pacs;
 
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
