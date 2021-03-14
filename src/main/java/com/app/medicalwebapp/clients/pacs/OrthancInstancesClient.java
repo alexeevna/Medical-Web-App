@@ -3,6 +3,8 @@ package com.app.medicalwebapp.clients.pacs;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -12,12 +14,15 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -29,6 +34,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Map;
 
 @Service
@@ -66,20 +72,20 @@ public class OrthancInstancesClient {
         );
 
 
-        System.out.println("Hi! Started executing \"getAllAvailableInstances\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-        this.getAllAvailableInstances();
-        System.out.println("Ended executing \"getAllAvailableInstances\"");
-
-
-        System.out.println("Hi! Started executing \"uploadInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-        ClassLoader classLoader = getClass().getClassLoader();
-        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/image-000002.dcm");
-        this.uploadInstance(dicomForUpload);
-        System.out.println("Ended executing \"uploadInstance\"");
-
-        System.out.println("Hi! Started executing \"getAllAvailableInstances\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-        this.getAllAvailableInstances();
-        System.out.println("Ended executing \"getAllAvailableInstances\"");
+//        System.out.println("Hi! Started executing \"getAllAvailableInstances\" \n orthancInstancesUrl=" + orthancInstancesUrl);
+//        this.getAllAvailableInstances();
+//        System.out.println("Ended executing \"getAllAvailableInstances\"");
+//
+//
+//        System.out.println("Hi! Started executing \"uploadInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
+//        ClassLoader classLoader = getClass().getClassLoader();
+//        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/image-000002.dcm");
+//        this.uploadInstance(FileUtils.openInputStream(dicomForUpload));
+//        System.out.println("Ended executing \"uploadInstance\"");
+//
+//        System.out.println("Hi! Started executing \"getAllAvailableInstances\" \n orthancInstancesUrl=" + orthancInstancesUrl);
+//        this.getAllAvailableInstances();
+//        System.out.println("Ended executing \"getAllAvailableInstances\"");
 
         //9cc915b5-45f10448-362710fd-a5c094d9-629b2643
 //        System.out.println("Hi! Started executing \"deleteInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
@@ -106,15 +112,14 @@ public class OrthancInstancesClient {
             if (entity != null) {
                 // return it as a String
                 String jsonResponse = EntityUtils.toString(entity);
-
+                System.out.println(jsonResponse);
             }
         }
     }
 
-    public String uploadInstance(File dicomFile) throws IOException {
+    public String uploadInstance(InputStream dicomFile) throws IOException {
         HttpPost request = new HttpPost(orthancInstancesUrl);
-        FileEntity requestEntity = new FileEntity(dicomFile);
-        //InputStreamEntity requestEntity = new BufferedHttpEntity(new BufferedInputStream(new FileInputStream(dicomFile)));
+        ByteArrayEntity requestEntity = new ByteArrayEntity(IOUtils.toByteArray(dicomFile));
 
         request.setEntity(requestEntity);
         request.setHeader("Accept", "application/dicom");
@@ -140,6 +145,31 @@ public class OrthancInstancesClient {
         }
     }
 
+    /*
+    public void uploadInstanceMultipart(File dicomFile) throws IOException {
+        HttpPost request = new HttpPost(orthancInstancesUrl);
+        MultipartEntityBuilder builder2 = MultipartEntityBuilder.create();
+
+        builder2.addBinaryBody(
+                "addressFile",
+                FileUtils.readFileToByteArray(dicomFile),
+                ContentType.DEFAULT_BINARY,
+                "dicom_file.dcm");
+        HttpEntity multipart = builder2.build();
+        request.setEntity(multipart);
+        request.setHeader("Accept", "application/dicom");
+        request.setHeader("Content-type", "application/dicom");
+        //CloseableHttpResponse response = httpClient.execute(request);
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
+                .setDefaultCredentialsProvider(credentialsProvider)
+                .build();
+             CloseableHttpResponse response = httpClient.execute(request)) {
+            System.out.println(response.getStatusLine().getStatusCode());
+            System.out.println(response.getEntity());
+        }
+    }
+*/
     public void deleteInstance(String instanceId) throws IOException {
         HttpDelete request = new HttpDelete(orthancInstancesUrl + "/" + instanceId);
 

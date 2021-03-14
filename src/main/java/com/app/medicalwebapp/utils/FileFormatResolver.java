@@ -2,12 +2,11 @@ package com.app.medicalwebapp.utils;
 
 import com.app.medicalwebapp.model.FileObjectFormat;
 
-import java.io.File;
+import java.io.InputStream;
 
 public class FileFormatResolver {
 
-    public static FileObjectFormat resolveFormat(File file) {
-        String name = file.getName();
+    public static FileObjectFormat resolveFormat(String name, InputStream file) {
         if (name.contains(".") && name.length() >= 4) {
             String fileExtension = name.split(".")[1].toLowerCase();
             switch (fileExtension) {

@@ -3,7 +3,7 @@ package com.app.medicalwebapp.utils;
 import com.app.medicalwebapp.model.FileObjectFormat;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
+import java.io.InputStream;
 
 @Component
 public class SftpSaverStrategy implements FileSaverStrategy {
@@ -14,7 +14,7 @@ public class SftpSaverStrategy implements FileSaverStrategy {
     }
 
     @Override
-    public void save(Long ownerId, File fileToSave) {
+    public void save(Long ownerId, FileObjectFormat format, InputStream fileToSave) {
 
     }
 
