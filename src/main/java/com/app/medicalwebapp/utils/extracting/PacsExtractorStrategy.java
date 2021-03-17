@@ -1,0 +1,29 @@
+package com.app.medicalwebapp.utils.extracting;
+
+import com.app.medicalwebapp.clients.pacs.OrthancInstancesClient;
+import com.app.medicalwebapp.model.FileObject;
+import com.app.medicalwebapp.model.FileObjectFormat;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.InputStream;
+
+public class PacsExtractorStrategy implements FileExtractorStrategy {
+
+    @Autowired
+    OrthancInstancesClient orthancClient;
+
+    @Override
+    public boolean supportsFormat(FileObjectFormat fileFormat) {
+        return fileFormat == FileObjectFormat.DICOM;
+    }
+
+    @Override
+    public InputStream getFileInActualFormat(FileObject fileObject) throws Exception {
+        return orthancClient.downloadInstance(fileObject.getPathToFile());
+    }
+
+    @Override
+    public void getHumanReadablePresentation() {
+        //TODO: add getting image from first frame in instance
+    }
+}
