@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.utils;
+package com.app.medicalwebapp.utils.saving;
 
 import com.app.medicalwebapp.model.FileObjectFormat;
 
@@ -9,6 +9,4 @@ public interface FileSaverStrategy {
     boolean supportsFormat(FileObjectFormat fileFormat);
 
     void save(Long ownerId, FileObjectFormat format, InputStream fileToSave) throws Exception;
-
-    void bindToRecord(Long recordId, Long fileId);
 }

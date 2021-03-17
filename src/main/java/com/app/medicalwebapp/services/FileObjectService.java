@@ -5,6 +5,7 @@ import com.app.medicalwebapp.repositories.FileObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -17,8 +18,7 @@ public class FileObjectService {
         return fileObjectRepository.findAll();
     }
 
-    public FileObject saveRecord(FileObject fileObject) {
+    public FileObject saveFileObject(FileObject fileObject) {
         return fileObjectRepository.save(fileObject);
     }
-
 }

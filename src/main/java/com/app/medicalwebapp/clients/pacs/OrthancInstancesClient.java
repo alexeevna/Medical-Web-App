@@ -96,7 +96,7 @@ public class OrthancInstancesClient {
 
 
 
-    public void getAllAvailableInstances() throws IOException {
+    public void getAllAvailableInstanceIds() throws IOException {
 
         HttpGet request = new HttpGet(orthancInstancesUrl);
 
@@ -139,6 +139,31 @@ public class OrthancInstancesClient {
                 // return it as a String
                 String json = EntityUtils.toString(responseEntity);
                 return getIdFromResponse(json);
+            } else {
+                throw new RuntimeException("Pacs server response is empty");
+            }
+        }
+    }
+
+    public InputStream downloadInstance(String instanceId) throws IOException {
+        HttpGet request = new HttpGet(orthancInstancesUrl + "/" + instanceId + "/file");
+//        ByteArrayEntity requestEntity = new ByteArrayEntity(IOUtils.toByteArray(dicomFile));
+
+        request.setHeader("Accept", "application/dicom");
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
+                .setDefaultCredentialsProvider(credentialsProvider)
+                .build();
+             CloseableHttpResponse response = httpClient.execute(request)) {
+
+            // 401 if wrong user/password
+            //TODO handle bad status codes
+            //System.out.println(response.getStatusLine().getStatusCode());
+
+            HttpEntity responseEntity = response.getEntity();
+            if (responseEntity != null) {
+                //String json = EntityUtils.toString(responseEntity);
+                return responseEntity.getContent();
             } else {
                 throw new RuntimeException("Pacs server response is empty");
             }

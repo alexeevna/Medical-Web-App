@@ -1,6 +1,8 @@
-package com.app.medicalwebapp.utils;
+package com.app.medicalwebapp.utils.saving;
 
 import com.app.medicalwebapp.model.FileObjectFormat;
+import com.app.medicalwebapp.utils.FileFormatResolver;
+import com.app.medicalwebapp.utils.saving.FileSaverStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +20,7 @@ public class FileSaverStrategyResolver {
         FileSaverStrategy fileSaver = strategies.stream()
                                             .filter(strategy -> strategy.supportsFormat(fileFormat))
                                             .findFirst()
-                                            .orElse(null);
-        if (fileSaver != null) {
-            return fileSaver;
-        } else {
-            throw new RuntimeException();
-        }
+                                            .orElseThrow(RuntimeException::new);
+        return fileSaver;
     }
 }

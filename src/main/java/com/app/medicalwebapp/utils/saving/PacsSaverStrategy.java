@@ -1,10 +1,11 @@
-package com.app.medicalwebapp.utils;
+package com.app.medicalwebapp.utils.saving;
 
 import com.app.medicalwebapp.clients.pacs.OrthancInstancesClient;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
 import com.app.medicalwebapp.services.FileObjectService;
 import com.app.medicalwebapp.services.RecordService;
+import com.app.medicalwebapp.utils.saving.FileSaverStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,12 +37,6 @@ public class PacsSaverStrategy implements FileSaverStrategy {
         fileObject.setPathToFile(idPathInPacs);
         fileObject.setFormat(format);
         fileObject.setCreationTime(LocalDateTime.now());
-        fileObject.setSize(0);
-        fileObjectService.saveRecord(fileObject);
-    }
-
-    @Override
-    public void bindToRecord(Long recordId, Long fileId) {
-
+        fileObjectService.saveFileObject(fileObject);
     }
 }
