@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -71,26 +72,28 @@ public class OrthancInstancesClient {
                 new UsernamePasswordCredentials(orthancUsername, orthancPassword)
         );
 
-
-//        System.out.println("Hi! Started executing \"getAllAvailableInstances\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-//        this.getAllAvailableInstances();
-//        System.out.println("Ended executing \"getAllAvailableInstances\"");
-//
 //
 //        System.out.println("Hi! Started executing \"uploadInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-//        ClassLoader classLoader = getClass().getClassLoader();
-//        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/image-000002.dcm");
-//        this.uploadInstance(FileUtils.openInputStream(dicomForUpload));
-//        System.out.println("Ended executing \"uploadInstance\"");
+//        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/ihd001.dcm");
+//        String id = this.uploadInstance(FileUtils.openInputStream(dicomForUpload));
 //
 //        System.out.println("Hi! Started executing \"getAllAvailableInstances\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-//        this.getAllAvailableInstances();
+//        this.getAllAvailableInstanceIds();
 //        System.out.println("Ended executing \"getAllAvailableInstances\"");
 
         //9cc915b5-45f10448-362710fd-a5c094d9-629b2643
 //        System.out.println("Hi! Started executing \"deleteInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
 //        this.deleteInstance("9cc915b5-45f10448-362710fd-a5c094d9-629b2643");
 //        System.out.println("Ended executing \"deleteInstance\"");
+
+//        System.out.println("Started executing \"downloadInstance\"");
+//        InputStream is = this.downloadInstance(id);
+        //File dicomForDownload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/downloaded_ihd.dcm");
+        //File dicomForDownload = new File("src/main/resources/downloaded_ihd.dcm");
+        //FileUtils.copyInputStreamToFile(is, dicomForDownload);
+
+        //System.out.println("Hi! Started executing \"uploadInstance\"");
+        //System.out.println(this.uploadInstance(FileUtils.openInputStream(dicomForDownload)));
     }
 
 
@@ -163,7 +166,13 @@ public class OrthancInstancesClient {
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity != null) {
                 //String json = EntityUtils.toString(responseEntity);
-                return responseEntity.getContent();
+                InputStream is = responseEntity.getContent();
+//                File targetFile = new File("src/main/resources/downloaded_ihd.dcm");
+//                FileUtils.copyInputStreamToFile(is, targetFile);
+                //InputStream is;
+                byte[] bytes = IOUtils.toByteArray(is);
+                return new ByteArrayInputStream(bytes);
+                //return responseEntity.getContent();
             } else {
                 throw new RuntimeException("Pacs server response is empty");
             }

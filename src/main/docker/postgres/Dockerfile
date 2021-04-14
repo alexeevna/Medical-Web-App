@@ -23,7 +23,7 @@ COPY init.sql /docker-entrypoint-initdb.d/
 # See existing images
 # docker images
 
-# See containers (-aq = with stopped containers)
-# docker ps -aq
+# See containers (-a = with stopped containers)
+# docker ps -a
 
 

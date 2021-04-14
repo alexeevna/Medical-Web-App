@@ -4,10 +4,12 @@ import com.app.medicalwebapp.clients.sftp.SftpClient;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.util.Set;
 
+@Component
 public class SftpExtractorStrategy implements FileExtractorStrategy {
 
     @Autowired
