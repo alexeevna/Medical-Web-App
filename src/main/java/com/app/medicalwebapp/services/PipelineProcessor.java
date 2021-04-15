@@ -77,7 +77,7 @@ public class PipelineProcessor {
         byte[] zipArchive = createZipArchive(inputInMirfPipeline, fileAsInputStream, sessionId);
         String zipArchiveName = sessionId + ".zip";
         mirfRepository.sendArchive(sessionId, zipArchiveName, zipArchive);
-        mirfOrchestrator.processPipeline(sessionId, MirfOrchestratorClient.DEFAULT_PIPELINE);
+        mirfOrchestrator.processPipeline(sessionId, MirfOrchestratorClient.DEFAULT_PIPELINE2);
     }
 
     public Object resolveMirfInput(FileObjectFormat fileFormat, String sessionId) {

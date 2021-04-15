@@ -34,7 +34,7 @@ public class MirfOrchestratorClient {
             "]\n";
 
     public final static String DEFAULT_PIPELINE2 = "[\n" +
-            "  { \"id\": 0, \"blockType\" : \"DicomImageSeriesReaderAlg\", \"children\": [] }\n" +
+            "  { \"id\": 0, \"blockType\" : \"PipelineForDeveloping\", \"children\": [] }\n" +
             "]\n";
 
     public final static String IHD_PIPELINE = "[\n" +
