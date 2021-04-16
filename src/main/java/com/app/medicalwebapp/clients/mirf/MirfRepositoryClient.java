@@ -12,21 +12,32 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class MirfRepositoryClient {
 
+    @Value("${mirf.repository.url}")
+    private String mirfRepositoryUrl;
+
+    @Value("${mirf.repository.port}")
+    private String mirfRepositoryPort;
+
     @Value("${mirf.repository.url.archive}")
-    private String mirfRepositoryArchive;
+    private String mirfRepositoryArchiveEndPoint;
 
     private CloseableHttpClient httpclient = HttpClients.createDefault();
 
     /**
      * @param filename name of archive, it should be in *.zip format
      */
-    public Boolean sendArchive(String sessionId, String filename, byte[] zipArchive) throws IOException {
+    public Boolean sendArchive(String sessionId, String filename, byte[] zipArchive) throws IOException, URISyntaxException, InterruptedException {
 
-        HttpPost post = new HttpPost(mirfRepositoryArchive);
+        URI repositoryUri = new URI("http", null, mirfRepositoryUrl, Integer.parseInt(mirfRepositoryPort), null, null, null);
+
+        HttpPost post = new HttpPost(repositoryUri.toString() + mirfRepositoryArchiveEndPoint);
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 

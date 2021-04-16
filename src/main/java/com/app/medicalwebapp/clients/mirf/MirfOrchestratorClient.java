@@ -15,15 +15,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Service
 public class MirfOrchestratorClient {
 
+
+    @Value("${mirf.orchestrator.url}")
+    private String mirfOrchestratorUrl;
+
+    @Value("${mirf.orchestrator.port}")
+    private String mirfOrchestratorPort;
+
     @Value("${mirf.orchestrator.url.pipeline.start}")
-    private String mirfPipelineStartUrl;
+    private String mirfPipelineEndPoint;
 
     @Value("${mirf.orchestrator.url.sessionId}")
-    private String mirfSessionIdUrl;
+    private String mirfSessionIdEndpoint;
 
     public final static String DEFAULT_PIPELINE = "[\n" +
             "  { \"id\": 0, \"blockType\" : \"DicomImageSeriesReaderAlg\", \"children\": [1, 3] },\n" +
@@ -43,9 +52,11 @@ public class MirfOrchestratorClient {
 
     private CloseableHttpClient httpclient = HttpClients.createDefault();
 
-    public Boolean processPipeline(String sessionId, String pipelineConfiguration) throws IOException {
+    public Boolean processPipeline(String sessionId, String pipelineConfiguration) throws IOException, URISyntaxException {
 
-        HttpPost post = new HttpPost(mirfPipelineStartUrl);
+        URI repositoryUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
+
+        HttpPost post = new HttpPost(repositoryUri.toString() + mirfPipelineEndPoint);
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
@@ -63,7 +74,9 @@ public class MirfOrchestratorClient {
 
     public String getSessionId() throws Exception {
 
-        HttpGet request = new HttpGet(mirfSessionIdUrl);
+        URI repositoryUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
+
+        HttpGet request = new HttpGet(repositoryUri + mirfSessionIdEndpoint);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(request)) {

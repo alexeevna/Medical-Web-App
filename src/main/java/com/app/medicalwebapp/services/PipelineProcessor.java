@@ -60,8 +60,13 @@ public class PipelineProcessor {
 //        orthancInstancesClient.getAllAvailableInstanceIds();
 //        System.out.println("Ended executing \"getAllAvailableInstances\"");
 
-        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/image-000002.dcm");
-        InputStream inputStream = new FileInputStream(dicomForUpload);
+//        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/image-000002.dcm");
+//        InputStream inputStream = new FileInputStream(dicomForUpload);
+
+    }
+
+    public void triggerPipeline() throws Exception {
+        InputStream inputStream = PipelineProcessor.class.getClassLoader().getResourceAsStream("image-000002.dcm");
 
         FileObject fileObject = new FileObject();
         fileObject.setPathToFile("kek");
