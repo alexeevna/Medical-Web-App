@@ -15,8 +15,8 @@ public class FileSaverStrategyResolver {
     @Autowired
     List<FileSaverStrategy> strategies;
 
-    public FileSaverStrategy getFileSaver(String fileName, InputStream fileToSave) {
-        FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(fileName, fileToSave);
+    public FileSaverStrategy getFileSaver(String fileName, byte[] content) {
+        FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(fileName, content);
         FileSaverStrategy fileSaver = strategies.stream()
                                             .filter(strategy -> strategy.supportsFormat(fileFormat))
                                             .findFirst()

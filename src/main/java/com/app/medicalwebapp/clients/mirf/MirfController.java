@@ -25,7 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @RestController
-@RequestMapping("mirf")
+@RequestMapping("api/mirf")
 public class MirfController {
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -20,9 +21,14 @@ public class FileObject {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "initial_name")
+    private String initialName;
+
+    @JsonIgnore
     @Column(name = "format")
     private FileObjectFormat format;
 
+    @JsonIgnore
     @Column(name = "path_to_file")
     private String pathToFile;
 

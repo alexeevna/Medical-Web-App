@@ -1,7 +1,7 @@
 package com.app.medicalwebapp.security;
 
-import com.app.medicalwebapp.security.jwt.AuthEntryPoint;
-import com.app.medicalwebapp.security.jwt.AuthFilter;
+import com.app.medicalwebapp.security.jwt.AuthExceptionProcessor;
+import com.app.medicalwebapp.security.jwt.OncePerRequestFilterImpl;
 import com.app.medicalwebapp.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +25,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    private AuthEntryPoint unauthorizedHandler;
+    private AuthExceptionProcessor unauthorizedHandler;
 
     @Bean
-    public AuthFilter authenticationJwtTokenFilter() {
-        return new AuthFilter();
+    public OncePerRequestFilterImpl authenticationJwtTokenFilter() {
+        return new OncePerRequestFilterImpl();
     }
 
     @Override
@@ -52,8 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/auth/**").permitAll()
-                .antMatchers("/mirf/**").permitAll()
+                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/mirf/**").permitAll()
+                .antMatchers("/api/test/all").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

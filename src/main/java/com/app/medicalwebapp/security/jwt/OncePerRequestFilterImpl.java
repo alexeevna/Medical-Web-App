@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public class AuthFilter extends OncePerRequestFilter {
+public class OncePerRequestFilterImpl extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
 

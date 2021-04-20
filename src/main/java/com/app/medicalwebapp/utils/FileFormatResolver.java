@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 public class FileFormatResolver {
 
-    public static FileObjectFormat resolveFormat(String name, InputStream file) {
+    public static FileObjectFormat resolveFormat(String name, byte[] content) {
         if (name.contains(".") && name.length() >= 4) {
             String fileExtension = name.split(".")[1].toLowerCase();
             switch (fileExtension) {

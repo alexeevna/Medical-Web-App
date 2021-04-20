@@ -14,6 +14,13 @@ public class FileObjectService {
     @Autowired
     FileObjectRepository fileObjectRepository;
 
+    // 1) save file to downstream system
+    // 2) if no exception thrown then the file was saved successfully
+
+    public List<FileObject> getAllFilesForUser(Long userId) {
+        return fileObjectRepository.findByOwner(userId);
+    }
+
     public List<FileObject> getAllFileObjects() {
         return fileObjectRepository.findAll();
     }

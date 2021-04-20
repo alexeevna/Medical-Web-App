@@ -188,6 +188,29 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>1.2.7.RELEASE</version>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>2.1.0</version>
+                <configuration>
+                    <from>
+                        <image>openjdk:11-jdk-slim</image>
+                    </from>
+                    <to>
+                        <image>medwebapp</image>
+                        <tags>
+                            <tag>latest</tag>
+<!--                            <tag>${project.version}</tag>-->
+                        </tags>
+                    </to>
+                    <container>
+                        <mainClass>com.app.medicalwebapp.MedicalWebApp</mainClass>
+                        <ports>
+                            <port>7999</port>
+                        </ports>
+                    </container>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
