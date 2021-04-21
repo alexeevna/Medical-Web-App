@@ -4,6 +4,8 @@ import com.app.medicalwebapp.repositories.FileObjectRepository;
 import com.app.medicalwebapp.security.data.UserDetailsImpl;
 import com.app.medicalwebapp.security.data.response.MessageResponse;
 import com.app.medicalwebapp.services.FileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +27,8 @@ import java.util.List;
 @RequestMapping("/api/files")
 public class FileObjectController {
 
+    Logger log = LoggerFactory.getLogger(FileObjectController.class);
+
     @Autowired
     FileObjectRepository fileObjectRepository;
 
@@ -45,17 +49,17 @@ public class FileObjectController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            List<String> fileNames = new ArrayList<>();
+            log.info("Got request to upload file");
 
-            for (MultipartFile file: files) {
-                fileService.saveFile(file.getOriginalFilename(), file.getBytes(), getAuthenticatedUser().getId());
-                fileNames.add(file.getOriginalFilename());
-            }
+            System.out.println(file.getOriginalFilename());
+            fileService.saveFile(file.getOriginalFilename(), file.getBytes(), getAuthenticatedUser().getId());
 
-            return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + fileNames));
+
+            return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + file.getOriginalFilename()));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.ok().body(new MessageResponse("Ошибка при загрузке файлов"));
         }
     }

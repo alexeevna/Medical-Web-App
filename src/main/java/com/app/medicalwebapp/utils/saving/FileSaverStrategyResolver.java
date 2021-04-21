@@ -15,12 +15,15 @@ public class FileSaverStrategyResolver {
     @Autowired
     List<FileSaverStrategy> strategies;
 
+    @Autowired
+    FileSaverStrategy sftpSaverStrategy;
+
     public FileSaverStrategy getFileSaver(String fileName, byte[] content) {
         FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(fileName, content);
         FileSaverStrategy fileSaver = strategies.stream()
                                             .filter(strategy -> strategy.supportsFormat(fileFormat))
                                             .findFirst()
-                                            .orElseThrow(RuntimeException::new);
+                                            .orElseGet(() -> sftpSaverStrategy);
         return fileSaver;
     }
 }

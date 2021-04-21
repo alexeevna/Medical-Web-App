@@ -33,13 +33,16 @@ public class SftpSaverStrategy implements FileSaverStrategy {
     }
 
     @Override
-    public void save(Long ownerId, FileObjectFormat format, InputStream fileToSave) throws SftpException, JSchException {
+    public void save(Long ownerId, String initialName, FileObjectFormat format, InputStream fileToSave) throws SftpException, JSchException {
+        System.out.println("Saving file from user " + ownerId);
         String uniqueID = UUID.randomUUID().toString();
-        sftpClient.saveFile(fileToSave, uniqueID);
+        String pathToFile = "/upload/" + uniqueID;
+        sftpClient.saveFile(fileToSave, pathToFile);
         FileObject fileObject = new FileObject();
         fileObject.setOwner(ownerId);
-        fileObject.setPathToFile(uniqueID);
+        fileObject.setPathToFile(pathToFile);
         fileObject.setFormat(format);
+        fileObject.setInitialName(initialName);
         fileObject.setCreationTime(LocalDateTime.now());
         fileObjectService.saveFileObject(fileObject);
     }

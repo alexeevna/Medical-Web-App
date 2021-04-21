@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +35,7 @@ public class SftpClient {
     public SftpClient() throws JSchException, SftpException {
     }
 
+    @PostConstruct
     public void connect() throws JSchException {
         JSch jsch = new JSch();
 
