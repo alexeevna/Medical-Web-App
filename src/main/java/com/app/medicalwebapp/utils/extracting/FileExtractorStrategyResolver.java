@@ -12,11 +12,14 @@ public class FileExtractorStrategyResolver {
     @Autowired
     List<FileExtractorStrategy> strategies;
 
+    @Autowired
+    SftpExtractorStrategy sftpExtractorStrategy;
+
     public FileExtractorStrategy getFileExtractor(FileObjectFormat fileFormat) {
         FileExtractorStrategy fileExtractor = strategies.stream()
                 .filter(strategy -> strategy.supportsFormat(fileFormat))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElse(sftpExtractorStrategy);
         return fileExtractor;
     }
 

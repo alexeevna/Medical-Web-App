@@ -1,5 +1,7 @@
 package com.app.medicalwebapp.controllers;
 
+import com.app.medicalwebapp.exceptions.FileNotExistsException;
+import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.repositories.FileObjectRepository;
 import com.app.medicalwebapp.security.data.UserDetailsImpl;
 import com.app.medicalwebapp.security.data.response.MessageResponse;
@@ -7,7 +9,9 @@ import com.app.medicalwebapp.services.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,14 +45,6 @@ public class FileObjectController {
         return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    @GetMapping("{username}")
-    public ResponseEntity<?> getAllFilesForUser(@PathVariable String username) {
-        if (username.equals(getAuthenticatedUser().getUsername())) {
-            return ResponseEntity.ok(fileObjectRepository.findByOwner(getAuthenticatedUser().getId()));
-        }
-        return ResponseEntity.badRequest().body(new MessageResponse("Нет прав доступа к этому контенту"));
-    }
-
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -60,20 +58,49 @@ public class FileObjectController {
             return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + file.getOriginalFilename()));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.ok().body(new MessageResponse("Ошибка при загрузке файлов"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при загрузке файлов"));
         }
     }
 
-//    @GetMapping("/files")
-//    public ResponseEntity<List<FileInfo>> getListFiles() {
-//        List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
-//            String filename = path.getFileName().toString();
-//            String url = MvcUriComponentsBuilder
-//                    .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
-//
-//            return new FileInfo(filename, url);
-//        }).collect(Collectors.toList());
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
-//    }
+    @GetMapping("{username}")
+    public ResponseEntity<?> getAllFilesForUser(@PathVariable String username) {
+        if (username.equals(getAuthenticatedUser().getUsername())) {
+            return ResponseEntity.ok(fileObjectRepository.findByOwner(getAuthenticatedUser().getId()));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Нет прав доступа к этому контенту"));
+    }
+
+    @GetMapping("test/{username}")
+    public ResponseEntity<?> getFilesList(@PathVariable String username) {
+        if (username.equals(getAuthenticatedUser().getUsername())) {
+            List<FileObject> filesInfo = fileObjectRepository.findByOwner(getAuthenticatedUser().getId());
+            filesInfo.stream().forEach(fileInfo -> fileInfo.setDownloadLink(
+                    MvcUriComponentsBuilder
+                            .fromMethodName(FileObjectController.class, "downloadFile", fileInfo.getId())
+                            .build().toString()
+            ));
+            return ResponseEntity.ok().body(filesInfo);
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Нет прав доступа к этому контенту"));
+    }
+
+    @GetMapping("download/{fileId}")
+    public ResponseEntity<?> downloadFile(@PathVariable Long fileId) {
+        try {
+            FileObject fileObject = fileObjectRepository.findById(fileId).orElseThrow(FileNotExistsException::new);
+//            if (fileObject.getOwner() == getAuthenticatedUser().getId()) {
+//                throw new AuthorizationServiceException("User is not authorized to download this file");
+//            }
+            byte[] fileContent = fileService.extractFile(fileObject);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileObject.getInitialName() + "\"")
+                    .body(fileContent);
+        } catch (AuthorizationServiceException ex) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Нет прав доступа к этому контенту"));
+        } catch (Exception ex) {
+            log.error("Download of file failed");
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при скачивании файла"));
+        }
+    }
 }

@@ -6,17 +6,23 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 @Lazy
@@ -58,13 +64,24 @@ public class SftpClient {
         Channel channel = session.openChannel("sftp");
         channel.connect();
         ChannelSftp sftpChannel = (ChannelSftp) channel;
-        PipedInputStream pipedInputStream;
-        try (PipedOutputStream pipedOutputStream = new PipedOutputStream()) {
-            sftpChannel.get(source, pipedOutputStream);
-            pipedInputStream = new PipedInputStream(pipedOutputStream);
+
+        File tempSftpFile = File.createTempFile("sftp-download-temp", "");
+
+        try (OutputStream outputStream = new FileOutputStream(tempSftpFile.getAbsolutePath().toString())) {
+            sftpChannel.get(source, outputStream);
         }
+
+
+        byte[] fileContent = FileUtils.readFileToByteArray(tempSftpFile);
+//        PipedInputStream pipedInputStream;
+//        try (PipedOutputStream pipedOutputStream = new PipedOutputStream()) {
+//            sftpChannel.get(source, pipedOutputStream);
+//            pipedInputStream = new PipedInputStream(pipedOutputStream);
+//        }
+        tempSftpFile.delete();
         sftpChannel.exit();
-        return pipedInputStream;
+
+        return new ByteArrayInputStream(fileContent);
     }
 
     public void disconnect() {
