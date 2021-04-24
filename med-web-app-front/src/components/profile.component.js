@@ -51,8 +51,6 @@ export default class Profile extends Component {
                         <Link to={"/files/upload"} className="nav-link card-link-custom color-orange">
                             Загрузить файл
                         </Link>
-                        {/*<div className="card-link color-orange ">Загрузить файл</div>*/}
-                        {/*<div className="card-link color-orange ">Мои файлы</div>*/}
                     </div>
                 </div>
             </div>

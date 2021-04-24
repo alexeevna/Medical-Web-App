@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
+import {Link} from "react-router-dom";
 
 export default class BoardUploadAttachments extends Component {
     constructor(props) {
@@ -9,6 +10,7 @@ export default class BoardUploadAttachments extends Component {
         this.selectFiles = this.selectFiles.bind(this);
         this.uploadFiles = this.uploadFiles.bind(this);
         this.upload = this.upload.bind(this);
+        this.download = this.download.bind(this);
 
         const user = AuthService.getCurrentUser();
 
@@ -21,6 +23,13 @@ export default class BoardUploadAttachments extends Component {
             fileInfos: [],
         };
     }
+
+    download(event) {
+        //console.log(event.target);
+        AttachmentService.downloadAttachment(event.target.fileInfo);
+        event.preventDefault();
+    }
+
 
     selectFiles(event) {
         this.setState({
@@ -53,6 +62,7 @@ export default class BoardUploadAttachments extends Component {
 
     upload(idx, file) {
         let _progressInfos = [...this.state.progressInfos];
+        let _currentUser = this.state.currentUser;
 
         AttachmentService.uploadAttachment(file, (event) => {
             _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
@@ -68,8 +78,7 @@ export default class BoardUploadAttachments extends Component {
                     };
                 });
 
-                //return AttachmentService.getFiles();
-                return [];
+                return AttachmentService.getAttachmentsInfoForUser(_currentUser.username);
             })
             .then((files) => {
                 this.setState({
@@ -89,6 +98,12 @@ export default class BoardUploadAttachments extends Component {
     }
 
     async componentDidMount(){
+        AttachmentService.getAttachmentsInfoForUser(this.state.currentUser.username).then((response) => {
+            console.log(response);
+            this.setState({
+                fileInfos: response.data,
+            });
+        });
         // const response = await AttachmentService.getAttachmentsForUser(this.state.currentUser.username);
         // const userFilesInfo = response.data
         // console.log(userFilesInfo);
@@ -96,68 +111,78 @@ export default class BoardUploadAttachments extends Component {
     }
 
     render() {
-        const { selectedFiles, progressInfos, message, fileInfos } = this.state;
+        const { selectedFiles, progressInfos, message, fileInfos, user } = this.state;
 
         return (
-            <div>
-                {progressInfos &&
-                progressInfos.map((progressInfo, index) => (
-                    <div className="mb-2" key={index}>
-                        <span>{progressInfo.fileName}</span>
-                        <div className="progress">
-                            <div
-                                className="progress-bar progress-bar-info"
-                                role="progressbar"
-                                aria-valuenow={progressInfo.percentage}
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                                style={{ width: progressInfo.percentage + "%" }}
-                            >
-                                {progressInfo.percentage}%
+
+            <div className="row">
+                <div className=" col-sm-10 align-content-center top-buffer-custom">
+
+                    <header className="jumbotron align-text-center color-light-blue">
+                        <h3><strong>Загрузить файлы</strong></h3>
+                    </header>
+
+                    {progressInfos &&
+                    progressInfos.map((progressInfo, index) => (
+                        <div className="mb-2 center-horizontal width-600" key={index}>
+                            <span>{progressInfo.fileName}</span>
+                            <div className="progress">
+                                <div
+                                    className="progress-bar progress-bar-info color-orange"
+                                    role="progressbar"
+                                    aria-valuenow={progressInfo.percentage}
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                    style={{ width: progressInfo.percentage + "%" }}
+                                >
+                                    {progressInfo.percentage}%
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
 
-                <div className="row my-3">
-                    <div className="col-8">
-                        <label className="btn btn-default p-0">
-                            <input type="file" multiple onChange={this.selectFiles} />
-                        </label>
-                    </div>
 
-                    <div className="col-4">
-                        <button
-                            className="btn btn-success btn-sm"
-                            disabled={!selectedFiles}
-                            onClick={this.uploadFiles}
-                        >
-                            Upload
-                        </button>
+                    <div className="align-center view-attachments-card color-light-blue">
+                        <div className="row top-buffer-custom">
+                            <div className="col-9">
+                                <label className="btn color-light-blue">
+                                    <input type="file"
+                                           multiple onChange={this.selectFiles} />
+                                </label>
+                            </div>
+
+                            <div className="col-3">
+                                <button
+                                    className="btn btn-primary btn-block color-middle-blue"
+                                    disabled={!selectedFiles}
+                                    onClick={this.uploadFiles}
+                                >
+                                    Загрузить
+                                </button>
+                            </div>
+                        </div>
+
+                        {message.length > 0 && (
+                            <div className="alert color-light-blue" role="alert">
+                                <ul>
+                                    {message.map((item, i) => {
+                                        return <li key={i}>{item}</li>;
+                                    })}
+                                </ul>
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {message.length > 0 && (
-                    <div className="alert alert-secondary" role="alert">
-                        <ul>
-                            {message.map((item, i) => {
-                                return <li key={i}>{item}</li>;
-                            })}
-                        </ul>
-                    </div>
-                )}
-
-                <div className="card">
-                    <div className="card-header">List of Files</div>
-                    <ul className="list-group list-group-flush">
-                        {fileInfos &&
-                        fileInfos.map((file, index) => (
-                            <li className="list-group-item" key={index}>
-                                <a href={file.url}>{file.name}</a>
-                            </li>
-                        ))}
-                    </ul>
+                <div className="col-sm-2 align-center">
+                    <Link to={"/profile"} className="nav-link card-link-custom color-orange">
+                        Профиль
+                    </Link>
+                    <Link to={"/files/view"} className="nav-link card-link-custom color-orange">
+                        Мои файлы
+                    </Link>
                 </div>
+
             </div>
         );
     }

@@ -79,12 +79,12 @@ export default class Login extends Component {
     render() {
         return (
             <div className="col-md-12">
-                <div className="card card-container">
-                    <img
-                        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-                        alt="profile-img"
-                        className="profile-img-card"
-                    />
+                <div className="card card-container color-light-blue">
+                    {/*<img*/}
+                    {/*    src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"*/}
+                    {/*    alt="profile-img"*/}
+                    {/*    className="profile-img-card"*/}
+                    {/*/>*/}
 
                     <Form
                         onSubmit={this.handleLogin}
@@ -118,7 +118,7 @@ export default class Login extends Component {
 
                         <div className="form-group">
                             <button
-                                className="btn btn-primary btn-block"
+                                className="btn btn-primary btn-block color-dark-blue"
                                 disabled={this.state.loading}
                             >
                                 {this.state.loading && (

@@ -1,6 +1,6 @@
 .jumbotron {
     font-size: large;
-    max-width: 600px;
+    max-width: 600px !important;
     margin-left: auto;
     margin-right: auto;
     /*background-color: #f1f1f1;*/

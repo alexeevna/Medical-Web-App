@@ -3,22 +3,23 @@ import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:7999/api/files/';
 
+var http = axios.create({
+    baseURL: API_URL,
+    headers: authHeader()
+})
+
 class AttachmentService {
 
     getAttachmentsForUser(username) {
         return axios.get(API_URL + username, { headers: authHeader() });
-        //     .then(response => {
-        //         //console.log(response);
-        //         console.log(response.data);
-        //         //console.log(JSON.stringify(response.data));
-        //         return response.data;
-        //     });
-        // return data;
+    }
+
+    getAttachmentsInfoForUser(username) {
+        return axios.get(API_URL + 'test/' + username, { headers: authHeader() });
     }
 
     uploadAttachment(file, onUploadProgress) {
-        console.log("Got file to send");
-        console.log(authHeader());
+        console.log("Got file to upload");
         let formData = new FormData();
 
         formData.append("file", file);
@@ -33,6 +34,18 @@ class AttachmentService {
             onUploadProgress,
         });
     }
+
+    async downloadAttachment(fileId, fileName) {
+        console.log("Got request to download!!!");
+        console.log(fileId);
+        var response = axios.get(API_URL + 'download/' + fileId, {responseType: 'blob', headers: authHeader()})
+            .then(response => {
+                var fileDownload = require('js-file-download');
+                fileDownload(response.data, fileName);
+                return response;
+            });
+    }
+
 }
 
 export default new AttachmentService();

@@ -122,12 +122,12 @@ export default class Register extends Component {
     render() {
         return (
             <div className="col-md-12">
-                <div className="card card-container">
-                    <img
-                        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-                        alt="profile-img"
-                        className="profile-img-card"
-                    />
+                <div className="card card-container color-light-blue">
+                    {/*<img*/}
+                    {/*    src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"*/}
+                    {/*    alt="profile-img"*/}
+                    {/*    className="profile-img-card"*/}
+                    {/*/>*/}
 
                     <Form
                         onSubmit={this.handleRegister}
@@ -138,7 +138,7 @@ export default class Register extends Component {
                         {!this.state.successful && (
                             <div>
                                 <div className="form-group">
-                                    <label htmlFor="username">Username</label>
+                                    <label htmlFor="username">Логин</label>
                                     <Input
                                         type="text"
                                         className="form-control"
@@ -150,7 +150,7 @@ export default class Register extends Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="email">Email</label>
+                                    <label htmlFor="email">Почта</label>
                                     <Input
                                         type="text"
                                         className="form-control"
@@ -162,7 +162,7 @@ export default class Register extends Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="password">Password</label>
+                                    <label htmlFor="password">Пароль</label>
                                     <Input
                                         type="password"
                                         className="form-control"
@@ -174,7 +174,7 @@ export default class Register extends Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <button className="btn btn-primary btn-block">Sign Up</button>
+                                    <button className="btn btn-block color-dark-blue">Зарегистрироваться</button>
                                 </div>
                             </div>
                         )}

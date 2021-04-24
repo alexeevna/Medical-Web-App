@@ -12,24 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping("/all")
     public String allAccess() {
-        return "Public Content.";
+        return "Общая информация";
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAuthority('USER_ROLE') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String userAccess() {
-        return "User Content.";
+        return "Доступные пайплайны";
     }
 
     @GetMapping("/mod")
-    @PreAuthorize("hasRole('MODERATOR')")
     public String moderatorAccess() {
-        return "Moderator Board.";
+        return "Информация о пайплайнах";
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
     public String adminAccess() {
-        return "Admin Board.";
+        return "Информация для админа";
     }
 }

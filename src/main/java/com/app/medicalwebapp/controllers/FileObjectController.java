@@ -6,6 +6,7 @@ import com.app.medicalwebapp.repositories.FileObjectRepository;
 import com.app.medicalwebapp.security.data.UserDetailsImpl;
 import com.app.medicalwebapp.security.data.response.MessageResponse;
 import com.app.medicalwebapp.services.FileService;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -65,7 +67,13 @@ public class FileObjectController {
     @GetMapping("{username}")
     public ResponseEntity<?> getAllFilesForUser(@PathVariable String username) {
         if (username.equals(getAuthenticatedUser().getUsername())) {
-            return ResponseEntity.ok(fileObjectRepository.findByOwner(getAuthenticatedUser().getId()));
+            List<FileObject> filesInfo = fileObjectRepository.findByOwner(getAuthenticatedUser().getId());
+            filesInfo.stream().forEach(fileInfo -> fileInfo.setDownloadLink(
+                    MvcUriComponentsBuilder
+                            .fromMethodName(FileObjectController.class, "downloadFile", fileInfo.getId())
+                            .build().toString()
+            ));
+            return ResponseEntity.ok().body(filesInfo);
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Нет прав доступа к этому контенту"));
     }
@@ -87,15 +95,20 @@ public class FileObjectController {
     @GetMapping("download/{fileId}")
     public ResponseEntity<?> downloadFile(@PathVariable Long fileId) {
         try {
+            log.info("Received request to download file");
             FileObject fileObject = fileObjectRepository.findById(fileId).orElseThrow(FileNotExistsException::new);
-//            if (fileObject.getOwner() == getAuthenticatedUser().getId()) {
-//                throw new AuthorizationServiceException("User is not authorized to download this file");
-//            }
+//            System.out.println(fileObject.getOwner());
+//            System.out.println(fileObject.getOwner().equals(getAuthenticatedUser().getId()));
+            if (getAuthenticatedUser() == null || !fileObject.getOwner().equals(getAuthenticatedUser().getId())) {
+                throw new AuthorizationServiceException("User is not authorized to download this file");
+            }
             byte[] fileContent = fileService.extractFile(fileObject);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileObject.getInitialName() + "\"")
+                    .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
                     .body(fileContent);
         } catch (AuthorizationServiceException ex) {
+            ex.printStackTrace();
             return ResponseEntity.badRequest().body(new MessageResponse("Нет прав доступа к этому контенту"));
         } catch (Exception ex) {
             log.error("Download of file failed");
