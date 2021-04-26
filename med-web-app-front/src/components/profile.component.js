@@ -19,28 +19,21 @@ export default class Profile extends Component {
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-sm-10">
+                    <div className="col-sm-9">
                         <header className="jumbotron align-center color-light-blue">
                             <h3><strong>Мой профиль</strong></h3>
                         </header>
 
                         <div className="card color-light-blue">
                             <div className="row top-buffer">
-                                <div className="col-sm-4">Логин:</div>
-                                <div className="col-sm-8">{currentUser.username}</div>
+                                <div className="col-sm-5">Логин:</div>
+                                <div className="col-sm-7">{currentUser.username}</div>
                             </div>
                             <div className="row top-buffer">
-                                <div className="col-sm-4">Имя, фамилия:</div>
-                                <div className="col-sm-8">{currentUser.realName}</div>
-                            </div>
-                            <div className="row top-buffer">
-                                <div className="col-sm-4">Статус:</div>
+                                <div className="col-sm-5">Дата регистрации:</div>
+                                <div className="col-sm-7"></div>
                                 {/*<div className="col-sm-8" v-if="currentUser.roles[0] === 'driver'">Перевозчик</div>*/}
                                 {/*<div className="col-sm-8" v-if="currentUser.roles[0] === 'client'">Заказчик</div>*/}
-                            </div>
-                            <div className="row top-buffer">
-                                <div className="col-sm-4">Моб. номер:</div>
-                                <div className="col-sm-8">{currentUser.mobilePhone}</div>
                             </div>
                         </div>
                     </div>
@@ -52,6 +45,8 @@ export default class Profile extends Component {
                             Загрузить файл
                         </Link>
                     </div>
+
+                    <div className="col-sm-1"></div>
                 </div>
             </div>
         );

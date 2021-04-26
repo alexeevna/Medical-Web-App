@@ -18,11 +18,15 @@ class AttachmentService {
         return axios.get(API_URL + 'test/' + username, { headers: authHeader() });
     }
 
-    uploadAttachment(file, onUploadProgress) {
+    uploadAttachment(file, fileName, isDicom, onUploadProgress) {
         console.log("Got file to upload");
         let formData = new FormData();
 
-        formData.append("file", file);
+        if (isDicom) {
+            formData.append("file", new Blob([file]), fileName);
+        } else {
+            formData.append("file", file);
+        }
 
         const user = JSON.parse(localStorage.getItem('user'));
         let token = '';

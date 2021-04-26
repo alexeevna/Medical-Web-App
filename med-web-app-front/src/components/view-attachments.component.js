@@ -38,7 +38,7 @@ export default class BoardViewAttachments extends Component {
             <div className="container">
 
                 <div className="row">
-                    <div className="col-sm-10">
+                    <div className="col-sm-9">
                         <header className="jumbotron align-center color-light-blue">
                             <h3><strong>Загруженные файлы</strong></h3>
                         </header>
@@ -47,8 +47,8 @@ export default class BoardViewAttachments extends Component {
                             {this.state.userFilesInfo.map(el => (
                                 <div key={el.id} className="row color-light-blue top-buffer-custom">
                                     <div className="col-sm-5">{el.initialName}</div>
-                                    <div className="col-sm-5">{new Date(el.creationTime).toLocaleDateString()}</div>
-                                    <div className="col-sm-2">
+                                    <div className="col-sm-4">{new Date(el.creationTime).toLocaleDateString()}</div>
+                                    <div className="col-sm-3">
                                         <button
                                             className="btn btn-primary btn-block color-dark-blue"
                                             onClick={() => this.download(el.id, el.initialName)}>Скачать</button>
@@ -66,6 +66,8 @@ export default class BoardViewAttachments extends Component {
                             Загрузить файл
                         </Link>
                     </div>
+
+                    <div className="col-sm-1"></div>
                 </div>
 
             </div>

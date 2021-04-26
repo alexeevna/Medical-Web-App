@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import {Link} from "react-router-dom";
+import DicomAnonymizerService from "../services/dicom-anonymizer.service"
 
 export default class BoardUploadAttachments extends Component {
     constructor(props) {
@@ -10,7 +11,6 @@ export default class BoardUploadAttachments extends Component {
         this.selectFiles = this.selectFiles.bind(this);
         this.uploadFiles = this.uploadFiles.bind(this);
         this.upload = this.upload.bind(this);
-        this.download = this.download.bind(this);
 
         const user = AuthService.getCurrentUser();
 
@@ -23,13 +23,6 @@ export default class BoardUploadAttachments extends Component {
             fileInfos: [],
         };
     }
-
-    download(event) {
-        //console.log(event.target);
-        AttachmentService.downloadAttachment(event.target.fileInfo);
-        event.preventDefault();
-    }
-
 
     selectFiles(event) {
         this.setState({
@@ -60,35 +53,40 @@ export default class BoardUploadAttachments extends Component {
         );
     }
 
-    upload(idx, file) {
+    async upload(idx, file) {
         let _progressInfos = [...this.state.progressInfos];
         let _currentUser = this.state.currentUser;
 
-        AttachmentService.uploadAttachment(file, (event) => {
-            _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
-            this.setState({
-                _progressInfos,
+        let isDicom = file.name.includes(".dcm");
+        if (isDicom) {
+            var anonymizedDicomBlob = await DicomAnonymizerService.anonymizeInstance(file);
+        }
+
+        let toSend = isDicom ? anonymizedDicomBlob : file;
+
+        console.log(toSend);
+        AttachmentService.uploadAttachment(toSend, file.name, isDicom,
+            (event) => {
+                _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
+                this.setState({
+                    _progressInfos,
             });
         })
             .then((response) => {
                 this.setState((prev) => {
-                    let nextMessage = [...prev.message, "Uploaded the file successfully: " + file.name];
-                    return {
-                        message: nextMessage
-                    };
+                    let nextMessage = [...prev.message, "Успешно загружен файл: " + file.name];
+                    return {message: nextMessage};
                 });
 
                 return AttachmentService.getAttachmentsInfoForUser(_currentUser.username);
             })
             .then((files) => {
-                this.setState({
-                    fileInfos: files.data,
-                });
+                this.setState({fileInfos: files.data,});
             })
             .catch(() => {
                 _progressInfos[idx].percentage = 0;
                 this.setState((prev) => {
-                    let nextMessage = [...prev.message, "Could not upload the file: " + file.name];
+                    let nextMessage = [...prev.message, "Не удалось загрузить файл: " + file.name];
                     return {
                         progressInfos: _progressInfos,
                         message: nextMessage
@@ -97,29 +95,16 @@ export default class BoardUploadAttachments extends Component {
             });
     }
 
-    async componentDidMount(){
-        AttachmentService.getAttachmentsInfoForUser(this.state.currentUser.username).then((response) => {
-            console.log(response);
-            this.setState({
-                fileInfos: response.data,
-            });
-        });
-        // const response = await AttachmentService.getAttachmentsForUser(this.state.currentUser.username);
-        // const userFilesInfo = response.data
-        // console.log(userFilesInfo);
-        // this.setState({userFilesInfo: userFilesInfo});
-    }
-
     render() {
-        const { selectedFiles, progressInfos, message, fileInfos, user } = this.state;
+        const { selectedFiles, progressInfos, message } = this.state;
 
         return (
 
             <div className="row">
-                <div className=" col-sm-10 align-content-center top-buffer-custom">
+                <div className=" col-sm-9 align-content-center top-buffer-custom">
 
                     <header className="jumbotron align-text-center color-light-blue">
-                        <h3><strong>Загрузить файлы</strong></h3>
+                        <h3><strong>Загрузка файлов</strong></h3>
                     </header>
 
                     {progressInfos &&
@@ -146,8 +131,7 @@ export default class BoardUploadAttachments extends Component {
                         <div className="row top-buffer-custom">
                             <div className="col-9">
                                 <label className="btn color-light-blue">
-                                    <input type="file"
-                                           multiple onChange={this.selectFiles} />
+                                    <input type="file" multiple onChange={this.selectFiles} />
                                 </label>
                             </div>
 
@@ -156,18 +140,14 @@ export default class BoardUploadAttachments extends Component {
                                     className="btn btn-primary btn-block color-middle-blue"
                                     disabled={!selectedFiles}
                                     onClick={this.uploadFiles}
-                                >
-                                    Загрузить
-                                </button>
+                                >Загрузить</button>
                             </div>
                         </div>
 
                         {message.length > 0 && (
                             <div className="alert color-light-blue" role="alert">
                                 <ul>
-                                    {message.map((item, i) => {
-                                        return <li key={i}>{item}</li>;
-                                    })}
+                                    {message.map((item, i) => {return <li key={i}>{item}</li>;})}
                                 </ul>
                             </div>
                         )}
@@ -175,14 +155,11 @@ export default class BoardUploadAttachments extends Component {
                 </div>
 
                 <div className="col-sm-2 align-center">
-                    <Link to={"/profile"} className="nav-link card-link-custom color-orange">
-                        Профиль
-                    </Link>
-                    <Link to={"/files/view"} className="nav-link card-link-custom color-orange">
-                        Мои файлы
-                    </Link>
+                    <Link to={"/profile"} className="nav-link card-link-custom color-orange">Профиль</Link>
+                    <Link to={"/files/view"} className="nav-link card-link-custom color-orange">Мои файлы</Link>
                 </div>
 
+                <div className="col-sm-1"></div>
             </div>
         );
     }
