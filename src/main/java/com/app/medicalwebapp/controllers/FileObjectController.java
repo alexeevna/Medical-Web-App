@@ -56,7 +56,6 @@ public class FileObjectController {
             System.out.println(file.getOriginalFilename());
             fileService.saveFile(file.getOriginalFilename(), file.getBytes(), getAuthenticatedUser().getId());
 
-
             return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + file.getOriginalFilename()));
         } catch (Exception e) {
             e.printStackTrace();

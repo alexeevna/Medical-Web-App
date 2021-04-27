@@ -29,6 +29,9 @@ public class PipelineJob {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "mirf_session_id")
+    private String mirfSessionid;
+
     @ManyToOne
     @JoinColumn(name="creator_id", nullable=false)
     private User creator;
@@ -36,6 +39,9 @@ public class PipelineJob {
     @ManyToOne
     @JoinColumn(name="pipeline_id", nullable=false)
     private Pipeline pipeline;
+
+    @Column(name = "status")
+    private PipelineJobStatus executionStatus;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

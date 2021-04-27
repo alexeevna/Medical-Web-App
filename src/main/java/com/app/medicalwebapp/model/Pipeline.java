@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ public class Pipeline {
     private Long id;
 
     @Column(name = "json_config")
+    @JsonIgnore
     private String jsonConfig;
 
     @Column(name = "input_format")
