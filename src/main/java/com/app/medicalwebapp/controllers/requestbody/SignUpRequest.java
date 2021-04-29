@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.security.data.request;
+package com.app.medicalwebapp.controllers.requestbody;
 
 import lombok.Data;
 

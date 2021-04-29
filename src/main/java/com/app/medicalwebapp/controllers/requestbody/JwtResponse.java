@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.security.data.response;
+package com.app.medicalwebapp.controllers.requestbody;
 
 import lombok.Getter;
 import lombok.Setter;

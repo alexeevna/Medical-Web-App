@@ -1,12 +1,11 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.exceptions.FileNotExistsException;
+import com.app.medicalwebapp.exceptions.ObjectNotExistsException;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.repositories.FileObjectRepository;
-import com.app.medicalwebapp.security.data.UserDetailsImpl;
-import com.app.medicalwebapp.security.data.response.MessageResponse;
+import com.app.medicalwebapp.security.UserDetailsImpl;
+import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.services.FileService;
-import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -42,11 +37,6 @@ public class FileObjectController {
 
     @Autowired
     FileService fileService;
-
-    UserDetailsImpl getAuthenticatedUser() {
-        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -95,9 +85,7 @@ public class FileObjectController {
     public ResponseEntity<?> downloadFile(@PathVariable Long fileId) {
         try {
             log.info("Received request to download file");
-            FileObject fileObject = fileObjectRepository.findById(fileId).orElseThrow(FileNotExistsException::new);
-//            System.out.println(fileObject.getOwner());
-//            System.out.println(fileObject.getOwner().equals(getAuthenticatedUser().getId()));
+            FileObject fileObject = fileObjectRepository.findById(fileId).orElseThrow(ObjectNotExistsException::new);
             if (getAuthenticatedUser() == null || !fileObject.getOwner().equals(getAuthenticatedUser().getId())) {
                 throw new AuthorizationServiceException("User is not authorized to download this file");
             }
@@ -115,4 +103,9 @@ public class FileObjectController {
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при скачивании файла"));
         }
     }
+
+    private UserDetailsImpl getAuthenticatedUser() {
+        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
 }

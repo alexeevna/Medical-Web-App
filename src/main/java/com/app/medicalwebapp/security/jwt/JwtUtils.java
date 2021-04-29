@@ -1,6 +1,6 @@
 package com.app.medicalwebapp.security.jwt;
 
-import com.app.medicalwebapp.security.data.UserDetailsImpl;
+import com.app.medicalwebapp.security.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

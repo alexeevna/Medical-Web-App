@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,6 +43,7 @@ public class PipelineJob {
     private Pipeline pipeline;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private PipelineJobStatus executionStatus;
 
     @ManyToMany(fetch = FetchType.EAGER)

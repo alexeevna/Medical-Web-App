@@ -1,8 +1,8 @@
-package com.app.medicalwebapp.security.services;
+package com.app.medicalwebapp.security;
 
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.repositories.UserRepository;
-import com.app.medicalwebapp.security.data.UserDetailsImpl;
+import com.app.medicalwebapp.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

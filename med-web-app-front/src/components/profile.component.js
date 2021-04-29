@@ -32,8 +32,6 @@ export default class Profile extends Component {
                             <div className="row top-buffer">
                                 <div className="col-sm-5">Дата регистрации:</div>
                                 <div className="col-sm-7"></div>
-                                {/*<div className="col-sm-8" v-if="currentUser.roles[0] === 'driver'">Перевозчик</div>*/}
-                                {/*<div className="col-sm-8" v-if="currentUser.roles[0] === 'client'">Заказчик</div>*/}
                             </div>
                         </div>
                     </div>

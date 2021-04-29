@@ -9,11 +9,10 @@ import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
-import BoardUser from "./components/questions.component";
-import BoardModerator from "./components/board-moderator.component";
-import BoardAdmin from "./components/board-admin.component";
-import BoardViewAttachments from "./components/view-attachments.component";
-import BoardUploadAttachments from "./components/upload-attachments.component";
+import ViewAttachmentsComponent from "./components/view-attachments.component";
+import UploadAttachmentsComponent from "./components/upload-attachments.component";
+import PipelinesComponent from "./components/pipelines.component";
+import PipelineResultsComponent from "./components/pipeline-results.component";
 
 class App extends Component {
   constructor(props) {
@@ -32,9 +31,7 @@ class App extends Component {
 
     if (user) {
       this.setState({
-        currentUser: user,
-        showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
-        showAdminBoard: user.roles.includes("ROLE_ADMIN"),
+        currentUser: user
       });
     }
   }
@@ -56,25 +53,9 @@ class App extends Component {
                 </Link>
               </li>
 
-              {showModeratorBoard && (
-                  <li className="nav-item">
-                    <Link to={"/mod"} className="nav-link color-dark-blue">
-                      Moderator Board
-                    </Link>
-                  </li>
-              )}
-
-              {showAdminBoard && (
-                  <li className="nav-item">
-                    <Link to={"/admin"} className="nav-link">
-                      Admin Board
-                    </Link>
-                  </li>
-              )}
-
               {currentUser && (
                   <li className="nav-item">
-                    <Link to={"/user"} className="nav-link color-dark-blue">
+                    <Link to={"/pipelines/create"} className="nav-link color-dark-blue">
                       Конвейеры
                     </Link>
                   </li>
@@ -117,11 +98,10 @@ class App extends Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/profile" component={Profile} />
-              <Route path="/user" component={BoardUser} />
-              <Route path="/mod" component={BoardModerator} />
-              <Route path="/admin" component={BoardAdmin} />
-              <Route path="/files/view" component={BoardViewAttachments}/>
-              <Route path="/files/upload" component={BoardUploadAttachments}/>
+              <Route path="/pipelines/create" component={PipelinesComponent}/>
+              <Route path="/pipelines/results" component={PipelineResultsComponent}/>
+              <Route path="/files/view" component={ViewAttachmentsComponent}/>
+              <Route path="/files/upload" component={UploadAttachmentsComponent}/>
             </Switch>
           </div>
         </div>

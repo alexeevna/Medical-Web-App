@@ -2,7 +2,6 @@ package com.app.medicalwebapp.security;
 
 import com.app.medicalwebapp.security.jwt.AuthExceptionProcessor;
 import com.app.medicalwebapp.security.jwt.OncePerRequestFilterImpl;
-import com.app.medicalwebapp.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

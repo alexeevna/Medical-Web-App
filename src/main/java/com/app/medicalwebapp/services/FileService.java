@@ -1,6 +1,5 @@
 package com.app.medicalwebapp.services;
 
-import com.app.medicalwebapp.exceptions.FileNotExistsException;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
 import com.app.medicalwebapp.repositories.FileObjectRepository;

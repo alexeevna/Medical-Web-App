@@ -22,8 +22,10 @@ public class Pipeline {
     private Long id;
 
     @Column(name = "json_config")
-    @JsonIgnore
     private String jsonConfig;
+
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "input_format")
     private FileObjectFormat inputFormat;

@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.security.data;
+package com.app.medicalwebapp.security;
 
 import com.app.medicalwebapp.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

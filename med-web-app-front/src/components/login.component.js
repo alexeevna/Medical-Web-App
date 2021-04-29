@@ -88,9 +88,7 @@ export default class Login extends Component {
 
                     <Form
                         onSubmit={this.handleLogin}
-                        ref={c => {
-                            this.form = c;
-                        }}
+                        ref={c => {this.form = c;}}
                     >
                         <div className="form-group">
                             <label htmlFor="username">Логин</label>
@@ -137,9 +135,7 @@ export default class Login extends Component {
                         )}
                         <CheckButton
                             style={{ display: "none" }}
-                            ref={c => {
-                                this.checkBtn = c;
-                            }}
+                            ref={c => {this.checkBtn = c;}}
                         />
                     </Form>
                 </div>

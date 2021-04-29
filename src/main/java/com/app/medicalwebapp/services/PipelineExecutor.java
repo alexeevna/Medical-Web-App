@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class PipelineProcessor {
+public class PipelineExecutor {
 
     @Autowired
     FileExtractorStrategyResolver extractorStrategyResolver;
@@ -37,7 +37,7 @@ public class PipelineProcessor {
     PipelineJobRepository pipelineJobRepository;
 
     public void triggerPipeline() throws Exception {
-        InputStream inputStream = PipelineProcessor.class.getClassLoader().getResourceAsStream("image-000002.dcm");
+        InputStream inputStream = PipelineExecutor.class.getClassLoader().getResourceAsStream("image-000002.dcm");
 
         FileObject fileObject = new FileObject();
         fileObject.setPathToFile("tempFilePath");
@@ -45,12 +45,12 @@ public class PipelineProcessor {
         //processPipeline(fileObject, null, inputStream);
     }
 
-    public void processPipeline(FileObject fileObject, Pipeline pipeline, Long creatorId) throws Exception {
+    public void executePipeline(FileObject fileObject, Pipeline pipeline, Long creatorId) throws Exception {
         PipelineJob pipelineJob = initPipelineJob(fileObject, pipeline, creatorId);
 
-        String sessionId = null;
+        String sessionId = "";
         try {
-            sessionId = mirfOrchestrator.getSessionId();
+            //sessionId = mirfOrchestrator.getSessionId();
 
             FileExtractorStrategy extractorStrategy = extractorStrategyResolver.getFileExtractor(fileObject.getFormat());
             InputStream fileAsInputStream = extractorStrategy.getFileInActualFormat(fileObject);
@@ -58,11 +58,13 @@ public class PipelineProcessor {
             byte[] zipArchive = MirfZipUtils.createZipArchive(inputInMirfPipeline, fileAsInputStream, sessionId);
             String zipArchiveName = sessionId + ".zip";
 
-            mirfRepository.sendArchive(sessionId, zipArchiveName, zipArchive);
+            //mirfRepository.sendArchive(sessionId, zipArchiveName, zipArchive);
             pipelineJob.setStartedTime(LocalDateTime.now());
-            mirfOrchestrator.processPipeline(sessionId, pipeline.getJsonConfig());
+            //mirfOrchestrator.processPipeline(sessionId, pipeline.getJsonConfig());
         } catch (Exception ex) {
+            ex.printStackTrace();
             pipelineJob.setExecutionStatus(PipelineJobStatus.COMPLETED_ERROR);
+            throw ex;
         }
 
         pipelineJobRepository.save(pipelineJob);
@@ -75,6 +77,7 @@ public class PipelineProcessor {
         creator.setId(creatorId);
         pipelineJob.setCreator(creator);
         pipelineJob.setInputFiles(Collections.singletonList(fileObject));
+        pipelineJob.setExecutionStatus(PipelineJobStatus.IN_PROGRESS);
 
         return pipelineJob;
     }

@@ -3,9 +3,9 @@ package com.app.medicalwebapp.exceptions;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class FileNotExistsException extends Exception {
+public class ObjectNotExistsException extends Exception {
 
-    public FileNotExistsException(String message)
+    public ObjectNotExistsException(String message)
     {
         super(message);
     }

@@ -3,7 +3,7 @@ import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import {Link} from "react-router-dom";
 
-export default class BoardViewAttachments extends Component {
+export default class ViewAttachmentsComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -43,9 +43,9 @@ export default class BoardViewAttachments extends Component {
                             <h3><strong>Загруженные файлы</strong></h3>
                         </header>
 
-                        <div className="view-attachments-card color-light-blue">
+                        <div className="view-card color-light-blue">
                             {this.state.userFilesInfo.map(el => (
-                                <div key={el.id} className="row color-light-blue top-buffer-custom">
+                                <div key={el.id} className="row color-light-blue top-buffer-10">
                                     <div className="col-sm-5">{el.initialName}</div>
                                     <div className="col-sm-4">{new Date(el.creationTime).toLocaleDateString()}</div>
                                     <div className="col-sm-3">

@@ -2,11 +2,11 @@ package com.app.medicalwebapp.controllers;
 
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.repositories.UserRepository;
-import com.app.medicalwebapp.security.data.UserDetailsImpl;
-import com.app.medicalwebapp.security.data.request.SignInRequest;
-import com.app.medicalwebapp.security.data.request.SignUpRequest;
-import com.app.medicalwebapp.security.data.response.JwtResponse;
-import com.app.medicalwebapp.security.data.response.MessageResponse;
+import com.app.medicalwebapp.security.UserDetailsImpl;
+import com.app.medicalwebapp.controllers.requestbody.SignInRequest;
+import com.app.medicalwebapp.controllers.requestbody.SignUpRequest;
+import com.app.medicalwebapp.controllers.requestbody.JwtResponse;
+import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.security.jwt.JwtUtils;
 
 import org.slf4j.Logger;
@@ -75,7 +75,7 @@ public class AuthController {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("This username is already taken."));
+                    .body(new MessageResponse("Этот логин уже занят"));
         }
 
         User user = new User();
@@ -89,7 +89,7 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User has been successfully registered"));
+        return ResponseEntity.ok(new MessageResponse("Пользователь был успешно зарегистрирован"));
     }
 }
 

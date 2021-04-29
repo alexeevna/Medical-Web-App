@@ -4,7 +4,7 @@ import AttachmentService from "../services/attachment.service";
 import {Link} from "react-router-dom";
 import DicomAnonymizerService from "../services/dicom-anonymizer.service"
 
-export default class BoardUploadAttachments extends Component {
+export default class UploadAttachmentsComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -101,7 +101,7 @@ export default class BoardUploadAttachments extends Component {
         return (
 
             <div className="row">
-                <div className=" col-sm-9 align-content-center top-buffer-custom">
+                <div className=" col-sm-9 align-content-center top-buffer-10">
 
                     <header className="jumbotron align-text-center color-light-blue">
                         <h3><strong>Загрузка файлов</strong></h3>
@@ -127,8 +127,8 @@ export default class BoardUploadAttachments extends Component {
                     ))}
 
 
-                    <div className="align-center view-attachments-card color-light-blue">
-                        <div className="row top-buffer-custom">
+                    <div className="align-center view-card color-light-blue">
+                        <div className="row top-buffer-10">
                             <div className="col-9">
                                 <label className="btn color-light-blue">
                                     <input type="file" multiple onChange={this.selectFiles} />

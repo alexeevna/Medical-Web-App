@@ -5,7 +5,7 @@ import com.app.medicalwebapp.model.PipelineJobStatus;
 import com.app.medicalwebapp.repositories.PipelineJobRepository;
 import com.app.medicalwebapp.services.FileService;
 import com.app.medicalwebapp.services.MirfZipUtils;
-import com.app.medicalwebapp.services.PipelineProcessor;
+import com.app.medicalwebapp.services.PipelineExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class MirfController {
     Logger log = LoggerFactory.getLogger(MirfController.class);
 
     @Autowired
-    PipelineProcessor pipelineProcessor;
+    PipelineExecutor pipelineExecutor;
 
     @Autowired
     FileService fileService;
@@ -37,7 +37,7 @@ public class MirfController {
 
     @GetMapping("triggerPipeline")
     public void triggerPipeline() throws Exception {
-        pipelineProcessor.triggerPipeline();
+        pipelineExecutor.triggerPipeline();
     }
 
     @PostMapping("mirfSuccess")
