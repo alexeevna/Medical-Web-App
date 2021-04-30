@@ -50,7 +50,8 @@ public class PipelineExecutor {
 
         String sessionId = "";
         try {
-            //sessionId = mirfOrchestrator.getSessionId();
+            sessionId = mirfOrchestrator.getSessionId();
+            pipelineJob.setMirfSessionid(sessionId);
 
             FileExtractorStrategy extractorStrategy = extractorStrategyResolver.getFileExtractor(fileObject.getFormat());
             InputStream fileAsInputStream = extractorStrategy.getFileInActualFormat(fileObject);
@@ -58,16 +59,16 @@ public class PipelineExecutor {
             byte[] zipArchive = MirfZipUtils.createZipArchive(inputInMirfPipeline, fileAsInputStream, sessionId);
             String zipArchiveName = sessionId + ".zip";
 
-            //mirfRepository.sendArchive(sessionId, zipArchiveName, zipArchive);
+            mirfRepository.sendArchive(sessionId, zipArchiveName, zipArchive);
             pipelineJob.setStartedTime(LocalDateTime.now());
-            //mirfOrchestrator.processPipeline(sessionId, pipeline.getJsonConfig());
+            pipelineJobRepository.save(pipelineJob);
+            mirfOrchestrator.processPipeline(sessionId, pipeline.getJsonConfig());
         } catch (Exception ex) {
             ex.printStackTrace();
             pipelineJob.setExecutionStatus(PipelineJobStatus.COMPLETED_ERROR);
+            pipelineJobRepository.save(pipelineJob);
             throw ex;
         }
-
-        pipelineJobRepository.save(pipelineJob);
     }
 
     private PipelineJob initPipelineJob(FileObject fileObject, Pipeline pipeline, Long creatorId) {

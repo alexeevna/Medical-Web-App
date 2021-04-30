@@ -6,6 +6,7 @@ import com.app.medicalwebapp.exceptions.ObjectNotExistsException;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.Pipeline;
 import com.app.medicalwebapp.model.PipelineJob;
+import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.repositories.FileObjectRepository;
 import com.app.medicalwebapp.repositories.PipelineJobRepository;
 import com.app.medicalwebapp.repositories.PipelineRepository;
@@ -45,7 +46,9 @@ public class PipelineJobController {
     @GetMapping("{username}")
     @AuthorizedWithUsername
     public ResponseEntity<?> getPipelineJobsForUser(@PathVariable String username) {
-        List<PipelineJob> pipelineJobs = pipelineJobRepository.findByCreator(getAuthenticatedUserId());
+        User creator = new User();
+        creator.setId(getAuthenticatedUserId());
+        List<PipelineJob> pipelineJobs = pipelineJobRepository.findByCreator(creator);
         return ResponseEntity.ok().body(pipelineJobs);
     }
 

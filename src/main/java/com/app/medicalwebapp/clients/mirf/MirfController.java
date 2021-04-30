@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.clients.mirf;
 
+import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.PipelineJob;
 import com.app.medicalwebapp.model.PipelineJobStatus;
 import com.app.medicalwebapp.repositories.PipelineJobRepository;
@@ -18,9 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
-@RequestMapping("api/mirf")
+@RequestMapping("/api/mirf")
 public class MirfController {
 
     Logger log = LoggerFactory.getLogger(MirfController.class);
@@ -47,10 +50,15 @@ public class MirfController {
         byte[] zipInBytes = zipInputStream.readAllBytes();
         log.info("Received result from MIRF for session: {}, resultSize: {}", sessionId, resultZipFile.getSize());
 
+        pipelineJobRepository.findAll().forEach(it -> System.out.println(it.getMirfSessionid()));
         PipelineJob relatedPipelineJob = pipelineJobRepository.findByMirfSessionid(sessionId).get(0);
         try {
             byte[] resultFileInBytes = MirfZipUtils.unzipResultArchive(zipInBytes);
-            fileService.saveFile("pipeline-result.pdf", resultFileInBytes, relatedPipelineJob.getCreator().getId());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("-dd-MM-yyyy-HH-mm-ss");
+            String startedTime = formatter.format(relatedPipelineJob.getStartedTime());
+            FileObject outputFile = fileService.saveFile("pipeline-result" + startedTime + ".pdf", resultFileInBytes, relatedPipelineJob.getCreator().getId());
+            relatedPipelineJob.setOutputFile(outputFile);
+            relatedPipelineJob.setEndTime(LocalDateTime.now());
             relatedPipelineJob.setExecutionStatus(PipelineJobStatus.COMPLETED_OK);
         } catch (Exception ex) {
             relatedPipelineJob.setExecutionStatus(PipelineJobStatus.COMPLETED_ERROR);

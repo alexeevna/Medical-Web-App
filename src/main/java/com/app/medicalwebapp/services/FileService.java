@@ -25,10 +25,10 @@ public class FileService {
     @Autowired
     FileObjectRepository fileObjectRepository;
 
-    public void saveFile(String originalName, byte[] fileContent, Long ownerId) throws Exception {
+    public FileObject saveFile(String originalName, byte[] fileContent, Long ownerId) throws Exception {
         FileSaverStrategy fileSaver = saverStrategyResolver.getFileSaver(originalName, fileContent);
         FileObjectFormat format = FileFormatResolver.resolveFormat(originalName, fileContent);
-        fileSaver.save(ownerId, originalName, format, new ByteArrayInputStream(fileContent));
+        return fileSaver.save(ownerId, originalName, format, new ByteArrayInputStream(fileContent));
     }
 
     public byte[] extractFile(FileObject fileObject) throws Exception {

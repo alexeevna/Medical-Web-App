@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -32,10 +33,12 @@ public class PipelineJob {
     private Long id;
 
     @Column(name = "mirf_session_id")
+    @JsonIgnore
     private String mirfSessionid;
 
     @ManyToOne
     @JoinColumn(name="creator_id", nullable=false)
+    @JsonIgnore
     private User creator;
 
     @ManyToOne
