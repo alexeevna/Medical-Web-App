@@ -24,30 +24,20 @@ public class RecordController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllRecords(
             @RequestParam(required = false) String title,
+            @RequestParam(required = false) Long topicId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
-            RecordsPageResponse responseBody = recordService.getRecordsPage(page, size, title);
+            RecordsPageResponse responseBody;
+            if (title != null) {
+                responseBody = recordService.getRecordsPage(page, size, title);
+            } else {
+                responseBody = recordService.getRecordsPageByTopic(page, size, topicId);
+            }
             return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("{topicId}")
-    public ResponseEntity<?> getAllRecordsByTopic(
-            @PathVariable Long topicId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        try {
-            RecordsPageResponse responseBody = recordService.getRecordsPageByTopic(page, size, topicId);
-            return ResponseEntity.ok().body(responseBody);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
 }

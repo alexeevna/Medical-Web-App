@@ -13,6 +13,7 @@ import ViewAttachmentsComponent from "./components/view-attachments.component";
 import UploadAttachmentsComponent from "./components/upload-attachments.component";
 import PipelinesComponent from "./components/pipelines.component";
 import PipelineResultsComponent from "./components/pipeline-results.component";
+import ViewRecordsComponent from "./components/view-records.component";
 
 class App extends Component {
   constructor(props) {
@@ -60,6 +61,14 @@ class App extends Component {
                     </Link>
                   </li>
               )}
+
+              {currentUser && (
+                  <li className="nav-item">
+                    <Link to={"/records/view"} className="nav-link color-dark-blue">
+                      Посты
+                    </Link>
+                  </li>
+              )}
             </div>
 
             {currentUser ? (
@@ -102,6 +111,7 @@ class App extends Component {
               <Route path="/pipelines/results" component={PipelineResultsComponent}/>
               <Route path="/files/view" component={ViewAttachmentsComponent}/>
               <Route path="/files/upload" component={UploadAttachmentsComponent}/>
+              <Route path="/records/view" component={ViewRecordsComponent}/>
             </Switch>
           </div>
         </div>
