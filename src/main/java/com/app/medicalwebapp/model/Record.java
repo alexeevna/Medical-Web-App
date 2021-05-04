@@ -1,6 +1,7 @@
 package com.app.medicalwebapp.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +25,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Record {
 
     @Id
@@ -33,6 +35,9 @@ public class Record {
 
     @Column(name="parent")
     private Long parent;
+
+    @Column(name="title")
+    private String title;
 
     @Column(name="content")
     private String content;
