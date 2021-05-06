@@ -15,6 +15,7 @@ import PipelinesComponent from "./components/pipelines.component";
 import PipelineResultsComponent from "./components/pipeline-results.component";
 import ViewRecordsComponent from "./components/view-records.component";
 import CreateRecordComponent from "./components/create-record.component";
+import RecordThreadComponent from "./components/record-thread.component";
 
 class App extends Component {
   constructor(props) {
@@ -114,6 +115,7 @@ class App extends Component {
               <Route path="/files/upload" component={UploadAttachmentsComponent}/>
               <Route path="/records/view" component={ViewRecordsComponent}/>
               <Route path="/records/create" component={CreateRecordComponent}/>
+              <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
             </Switch>
           </div>
         </div>

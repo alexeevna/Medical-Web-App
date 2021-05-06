@@ -17,6 +17,14 @@ class RecordService {
             {headers: authHeader(), params: parameters});
     }
 
+    getRecord(recordId) {
+        return axios.get(API_URL + recordId, { headers: authHeader() });
+    }
+
+    getAnswers(recordId) {
+        return axios.get(API_URL + 'answers/' + recordId, {headers: authHeader()});
+    }
+
     saveRecord(title, content, topics, files) {
         let parameters = this.createRequestParamsForSave(title,content,topics, files);
 

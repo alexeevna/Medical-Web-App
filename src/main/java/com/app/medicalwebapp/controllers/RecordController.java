@@ -54,11 +54,33 @@ public class RecordController {
         }
     }
 
+
+    @GetMapping("/{recordId}")
+    public ResponseEntity<?> getRecord(@PathVariable Long recordId) {
+        try {
+            return ResponseEntity.ok().body(recordService.getRecordById(recordId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/answers/{recordId}")
+    public ResponseEntity<?> getAllRecords(@PathVariable Long recordId) {
+        try {
+            return ResponseEntity.ok().body(recordService.getRecordsAnswers(recordId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> saveRecord(@Valid @RequestBody RecordCreationRequest request) {
         try {
             System.out.println(request);
-            recordService.saveRecord(request, getAuthenticatedUserId());
+            recordService.saveRecord(request, getAuthenticatedUserId(), request.getParentId());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

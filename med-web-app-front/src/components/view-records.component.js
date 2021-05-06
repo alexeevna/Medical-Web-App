@@ -3,7 +3,7 @@ import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import Select from 'react-select';
-import RecordCard from "./record-card.component";
+import RecordCard from "./record-card-preview.component";
 
 export default class ViewRecordsList extends Component {
     constructor(props) {
@@ -11,7 +11,7 @@ export default class ViewRecordsList extends Component {
         this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
         this.getRecords = this.getRecords.bind(this);
         this.refreshList = this.refreshList.bind(this);
-        this.setActiveRecord = this.setActiveRecord.bind(this);
+        this.displayRecordThread = this.displayRecordThread.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
 
@@ -68,11 +68,16 @@ export default class ViewRecordsList extends Component {
         });
     }
 
-    setActiveRecord(record, index) {
-        this.setState({
-            currentRecord: record,
-            currentIndex: index,
+    displayRecordThread(record, index) {
+        // this.setState({
+        //     currentRecord: record,
+        //     currentIndex: index,
+        // });
+        this.props.history.push({
+            pathname: '/records/thread/' + record.id,
+            state: { recordId: record.id }
         });
+        window.location.reload();
     }
 
     handlePageChange(event, value) {
@@ -163,26 +168,14 @@ export default class ViewRecordsList extends Component {
                             <li
                                 style={{listStyleType: "none"}}
                                 key={index}
-                                onClick={() => this.setActiveRecord(record, index)}
+                                onClick={() => this.displayRecordThread(record, index)}
                             >
                                 <RecordCard record={record}/>
                             </li>
 
-                            // <li
-                            //     className={
-                            //         "list-group-item " +
-                            //         (index === currentIndex ? "active" : "")
-                            //     }
-                            //     onClick={() => this.setActiveRecord(record, index)}
-                            //     key={index}
-                            // >
-                            //     {record.title}
-                            // </li>
                         ))}
                     </ul>
                 </div>
-                {/*<div className="col-md-6">*/}
-                {/*</div>*/}
 
                 <div className="col-md-4">
                     <Link to={"/records/create"} className="nav-link card-link-custom color-orange">

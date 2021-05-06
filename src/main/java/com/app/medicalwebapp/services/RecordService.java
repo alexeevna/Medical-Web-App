@@ -48,7 +48,15 @@ public class RecordService {
         return getRecordsResponse(recordsPage, pageNumber);
     }
 
-    public void saveRecord(RecordCreationRequest request, Long creatorId) {
+    public Record getRecordById(Long recordId) {
+        return recordRepository.findById(recordId).orElse(null);
+    }
+
+    public List<Record> getRecordsAnswers(Long parentId) {
+        return recordRepository.findByParent(parentId);
+    }
+
+    public void saveRecord(RecordCreationRequest request, Long creatorId, Long parentId) {
         Set<FileObject> files = null;
         if (request.getFiles() != null && !request.getFiles().isEmpty()) {
             files = request.getFiles().stream().map(fileId -> {
@@ -78,6 +86,7 @@ public class RecordService {
                 .edited(false)
                 .attachments(files)
                 .topics(topics)
+                .parent(parentId)
                 .build();
 
         recordRepository.save(record);

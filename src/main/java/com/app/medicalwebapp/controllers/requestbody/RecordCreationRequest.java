@@ -16,6 +16,8 @@ public class RecordCreationRequest {
     @NotNull
     String content;
 
+    Long parentId;
+
     List<Long> topics;
 
     List<Long> files;
