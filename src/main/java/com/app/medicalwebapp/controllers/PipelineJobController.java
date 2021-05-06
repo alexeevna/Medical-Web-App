@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "*", maxAge = 604800)
 @RestController
 @RequestMapping("/api/pipelinejobs")
 public class PipelineJobController {

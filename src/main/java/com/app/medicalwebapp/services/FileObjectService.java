@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Deprecated
 public class FileObjectService {
 
     @Autowired

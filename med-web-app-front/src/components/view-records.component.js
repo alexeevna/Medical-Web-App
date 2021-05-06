@@ -3,6 +3,7 @@ import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import Select from 'react-select';
+import RecordCard from "./record-card.component";
 
 export default class ViewRecordsList extends Component {
     constructor(props) {
@@ -42,17 +43,18 @@ export default class ViewRecordsList extends Component {
 
     getRecords() {
         const { searchTitle, page, pageSize } = this.state;
-        const params = this.getRequestParams(searchTitle, page, pageSize);
+        console.log(searchTitle, page, pageSize);
 
-        RecordService.getAll(page - 1, pageSize, searchTitle, null)
+        RecordService.getAll(page, pageSize, searchTitle, null)
             .then((response) => {
                 const { records, totalPages } = response.data;
+
+                this.refreshList();
 
                 this.setState({
                     records: records,
                     count: totalPages,
                 });
-                console.log(response.data);
             })
             .catch((e) => {
                 console.log(e);
@@ -60,10 +62,9 @@ export default class ViewRecordsList extends Component {
     }
 
     refreshList() {
-        this.getRecords();
         this.setState({
-            currentRecord: null,
-            currentIndex: -1,
+            records: [],
+            count: -1,
         });
     }
 
@@ -129,9 +130,7 @@ export default class ViewRecordsList extends Component {
                             </button>
                         </div>
                     </div>
-                </div>
-                <div className="col-md-6">
-                    <h4>Список постов</h4>
+
 
                     <div className="mt-3">
                         <div className="row">
@@ -140,7 +139,7 @@ export default class ViewRecordsList extends Component {
                                     onChange={this.handlePageSizeChange}
                                     options={this.pageSizes}
                                     autoFocus={true}
-                                    defaultValue={this.pageSizes[1]}
+                                    defaultValue={this.pageSizes[2]}
                                     styles={stylesForSmallSelectBox}
                             />
                         </div>
@@ -157,48 +156,43 @@ export default class ViewRecordsList extends Component {
                         />
                     </div>
 
+
                     <ul className="list-group">
-                        {records &&
-                        records.map((record, index) => (
+                        {this.state.records &&
+                        this.state.records.map((record, index) => (
                             <li
-                                className={
-                                    "list-group-item " +
-                                    (index === currentIndex ? "active" : "")
-                                }
-                                onClick={() => this.setActiveRecord(record, index)}
+                                style={{listStyleType: "none"}}
                                 key={index}
+                                onClick={() => this.setActiveRecord(record, index)}
                             >
-                                {record.title}
+                                <RecordCard record={record}/>
                             </li>
+
+                            // <li
+                            //     className={
+                            //         "list-group-item " +
+                            //         (index === currentIndex ? "active" : "")
+                            //     }
+                            //     onClick={() => this.setActiveRecord(record, index)}
+                            //     key={index}
+                            // >
+                            //     {record.title}
+                            // </li>
                         ))}
                     </ul>
-
                 </div>
-                <div className="col-md-6">
-                    {currentRecord ? (
-                        <div>
-                            <h4>Record</h4>
-                            <div>
-                                <label>
-                                    <strong>Title:</strong>
-                                </label>{" "}
-                                {currentRecord.title}
-                            </div>
+                {/*<div className="col-md-6">*/}
+                {/*</div>*/}
 
-                            <Link
-                                to={"/records/" + currentRecord.id}
-                                className="badge badge-warning"
-                            >
-                                Edit
-                            </Link>
-                        </div>
-                    ) : (
-                        <div>
-                            <br />
-                            <p>Please click on a Record...</p>
-                        </div>
-                    )}
+                <div className="col-md-4">
+                    <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
+                        Создать пост
+                    </Link>
+                    <Link to={"/profile"} className="nav-link card-link-custom color-orange">
+                        Мои посты
+                    </Link>
                 </div>
+
             </div>
         );
     }

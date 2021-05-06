@@ -1,0 +1,43 @@
+.record-jumbotron {
+    font-size: medium;
+    max-width: 600px !important;
+    border-width: 1px;
+    border-color: #1B435D;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #D5EEFF;
+    padding-top: 15px !important;
+    padding-bottom: 10px !important;
+}
+
+
+.record-info-box {
+    text-align: center;
+    height: 100%;
+    border-right: 2px #1B435D solid;
+}
+
+.record-card {
+    font-size: medium;
+    width: 100%;
+    border-style: none;
+    /*background-color: #f7f7f7;*/
+    padding: 20px 25px 20px;
+    margin: 0 auto 25px;
+    margin-top: 50px;
+    border-radius: 4px;
+}
+
+
+.record-create-form {
+    font-size: medium;
+    max-width: 800px !important;
+    width: 80%;
+    border-style: none;
+    /*background-color: #f7f7f7;*/
+    padding: 20px 25px 20px;
+    margin: 0 auto 25px;
+    margin-top: 50px;
+    border-radius: 4px;
+
+}

@@ -32,7 +32,4 @@ public class Topic {
 
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
-
-//    @ManyToMany(mappedBy = "topics", fetch = FetchType.EAGER)
-//    private Set<Record> records = new HashSet<>();
 }

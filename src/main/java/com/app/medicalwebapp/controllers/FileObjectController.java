@@ -25,7 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 604800)
 @RestController
 @RequestMapping("/api/files")
 public class FileObjectController {

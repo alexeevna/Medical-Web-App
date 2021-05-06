@@ -5,14 +5,26 @@ const API_URL = 'http://localhost:7999/api/records/';
 
 class RecordService {
 
+    constructor(props) {
+        this.createRequestParamsForGet = this.createRequestParamsForGet.bind(this);
+        this.createRequestParamsForSave = this.createRequestParamsForSave.bind(this);
+    }
+
     getAll(pageNum, pageSize, titlePart, topic) {
-        let parameters = this.createRequestParams(titlePart, pageNum, pageSize, topic);
+        let parameters = this.createRequestParamsForGet(titlePart, pageNum, pageSize, topic);
 
         return axios.get(API_URL + 'all',
             {headers: authHeader(), params: parameters});
     }
 
-    createRequestParams(searchTitle, page, pageSize, topicId) {
+    saveRecord(title, content, topics, files) {
+        let parameters = this.createRequestParamsForSave(title,content,topics, files);
+
+        console.log(parameters);
+        return axios.post(API_URL + 'create', {title, content, topics, files},{ headers: authHeader() });
+    }
+
+    createRequestParamsForGet(searchTitle, page, pageSize, topicId) {
         let params = {};
 
         if (searchTitle) params["title"] = searchTitle;
@@ -22,6 +34,18 @@ class RecordService {
 
         return params;
     }
+
+    createRequestParamsForSave(title, content, topics, attachments) {
+        let params = {};
+
+        if (title) params["title"] = title;
+        if (content) params["content"] = content;
+        if (topics) params["topics"] = topics;
+        if (attachments) params["files"] = attachments;
+
+        return params;
+    }
+
 }
 
 export default new RecordService();

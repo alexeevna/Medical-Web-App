@@ -104,6 +104,7 @@ export default class PipelinesComponent extends Component {
                 }
         )
         this.setState({submitted: true});
+        //this.props.history.push("/pipelines/results");
     }
 
     render() {
@@ -146,7 +147,6 @@ export default class PipelinesComponent extends Component {
                                 onClick={this.submitPipeline}
                             >Запустить</button>
                         </div>
-
 
                     </div>
 
