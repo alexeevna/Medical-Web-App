@@ -13,7 +13,7 @@ class RecordService {
     getAll(pageNum, pageSize, titlePart, topic) {
         let parameters = this.createRequestParamsForGet(titlePart, pageNum, pageSize, topic);
 
-        return axios.get(API_URL + 'all',
+        return axios.get(API_URL + 'all/root',
             {headers: authHeader(), params: parameters});
     }
 

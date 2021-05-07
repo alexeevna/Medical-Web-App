@@ -16,8 +16,10 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
     Page<Record> findByTopics(Topic topic, Pageable pageable);
 
-    Page<Record> findByTitleContaining(String title, Pageable pageable);
+    Page<Record> findByParentAndTitleContainingIgnoreCase(Long parent, String title, Pageable pageable);
 
     List<Record> findByParent(Long parent);
+
+    Page<Record> findByParent(Long parent, Pageable pageable);
 
 }

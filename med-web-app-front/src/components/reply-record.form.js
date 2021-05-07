@@ -40,10 +40,6 @@ export default class ReplyRecordForm extends Component {
     handleSubmitReply(e) {
         e.preventDefault();
 
-        this.setState({
-            message: "",
-            loading: true
-        });
 
         if (this.checkBtn.context._errors.length === 0) {
             RecordService.saveRecord(null, this.state.content, null, this.state.selectedFiles, this.props.parentId).then(
@@ -99,18 +95,30 @@ export default class ReplyRecordForm extends Component {
                         ref={c => {this.inputForm = c;}}
                     >
 
-                        <div
-                            className="form-group">
-                            <label htmlFor="content">Содержание:</label>
-                            <Input
-                                type="text"
-                                autoComplete="off"
-                                className="form-control card-200"
-                                name="content"
-                                value={this.state.content}
-                                onChange={this.onChangeContent}
-                            />
+                        <div className="form-group">
+                            <label htmlFor="content">Комментарий:</label>
+                            <textarea className="form-control"
+                                      id="exampleFormControlTextarea1"
+                                      rows="4"
+                                      onChange={this.onChangeContent}
+                                      value={this.state.content}
+                                      autoComplete="off"
+                            >
+                            </textarea>
                         </div>
+
+                        {/*<div*/}
+                        {/*    className="form-group">*/}
+                        {/*    <label htmlFor="content">Комментарий:</label>*/}
+                        {/*    <Input*/}
+                        {/*        type="text"*/}
+                        {/*        autoComplete="off"*/}
+                        {/*        className="form-control card-200"*/}
+                        {/*        name="content"*/}
+                        {/*        value={this.state.content}*/}
+                        {/*        onChange={this.onChangeContent}*/}
+                        {/*    />*/}
+                        {/*</div>*/}
 
 
                         <div className="row top-buffer-10">

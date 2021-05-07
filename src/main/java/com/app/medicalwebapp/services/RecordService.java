@@ -33,8 +33,8 @@ public class RecordService {
         Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
 
         Page<Record> recordsPage = partOfTitle != null
-                ? recordRepository.findByTitleContaining(partOfTitle, pageable)
-                : recordRepository.findAll(pageable);
+                ? recordRepository.findByParentAndTitleContainingIgnoreCase(-1L, partOfTitle, pageable)
+                : recordRepository.findByParent(-1L, pageable);
 
         return getRecordsResponse(recordsPage, pageNumber);
     }

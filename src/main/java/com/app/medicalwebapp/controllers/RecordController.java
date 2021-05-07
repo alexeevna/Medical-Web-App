@@ -32,8 +32,8 @@ public class RecordController {
     @Autowired
     RecordService recordService;
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllRecords(
+    @GetMapping("/all/root")
+    public ResponseEntity<?> getAllRootRecords(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Long topicId,
             @RequestParam(defaultValue = "0") int page,
