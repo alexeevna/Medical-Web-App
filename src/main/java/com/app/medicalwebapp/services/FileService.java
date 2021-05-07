@@ -35,4 +35,9 @@ public class FileService {
         FileExtractorStrategy fileExtractor = extractorStrategyResolver.getFileExtractor(fileObject.getFormat());
         return fileExtractor.getFileInActualFormat(fileObject).readAllBytes();
     }
+
+    public byte[] previewFile(FileObject fileObject) throws Exception {
+        FileExtractorStrategy fileExtractor = extractorStrategyResolver.getFileExtractor(fileObject.getFormat());
+        return fileExtractor.getHumanReadablePresentation(fileObject);
+    }
 }

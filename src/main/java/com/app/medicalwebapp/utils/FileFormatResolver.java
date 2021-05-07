@@ -16,6 +16,8 @@ public class FileFormatResolver {
                     return FileObjectFormat.DICOM;
                 case "jpg":
                     return FileObjectFormat.JPEG;
+                case "png":
+                    return FileObjectFormat.PNG;
                 case "pdf":
                     return FileObjectFormat.PDF;
                 default:

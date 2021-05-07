@@ -11,5 +11,5 @@ public interface FileExtractorStrategy {
 
     InputStream getFileInActualFormat(FileObject fileObject) throws Exception;
 
-    void getHumanReadablePresentation();
+    byte[] getHumanReadablePresentation(FileObject fileObject) throws Exception;
 }

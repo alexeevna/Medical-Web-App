@@ -6,6 +6,7 @@ import com.app.medicalwebapp.model.FileObjectFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 @Component
@@ -25,7 +26,7 @@ public class PacsExtractorStrategy implements FileExtractorStrategy {
     }
 
     @Override
-    public void getHumanReadablePresentation() {
-        //TODO: add getting image from first frame in instance
+    public byte[] getHumanReadablePresentation(FileObject fileObject) throws IOException {
+        return orthancClient.previewInstance(fileObject.getPathToFile()).readAllBytes();
     }
 }

@@ -13,29 +13,20 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.FileEntity;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Map;
 
 @Service
@@ -207,6 +198,32 @@ public class OrthancInstancesClient {
         }
     }
 */
+
+    public ByteArrayInputStream previewInstance(String instanceId) throws IOException {
+        HttpGet request = new HttpGet(orthancInstancesUrl + "/" + instanceId + "/rendered");
+
+        request.setHeader("Accept", "image/jpeg");
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
+                .setDefaultCredentialsProvider(credentialsProvider)
+                .build();
+             CloseableHttpResponse response = httpClient.execute(request)) {
+
+            System.out.println(response.getStatusLine().getStatusCode());
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                InputStream is = entity.getContent();
+                //File file = File.createTempFile("downloaded-", "png");
+                //FileUtils.copyInputStreamToFile(is, file);
+                byte[] bytes = IOUtils.toByteArray(is);
+                //file.delete();
+                return new ByteArrayInputStream(bytes);
+            }
+        }
+        return null;
+    }
+
     public void deleteInstance(String instanceId) throws IOException {
         HttpDelete request = new HttpDelete(orthancInstancesUrl + "/" + instanceId);
 

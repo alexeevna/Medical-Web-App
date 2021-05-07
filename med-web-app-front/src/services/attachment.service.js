@@ -40,8 +40,6 @@ class AttachmentService {
     }
 
     async downloadAttachment(fileId, fileName) {
-        console.log("Got request to download!!!");
-        console.log(fileId);
         var response = axios.get(API_URL + 'download/' + fileId, {responseType: 'blob', headers: authHeader()})
             .then(response => {
                 var fileDownload = require('js-file-download');
@@ -50,6 +48,9 @@ class AttachmentService {
             });
     }
 
+    async getPreview(fileId) {
+        return axios.get(API_URL + 'preview/' + fileId, {headers: authHeader()});
+    }
 }
 
 export default new AttachmentService();

@@ -86,9 +86,9 @@ public class FileObjectController {
         try {
             log.info("Received request to download file");
             FileObject fileObject = fileObjectRepository.findById(fileId).orElseThrow(ObjectNotExistsException::new);
-            if (getAuthenticatedUser() == null || !fileObject.getOwner().equals(getAuthenticatedUser().getId())) {
-                throw new AuthorizationServiceException("User is not authorized to download this file");
-            }
+//            if (getAuthenticatedUser() == null || !fileObject.getOwner().equals(getAuthenticatedUser().getId())) {
+//                throw new AuthorizationServiceException("User is not authorized to download this file");
+//            }
             byte[] fileContent = fileService.extractFile(fileObject);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileObject.getInitialName() + "\"")
@@ -101,6 +101,27 @@ public class FileObjectController {
             log.error("Download of file failed");
             ex.printStackTrace();
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при скачивании файла"));
+        }
+    }
+
+
+    @GetMapping("preview/{fileId}")
+    public ResponseEntity<?> previewFile(@PathVariable Long fileId) {
+        try {
+            FileObject fileObject = fileObjectRepository.findById(fileId).orElseThrow(ObjectNotExistsException::new);
+
+            byte[] fileContent = fileService.previewFile(fileObject);
+            return ResponseEntity.ok()
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileObject.getInitialName() + "\"")
+//                    .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+                    .body(fileContent);
+        } catch (AuthorizationServiceException ex) {
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Нет прав доступа к этому контенту"));
+        } catch (Exception ex) {
+            log.error("Downloading of file preview failed");
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при скачивании предпросмотра файла"));
         }
     }
 

@@ -4,5 +4,6 @@ public enum FileObjectFormat {
     DICOM,
     PDF,
     JPEG,
+    PNG,
     UNKNOWN
 }

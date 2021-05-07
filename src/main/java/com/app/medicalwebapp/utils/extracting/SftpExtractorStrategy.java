@@ -15,7 +15,7 @@ public class SftpExtractorStrategy implements FileExtractorStrategy {
     @Autowired
     SftpClient sftpClient;
 
-    private Set<FileObjectFormat> SUPPORTED_FORMATS = Set.of(FileObjectFormat.PDF, FileObjectFormat.JPEG);
+    private Set<FileObjectFormat> SUPPORTED_FORMATS = Set.of(FileObjectFormat.PDF, FileObjectFormat.JPEG, FileObjectFormat.PNG);
 
     @Override
     public boolean supportsFormat(FileObjectFormat fileFormat) {
@@ -28,7 +28,11 @@ public class SftpExtractorStrategy implements FileExtractorStrategy {
     }
 
     @Override
-    public void getHumanReadablePresentation() {
-        throw new UnsupportedOperationException();
+    public byte[] getHumanReadablePresentation(FileObject fileObject) throws Exception {
+        if (fileObject.getFormat() == FileObjectFormat.JPEG || fileObject.getFormat() == FileObjectFormat.PNG) {
+            return sftpClient.getFile(fileObject.getPathToFile()).readAllBytes();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 }
