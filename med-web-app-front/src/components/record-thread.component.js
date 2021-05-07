@@ -2,10 +2,13 @@ import React, { Component } from "react";
 import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
 import RecordCard from "./record-card-preview.component";
+import ReplyRecordForm from "./reply-record.form";
 
 export default class RecordThreadComponent extends Component {
     constructor(props) {
         super(props);
+
+        this.refreshAnswers = this.refreshAnswers.bind(this);
 
         this.state = {
             recordId: this.props.location.state.recordId,
@@ -24,14 +27,19 @@ export default class RecordThreadComponent extends Component {
             .catch(error => {
                 console.log(error);
             });
+
+        this.refreshAnswers();
+    }
+
+    refreshAnswers() {
         RecordService.getAnswers(this.state.recordId)
             .then(response => {
-                this.setState({answers: response.data});
-            }
-        )
-        .catch(error => {
-            console.log(error);
-        });
+                    this.setState({answers: response.data});
+                }
+            )
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     render() {
@@ -39,12 +47,12 @@ export default class RecordThreadComponent extends Component {
 
         return (
             <div className="list row">
-                <div className="col-md-8">
+                <div className="col-md-9">
 
                     {this.state.record ?
                         (<RecordCard record={this.state.record}/>)
                      :
-                        (<h4>Empty(((</h4>)
+                        (<h4> </h4>)
                     }
 
                     <ul className="list-group">
@@ -60,9 +68,13 @@ export default class RecordThreadComponent extends Component {
 
                         ))}
                     </ul>
+
+                    <ReplyRecordForm
+                        refreshRecords = {this.refreshAnswers}
+                        parentId = {this.state.recordId}/>
                 </div>
 
-                <div className="col-md-4">
+                <div className="col-md-3">
                     <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
                         Создать пост
                     </Link>

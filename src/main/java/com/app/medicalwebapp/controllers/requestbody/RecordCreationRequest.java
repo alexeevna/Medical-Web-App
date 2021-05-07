@@ -10,7 +10,6 @@ import java.util.List;
 @ToString
 public class RecordCreationRequest {
 
-    @NotNull
     String title;
 
     @NotNull
