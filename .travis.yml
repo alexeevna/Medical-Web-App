@@ -12,12 +12,13 @@ before_script:
 before_install:
   - cd src/main/docker/postgres
   - docker build -t medwebpostgres .
-  - cd
+  - cd ../../../..
 
 script:
+  - ls
   - cd med-web-app-front
   - npm run build
-  - cd
+  - cd ..
   - maven compile jib:build
   - docker run -d --name sftp           -p 4999:22   --rm atmoz/sftp  medwebuser:secretpassword:::upload
   - docker run -d --name medwebpostgres -p 5555:5555 --rm medwebpostgres
