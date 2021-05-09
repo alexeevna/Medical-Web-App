@@ -108,7 +108,7 @@ export default class PipelinesComponent extends Component {
     }
 
     render() {
-        const { pipelines, files, message, selectedFile, selectedPipeline, submitted } = this.state;
+        const { pipelines, files, selectedFile, selectedPipeline, submitted } = this.state;
 
         return (
 

@@ -25,7 +25,7 @@ export default class ViewAttachmentsComponent extends Component {
     }
 
     download(fileId, initialFileName) {
-        var response = AttachmentService.downloadAttachment(fileId, initialFileName);
+        AttachmentService.downloadAttachment(fileId, initialFileName);
         //console.log(response.data);
         //event.preventDefault();
     }

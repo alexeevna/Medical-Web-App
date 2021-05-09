@@ -106,12 +106,8 @@ export default class ViewRecordsList extends Component {
     render() {
         const {
             searchTitle,
-            records,
-            currentRecord,
-            currentIndex,
             page,
             count,
-            pageSize,
         } = this.state;
 
         return (

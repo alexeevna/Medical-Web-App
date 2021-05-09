@@ -3,11 +3,6 @@ import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:7999/api/files/';
 
-var http = axios.create({
-    baseURL: API_URL,
-    headers: authHeader()
-})
-
 class AttachmentService {
 
     getAttachmentsForUser(username) {
@@ -40,7 +35,7 @@ class AttachmentService {
     }
 
     async downloadAttachment(fileId, fileName) {
-        var response = axios.get(API_URL + 'download/' + fileId, {responseType: 'blob', headers: authHeader()})
+        axios.get(API_URL + 'download/' + fileId, {responseType: 'blob', headers: authHeader()})
             .then(response => {
                 var fileDownload = require('js-file-download');
                 fileDownload(response.data, fileName);

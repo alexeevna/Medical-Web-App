@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import AuthService from "../services/auth.service";
 import '../styles/Record.css'
-import AttachmentService from "../services/attachment.service";
 
 export default class RecordCard extends Component {
     constructor(props) {
@@ -62,7 +61,8 @@ export default class RecordCard extends Component {
 
 
                     {this.state.filePreviews.map(el => (
-                        <img key={el.id} className="top-buffer-10" src={`data:image/jpeg;base64, ${el.image}`} />
+                        <div>A picture...</div>
+                        // <img key={el.id} className="top-buffer-10" src={`data:image/jpeg;base64, ${el.image}`} />
                     ))}
 
 

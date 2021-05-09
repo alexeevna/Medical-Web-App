@@ -46,7 +46,7 @@ export default class RecordThreadComponent extends Component {
     }
 
     render() {
-        const { record, answers} = this.state;
+        const { answers} = this.state;
 
         return (
             <div className="list row">

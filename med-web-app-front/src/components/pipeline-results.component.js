@@ -23,7 +23,7 @@ export default class PipelineResultsComponent extends Component {
         PipelineJobService.getPipelineJobsForUser(AuthService.getCurrentUser().username).then(
             response => {
                 let jobs = [];
-                response.data.map(el => {
+                response.data.forEach(el => {
                     let inputFileName = (el.inputFiles !== undefined && el.inputFiles !== null && el.inputFiles.length > 0)
                         ? el.inputFiles[0].initialName : "";
                     let outputFileName = el.outputFile !== undefined && el.outputFile !== null  ? el.outputFile.initialName : "";
@@ -53,7 +53,7 @@ export default class PipelineResultsComponent extends Component {
     }
 
     download(fileId, initialFileName) {
-        var response = AttachmentService.downloadAttachment(fileId, initialFileName);
+        AttachmentService.downloadAttachment(fileId, initialFileName);
     }
 
     render() {
