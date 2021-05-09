@@ -4,14 +4,18 @@ node_js: "0.10"
 services:
   - docker
 
-before_script:
-  - cd med-web-app-front
-  - npm install
-  - cd ..
+#before_script:
+#  - ls
+#  - cd med-web-app-front
+#  - npm install
+#  - cd ..
 
 before_install:
-  - cd src/main/docker/postgres
-  - docker build -t medwebpostgres .
+  - ls
+  - cd med-web-app-front
+  - npm install
+  - cd ../src/main/docker/postgres
+#  - docker build -t medwebpostgres .
 #  - cd ../../../..
 
 script:
