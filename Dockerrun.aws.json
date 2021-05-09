@@ -98,7 +98,8 @@
       ],
       "essential": true,
       "image": "atmoz/sftp",
-      "name": "sftp"
+      "name": "sftp",
+      "memory": 500
     }
   ],
   "family": "",
