@@ -24,8 +24,8 @@
 -- alter table public.users  owner to postgres;
 --
 
-insert into files(creation_time, size, initial_name)
-values (current_timestamp, 200, 'file1.dcm');
-
-insert into files(creation_time, size, initial_name)
-values (current_timestamp, 344, 'file2.dcm');
+-- insert into files(creation_time, size, initial_name)
+-- values (current_timestamp, 200, 'file1.dcm');
+--
+-- insert into files(creation_time, size, initial_name)
+-- values (current_timestamp, 344, 'file2.dcm');
