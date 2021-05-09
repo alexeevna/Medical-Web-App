@@ -53,7 +53,8 @@
           "containerPort": 7999,
           "hostPort": 80
         }
-      ]
+      ],
+      "memory": 500
     },
     {
       "environment": [
