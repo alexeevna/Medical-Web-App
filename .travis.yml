@@ -12,7 +12,7 @@ services:
 #  - cd ..
 
 before_install:
-  - nodejs --version
+#  - nodejs --version
   - npm --version
   - ls
   - cd med-web-app-front
