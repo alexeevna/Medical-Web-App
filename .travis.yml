@@ -1,5 +1,5 @@
 language: java
-node_js: "13"
+node_js: "7"
 
 services:
   - docker
@@ -11,6 +11,8 @@ services:
 #  - cd ..
 
 before_install:
+  - nodejs --version
+  - npm --version
   - ls
   - cd med-web-app-front
   - npm install
