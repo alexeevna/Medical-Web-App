@@ -19,8 +19,9 @@ before_install:
 #  - cd ../../../..
 
 script:
+  - cd
   - ls
-  - cd med-web-app-front
+  - cd Medical-Web-App/med-web-app-front
   - npm run build
   - cd ..
   - maven compile jib:build
