@@ -27,8 +27,8 @@ script:
   - docker run -d --name sftp           -p 4999:22   --rm atmoz/sftp  medwebuser:secretpassword:::upload
   - docker run -d --name medwebpostgres -p 5555:5555 --rm medwebpostgres
   - docker run -d --name ortanc         -p 8042:8042 --rm jodogne/orthanc
-  - docker run -d --name medwebapp      -p 7999:7999 --rm medwebpostgres
-  - docker stop sftp orthanc medwebpostgres
+  - docker run --name medwebapp         -p 7999:7999 --rm ashvyrkova/medwebapp
+#  - docker stop sftp orthanc medwebpostgres
 
 branches:
   only:
