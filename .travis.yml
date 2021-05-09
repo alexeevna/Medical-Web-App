@@ -15,16 +15,15 @@ before_install:
   - cd med-web-app-front
   - npm install
   - cd ../src/main/docker/postgres
-#  - docker build -t medwebpostgres .
+  - docker build -t medwebpostgres .
 #  - cd ../../../..
 
 script:
-  - cd ../../../..
-  - ls
-  - cd Medical-Web-App/med-web-app-front
+  - cd ../../../../med-web-app-front
   - npm run build
   - cd ..
-  - maven compile jib:build
+  - mvn compile jib:dockerBuild
+  - docker images
   - docker run -d --name sftp           -p 4999:22   --rm atmoz/sftp  medwebuser:secretpassword:::upload
   - docker run -d --name medwebpostgres -p 5555:5555 --rm medwebpostgres
   - docker run -d --name ortanc         -p 8042:8042 --rm jodogne/orthanc
