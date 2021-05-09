@@ -1,3 +1,30 @@
 language: java
+node_js: "0.10"
+
+services:
+  - docker
+
+before_script:
+  - cd med-web-app-front
+  - npm install
+  - cd ..
+
+before_install:
+  - cd src/main/docker/postgres
+  - docker build -t medwebpostgres .
+  - cd
+
 script:
-  - mvn clean package
+  - cd med-web-app-front
+  - npm run build
+  - cd
+  - maven compile jib:build
+  - docker run -d --name sftp           -p 4999:22   --rm atmoz/sftp  medwebuser:secretpassword:::upload
+  - docker run -d --name medwebpostgres -p 5555:5555 --rm medwebpostgres
+  - docker run -d --name ortanc         -p 8042:8042 --rm jodogne/orthanc
+  - docker run -d --name medwebapp      -p 7999:7999 --rm medwebpostgres
+  - docker stop sftp orthanc medwebpostgres
+
+branches:
+  only:
+    - master

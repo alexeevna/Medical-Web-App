@@ -10,8 +10,11 @@ export default class RecordThreadComponent extends Component {
 
         this.refreshAnswers = this.refreshAnswers.bind(this);
 
+        console.log(this.props);
+
         this.state = {
-            recordId: this.props.location.state.recordId,
+            //recordId: null,
+            recordId: this.props.match.params.recordId,
             record: null,
             answers: [],
         };

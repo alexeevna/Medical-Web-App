@@ -109,12 +109,12 @@ class App extends Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/profile" component={Profile} />
-              <Route path="/pipelines/create" component={PipelinesComponent}/>
-              <Route path="/pipelines/results" component={PipelineResultsComponent}/>
-              <Route path="/files/view" component={ViewAttachmentsComponent}/>
-              <Route path="/files/upload" component={UploadAttachmentsComponent}/>
-              <Route path="/records/view" component={ViewRecordsComponent}/>
-              <Route path="/records/create" component={CreateRecordComponent}/>
+              <Route exact path="/pipelines/create" component={PipelinesComponent}/>
+              <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
+              <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
+              <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
+              <Route exact path="/records/view" component={ViewRecordsComponent}/>
+              <Route exact path="/records/create" component={CreateRecordComponent}/>
               <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
             </Switch>
           </div>
