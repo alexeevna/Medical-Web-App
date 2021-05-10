@@ -4,6 +4,61 @@
     {
       "environment": [
         {
+          "name": "SERVER_PORT",
+          "value": "7999"
+        },
+        {
+          "name": "MIRF_ORCHESTRATOR_URL",
+          "value": "orchestrator"
+        },
+        {
+          "name": "MIRF_ORCHESTRATOR_PORT",
+          "value": "5011"
+        },
+        {
+          "name": "MIRF_REPOSITORY_URL",
+          "value": "mirfrepository"
+        },
+        {
+          "name": "MIRF_REPOSITORY_PORT",
+          "value": "8050"
+        },
+        {
+          "name": "ORTHANC_URL",
+          "value": "http://orthanc:8042"
+        },
+        {
+          "name": "SPRING_DATASOURCE_URL",
+          "value": "jdbc:postgresql://medwebpostgres:5555/medwebappdb"
+        },
+        {
+          "name": "SFTP_URL",
+          "value": "sftp"
+        },
+        {
+          "name": "SFTP_PORT",
+          "value": "22"
+        }
+      ],
+      "links": [
+        "orthanc",
+        "medwebpostgres",
+        "sftp"
+      ],
+      "essential": true,
+      "image": "ashvyrkova/medwebapp",
+      "name": "medwebapp",
+      "memory": 500,
+      "portMappings": [
+        {
+          "containerPort": 7999,
+          "hostPort": 80
+        }
+      ]
+    },
+    {
+      "environment": [
+        {
           "name": "POSTGRES_PASSWORD",
           "value": "secretpassword"
         },
@@ -35,6 +90,15 @@
       "essential": true,
       "image": "jodogne/orthanc",
       "name": "orthanc",
+      "memory": 500
+    },
+    {
+      "command": [
+        "medwebuser:secretpassword:::upload"
+      ],
+      "essential": true,
+      "image": "atmoz/sftp",
+      "name": "sftp",
       "memory": 500
     }
   ],
