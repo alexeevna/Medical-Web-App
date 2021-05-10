@@ -29,22 +29,13 @@
           "hostPort": 5555
         }
       ],
-      "memory": 600
+      "memory": 500
     },
     {
       "essential": true,
       "image": "jodogne/orthanc",
       "name": "orthanc",
-      "memory": 600
-    },
-    {
-      "command": [
-        "medwebuser:secretpassword:::upload"
-      ],
-      "essential": true,
-      "image": "atmoz/sftp",
-      "name": "sftp",
-      "memory": 600
+      "memory": 500
     }
   ],
   "family": "",
