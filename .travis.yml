@@ -16,7 +16,7 @@ before_script:
   - cd ../src/main/docker/postgres
   - docker build -t medwebpostgres .
   - cd ../../../../med-web-app-front
-  - npm run build
+#  - npm run build
   - cd ..
 
 script:
