@@ -45,6 +45,10 @@
         "medwebpostgres",
         "sftp"
       ],
+      "command": [
+        "sleep",
+        "10s"
+      ],
       "essential": true,
       "image": "ashvyrkova/medwebapp",
       "name": "medwebapp",
