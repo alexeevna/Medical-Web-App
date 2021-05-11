@@ -41,18 +41,22 @@ public class MirfOrchestratorClient {
 
     @PostConstruct
     public void init() throws URISyntaxException, IOException {
-        URI repositoryUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
+        try {
+            URI repositoryUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
 
-        HttpPost post = new HttpPost(repositoryUri.toString() + mirfRegisterClientEndpoint);
+            HttpPost post = new HttpPost(repositoryUri.toString() + mirfRegisterClientEndpoint);
 
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-        HttpEntity entity = builder.build();
-        post.setEntity(entity);
+            HttpEntity entity = builder.build();
+            post.setEntity(entity);
 
-        HttpResponse response = httpclient.execute(post);
+            HttpResponse response = httpclient.execute(post);
 
-        System.out.println(response.getStatusLine().getStatusCode() == 200);
+            System.out.println(response.getStatusLine().getStatusCode() == 200);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public final static String DEFAULT_PIPELINE = "[\n" +
