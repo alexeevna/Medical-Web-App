@@ -40,11 +40,6 @@
           "value": "22"
         }
       ],
-      "links": [
-        "orthanc",
-        "medwebpostgres",
-        "sftp"
-      ],
       "essential": true,
       "image": "ashvyrkova/medwebapp",
       "name": "medwebapp",
@@ -78,19 +73,111 @@
       "essential": true,
       "image": "postgres",
       "name": "medwebpostgres",
+      "memory": 600,
       "portMappings": [
         {
           "containerPort": 5555,
           "hostPort": 5555
         }
+      ]
+    },
+    {
+      "command": [
+        "sh",
+        "wait-for-orchestrator.sh",
+        "java",
+        "-jar",
+        "repository-1.0-SNAPSHOT.jar"
       ],
-      "memory": 500
+      "environment": [
+        {
+          "name": "SERVER_PORT",
+          "value": "8050"
+        },
+        {
+          "name": "ORCHESTRATOR_HOST",
+          "value": "orchestrator"
+        },
+        {
+          "name": "ORCHESTRATOR_PORT",
+          "value": "5011"
+        }
+      ],
+      "essential": false,
+      "image": "ashvyrkova/mirfrepository",
+      "name": "mirfrepository",
+      "memory": 400,
+      "portMappings": [
+        {
+          "containerPort": 8050,
+          "hostPort": 8050
+        }
+      ]
+    },
+    {
+      "environment": [
+        {
+          "name": "SERVER_PORT",
+          "value": "5011"
+        },
+        {
+          "name": "MEDICAL_WEB_APP_URL",
+          "value": "medwebapp"
+        }
+      ],
+      "essential": false,
+      "image": "ashvyrkova/mirforchestrator",
+      "name": "mirforchestrator",
+      "memory": 400,
+      "portMappings": [
+        {
+          "containerPort": 5011,
+          "hostPort": 5011
+        }
+      ]
     },
     {
       "essential": true,
       "image": "jodogne/orthanc",
       "name": "orthanc",
-      "memory": 500
+      "memory": 500,
+      "portMappings": [
+        {
+          "containerPort": 8042,
+          "hostPort": 8042
+        }
+      ]
+    },
+    {
+      "command": [
+        "sh",
+        "wait-for-orchestrator.sh",
+        "java",
+        "-jar",
+        "block-1.0-SNAPSHOT.jar"
+      ],
+      "environment": [
+        {
+          "name": "SERVER_PORT",
+          "value": "8063"
+        },
+        {
+          "name": "BLOCK_TYPE",
+          "value": "pipelineForDeveloping"
+        },
+        {
+          "name": "ORCHESTRATOR_HOST",
+          "value": "orchestrator"
+        },
+        {
+          "name": "ORCHESTRATOR_PORT",
+          "value": "5011"
+        }
+      ],
+      "essential": false,
+      "image": "ashvyrkova/mirfblock",
+      "memory": 400,
+      "name": "pipelinealg"
     },
     {
       "command": [
@@ -99,7 +186,13 @@
       "essential": true,
       "image": "atmoz/sftp",
       "name": "sftp",
-      "memory": 500
+      "memory": 500,
+      "portMappings": [
+        {
+          "containerPort": 22,
+          "hostPort": 4999
+        }
+      ]
     }
   ],
   "family": "",

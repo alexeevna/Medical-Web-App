@@ -2,7 +2,7 @@ import axios from 'axios';
 import authHeader from './auth-header';
 
 // const API_URL = 'http://localhost:7999/api/pipelinejobs/';
-const API_URL = 'http://mebwebapp.us-east-1.elasticbeanstalk.com/api/pipelinejobs/';
+const API_URL = process.env.REACT_APP_API_URL + '/api/pipelinejobs/';
 
 class PipelineJobService {
 

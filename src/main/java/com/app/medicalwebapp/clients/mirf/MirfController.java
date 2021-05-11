@@ -70,7 +70,7 @@ public class MirfController {
 
     @PostMapping("mirfError")
     public void getErrorFromPipeline(@RequestParam("sessionId") String sessionId,
-                                     @RequestParam("failReason") String failReason) {
+                                     @RequestParam("reason") String failReason) {
         log.info("Received error from MIRF for session: {}, reason: {}", sessionId, failReason);
 
         PipelineJob relatedPipelineJob = pipelineJobRepository.findByMirfSessionid(sessionId).get(0);

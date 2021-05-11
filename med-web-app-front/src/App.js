@@ -43,6 +43,8 @@ class App extends Component {
     AuthService.logout();
   }
 
+  // REACT_APP_API_URL=http://mebwebapp.us-east-1.elasticbeanstalk.com
+
   render() {
     const { currentUser } = this.state;
 
