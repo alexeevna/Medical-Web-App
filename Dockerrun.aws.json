@@ -115,8 +115,7 @@
         }
       ],
       "links": [
-        "mirforchestrator",
-        "pipelinealg"
+        "mirforchestrator"
       ],
       "essential": false,
       "image": "ashvyrkova/mirfrepository",
@@ -139,10 +138,6 @@
           "name": "MEDICAL_WEB_APP_URL",
           "value": "medwebapp"
         }
-      ],
-      "links": [
-        "mirfrepository",
-        "pipelinealg"
       ],
       "essential": false,
       "image": "ashvyrkova/mirforchestrator",
@@ -194,7 +189,6 @@
         }
       ],
       "links": [
-        "mirfrepository",
         "mirforchestrator"
       ],
       "essential": false,
