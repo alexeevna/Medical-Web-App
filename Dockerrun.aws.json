@@ -139,9 +139,6 @@
           "value": "medwebapp"
         }
       ],
-      "links": [
-        "medwebapp"
-      ],
       "essential": false,
       "image": "ashvyrkova/mirforchestrator",
       "name": "mirforchestrator",
