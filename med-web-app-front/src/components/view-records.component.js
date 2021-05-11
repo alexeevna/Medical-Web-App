@@ -177,9 +177,9 @@ export default class ViewRecordsList extends Component {
                     <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
                         Создать пост
                     </Link>
-                    <Link to={"/profile"} className="nav-link card-link-custom color-orange">
-                        Мои посты
-                    </Link>
+                    {/*<Link to={"/profile"} className="nav-link card-link-custom color-orange">*/}
+                    {/*    Мои посты*/}
+                    {/*</Link>*/}
                 </div>
 
             </div>

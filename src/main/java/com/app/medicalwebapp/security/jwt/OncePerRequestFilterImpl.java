@@ -40,8 +40,6 @@ public class OncePerRequestFilterImpl extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                logger.info("Username:" + username);
-                logger.info("Request from user with authorities: " + userDetails.getAuthorities().toString());
             }
         } catch (Exception e) {
             logger.error("Cannot authenticate the user: {}", e);

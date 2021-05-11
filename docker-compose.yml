@@ -156,28 +156,28 @@ services:
     networks:
       - app_net
 
-
-  medwebapp:
-    image: medwebapp
-    environment:
-      - SERVER_PORT=7999
-      - MIRF_ORCHESTRATOR_URL=orchestrator
-      - MIRF_ORCHESTRATOR_PORT=5011
-      - MIRF_REPOSITORY_URL=mirfrepository
-      - MIRF_REPOSITORY_PORT=8050
-      - ORTHANC_URL=http://orthanc:8042
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://medwebpostgres:5555/medwebappdb
-      - SFTP_URL=sftp
-      - SFTP_PORT=22
-    ports:
-      - "7999:7999"
-    depends_on:
-#      - pipelinealg
-#      - mirfrepository
-      - medwebpostgres
-      - sftp
-    networks:
-      - app_net
+#
+#  medwebapp:
+#    image: medwebapp
+#    environment:
+#      - SERVER_PORT=7999
+#      - MIRF_ORCHESTRATOR_URL=orchestrator
+#      - MIRF_ORCHESTRATOR_PORT=5011
+#      - MIRF_REPOSITORY_URL=mirfrepository
+#      - MIRF_REPOSITORY_PORT=8050
+#      - ORTHANC_URL=http://orthanc:8042
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://medwebpostgres:5555/medwebappdb
+#      - SFTP_URL=sftp
+#      - SFTP_PORT=22
+#    ports:
+#      - "7999:7999"
+#    depends_on:
+##      - pipelinealg
+##      - mirfrepository
+#      - medwebpostgres
+#      - sftp
+#    networks:
+#      - app_net
 
 networks:
   app_net:

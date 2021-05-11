@@ -16,6 +16,7 @@ import PipelineResultsComponent from "./components/pipeline-results.component";
 import ViewRecordsComponent from "./components/view-records.component";
 import CreateRecordComponent from "./components/create-record.component";
 import RecordThreadComponent from "./components/record-thread.component";
+import SavePipelineConfigComponent from "./components/save-pipeline-config.component";
 
 class App extends Component {
   constructor(props) {
@@ -113,6 +114,7 @@ class App extends Component {
               <Route exact path="/profile" component={Profile} />
               <Route exact path="/pipelines/create" component={PipelinesComponent}/>
               <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
+              <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
               <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
               <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
               <Route exact path="/records/view" component={ViewRecordsComponent}/>

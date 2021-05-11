@@ -33,7 +33,7 @@ deploy:
     provider: elasticbeanstalk
     region: us-east-1
     app: medwebapp
-    env: Medwebapp-env
+    env: Medwebapp-env-1
     bucket_name: elasticbeanstalk-us-east-1-099405913193
     bucket_path: medwebapp
     on:

@@ -56,6 +56,18 @@ export default class PipelineResultsComponent extends Component {
         AttachmentService.downloadAttachment(fileId, initialFileName);
     }
 
+    translateStatus(status) {
+        if (status === 'COMPLETED_ERROR') {
+            return 'Ошибка';
+        }
+        if (status === 'COMPLETED_OK') {
+            return 'Успешно';
+        }
+        if (status === 'IN_PROGRESS') {
+            return 'Выполняется';
+        }
+    }
+
     render() {
         const { pipelineJobs } = this.state;
 
@@ -73,10 +85,11 @@ export default class PipelineResultsComponent extends Component {
                             <div key={el.id} className="row color-light-blue top-buffer-10 bordered-box">
                                 <div className="col-sm-3">{el.pipelineName}</div>
                                 <div className="col-sm-3">{el.inputName}</div>
-                                <div className="col-sm-3">{el.outputName}</div>
+                                <div className="col-sm-3">{this.translateStatus(el.status)}</div>
                                 <div className="col-sm-3">
                                     <button
                                         className="btn btn-primary btn-block color-dark-blue"
+                                        disabled={el.status !== 'COMPLETED_OK'}
                                         onClick={() => this.download(el.outputId, el.outputName)}>Скачать результат</button>
                                 </div>
                             </div>

@@ -151,9 +151,13 @@ export default class PipelinesComponent extends Component {
                     </div>
 
                 </div>
+
+
                 <div className="col-sm-2 align-center">
                     <Link to={"/pipelines/results"} className="nav-link card-link-custom color-orange">Запущенные конвейеры</Link>
+                    <Link to={"/pipelines/save"} className="nav-link card-link-custom color-orange">Сохранить конфигурацию</Link>
                 </div>
+
 
                 <div className="col-sm-1"></div>
             </div>

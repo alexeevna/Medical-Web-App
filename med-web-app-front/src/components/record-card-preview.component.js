@@ -68,7 +68,7 @@ export default class RecordCard extends Component {
 
 
                     <div className="row top-buffer">
-                        <div className="col-sm-4">Лайки: {this.record.likes}</div>
+                        <div className="col-sm-4"></div>
                         <div  className="col-sm-4"></div>
                         <div className="col-sm-4">Ответы: </div>
                     </div>
