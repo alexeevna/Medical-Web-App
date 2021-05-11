@@ -9,7 +9,7 @@
         },
         {
           "name": "MIRF_ORCHESTRATOR_URL",
-          "value": "orchestrator"
+          "value": "mirforchestrator"
         },
         {
           "name": "MIRF_ORCHESTRATOR_PORT",
@@ -44,6 +44,17 @@
       "image": "ashvyrkova/medwebapp",
       "name": "medwebapp",
       "memory": 500,
+      "links": [
+        "orthanc",
+        "medwebpostgres",
+        "sftp",
+        "mirforchestrator",
+        "mirfrepository"
+      ],
+      "command": [
+        "sleep",
+        "10s"
+      ],
       "portMappings": [
         {
           "containerPort": 7999,
@@ -96,7 +107,7 @@
         },
         {
           "name": "ORCHESTRATOR_HOST",
-          "value": "orchestrator"
+          "value": "mirforchestrator"
         },
         {
           "name": "ORCHESTRATOR_PORT",
@@ -167,7 +178,7 @@
         },
         {
           "name": "ORCHESTRATOR_HOST",
-          "value": "orchestrator"
+          "value": "mirforchestrator"
         },
         {
           "name": "ORCHESTRATOR_PORT",
