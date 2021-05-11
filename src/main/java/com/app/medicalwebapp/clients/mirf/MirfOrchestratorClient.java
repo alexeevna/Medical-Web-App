@@ -14,6 +14,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,6 +34,26 @@ public class MirfOrchestratorClient {
 
     @Value("${mirf.orchestrator.url.sessionId}")
     private String mirfSessionIdEndpoint;
+
+    @Value("mirf.orchestrator.url.registerClient")
+    private String mirfRegisterClientEndpoint;
+
+
+    @PostConstruct
+    public void init() throws URISyntaxException, IOException {
+        URI repositoryUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
+
+        HttpPost post = new HttpPost(repositoryUri.toString() + mirfRegisterClientEndpoint);
+
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+        HttpEntity entity = builder.build();
+        post.setEntity(entity);
+
+        HttpResponse response = httpclient.execute(post);
+
+        System.out.println(response.getStatusLine().getStatusCode() == 200);
+    }
 
     public final static String DEFAULT_PIPELINE = "[\n" +
             "  { \"id\": 0, \"blockType\" : \"DicomImageSeriesReaderAlg\", \"children\": [1, 3] },\n" +
