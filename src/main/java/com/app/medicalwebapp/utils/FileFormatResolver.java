@@ -7,10 +7,8 @@ import java.io.InputStream;
 public class FileFormatResolver {
 
     public static FileObjectFormat resolveFormat(String name, byte[] content) {
-        System.out.println("Stepped in format resolver");
         if (name.contains(".") && name.length() >= 4) {
             String fileExtension = name.split("\\.")[1].toLowerCase();
-            System.out.println("FileExtension " + fileExtension);
             switch (fileExtension) {
                 case "dcm":
                     return FileObjectFormat.DICOM;
@@ -24,7 +22,6 @@ public class FileFormatResolver {
                     return FileObjectFormat.UNKNOWN;
             }
         }
-        System.out.println("Format is unknown");
         return FileObjectFormat.UNKNOWN;
     }
 }

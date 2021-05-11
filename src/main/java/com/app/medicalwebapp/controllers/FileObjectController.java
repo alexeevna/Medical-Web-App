@@ -41,9 +41,8 @@ public class FileObjectController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            log.info("Got request to upload file");
+            log.info("Got request to upload file: {}", file.getOriginalFilename());
 
-            System.out.println(file.getOriginalFilename());
             fileService.saveFile(file.getOriginalFilename(), file.getBytes(), getAuthenticatedUser().getId());
 
             return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + file.getOriginalFilename()));
