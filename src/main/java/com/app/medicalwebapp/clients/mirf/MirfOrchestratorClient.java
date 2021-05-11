@@ -35,16 +35,16 @@ public class MirfOrchestratorClient {
     @Value("${mirf.orchestrator.url.sessionId}")
     private String mirfSessionIdEndpoint;
 
-    @Value("mirf.orchestrator.url.registerClient")
+    @Value("${mirf.orchestrator.url.registerClient}")
     private String mirfRegisterClientEndpoint;
 
 
     @PostConstruct
     public void init() throws URISyntaxException, IOException {
         try {
-            URI repositoryUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
+            URI orchestratorUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
 
-            HttpPost post = new HttpPost(repositoryUri.toString() + mirfRegisterClientEndpoint);
+            HttpPost post = new HttpPost(orchestratorUri.toString() + mirfRegisterClientEndpoint);
 
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
