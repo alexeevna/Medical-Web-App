@@ -53,7 +53,7 @@ public class MirfOrchestratorClient {
 
             HttpResponse response = httpclient.execute(post);
 
-            System.out.println(response.getStatusLine().getStatusCode() == 200);
+            System.out.println("Register attempt: " + response.getStatusLine().getStatusCode());
             if (response.getEntity() != null) {
                 System.out.println("Register client: " + response.getEntity().getContent());
             }
