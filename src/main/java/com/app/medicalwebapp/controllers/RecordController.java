@@ -79,7 +79,6 @@ public class RecordController {
     @PostMapping("/create")
     public ResponseEntity<?> saveRecord(@Valid @RequestBody RecordCreationRequest request) {
         try {
-            System.out.println(request);
             recordService.saveRecord(request, getAuthenticatedUserId(), request.getParentId());
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,6 +86,8 @@ public class RecordController {
         }
         return ResponseEntity.ok().build();
     }
+
+
 
     private Long getAuthenticatedUserId() {
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

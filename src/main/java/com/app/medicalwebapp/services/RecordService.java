@@ -56,7 +56,11 @@ public class RecordService {
         return recordRepository.findByParent(parentId);
     }
 
-    public void saveRecord(RecordCreationRequest request, Long creatorId, Long parentId) {
+    public void saveRecord(RecordCreationRequest request, Long creatorId, Long parentId) throws Exception {
+        if (!request.getParentId().equals(-1L)) {
+            updateNumberOfReplies(request.getParentId());
+        }
+
         Set<FileObject> files = null;
         if (request.getFiles() != null && !request.getFiles().isEmpty()) {
             files = request.getFiles().stream().map(fileId -> {
@@ -101,4 +105,14 @@ public class RecordService {
                 .build();
     }
 
+    private void updateNumberOfReplies(Long parentId) throws Exception {
+        Record record = recordRepository.findById(parentId)
+                .orElseThrow(() -> new Exception("No record with id: " + parentId));
+        Integer currentNumber = record.getNumberOfReplies();
+        if (currentNumber != null) {
+            record.setNumberOfReplies(currentNumber + 1);
+        } else {
+            record.setNumberOfReplies(1);
+        }
+    }
 }

@@ -74,9 +74,7 @@ export default class RecordCard extends Component {
                         </header>
                     }
 
-
                     <div className="bottom-buffer-10">{this.getContent(this.record.content)}</div>
-
 
                     {!this.isPreview && this.state.filePreviews.map(el => (
                         <div>A picture...</div>
@@ -85,7 +83,7 @@ export default class RecordCard extends Component {
 
 
                     {!this.isReply &&
-                        <div className="col-sm-4 fa fa-comments" style={{"float": "right"}}></div>
+                        <div className="col-sm-4 fa fa-comments" style={{"float": "right"}}>{this.record.numOfReplies}</div>
                     }
                 </div>
             </div>

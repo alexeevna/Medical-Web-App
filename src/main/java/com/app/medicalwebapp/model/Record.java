@@ -46,8 +46,8 @@ public class Record {
     @JoinColumn(name="creator", nullable=false)
     private User creator;
 
-    @Column(name="likes")
-    private Integer likes;
+    @Column(name="num_replies")
+    private Integer numberOfReplies;
 
     @Column(name="creation_time")
     private LocalDateTime creationTime;

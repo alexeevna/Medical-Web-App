@@ -42,9 +42,8 @@ class App extends Component {
 
   logOut() {
     AuthService.logout();
+    this.setState({currentUser: null});
   }
-
-  // REACT_APP_API_URL=http://mebwebapp.us-east-1.elasticbeanstalk.com
 
   render() {
     const { currentUser } = this.state;
@@ -84,9 +83,12 @@ class App extends Component {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to={"/login"} className="nav-link color-dark-blue">
+                    <Link to={"/login"} className="nav-link color-dark-blue" onClick={this.logOut}>
                       Выйти
                     </Link>
+                    {/*<a href="/login" className="nav-link color-dark-blue" onClick={this.logOut}>*/}
+                    {/*  Выйти*/}
+                    {/*</a>*/}
                   </li>
                 </div>
             ) : (
