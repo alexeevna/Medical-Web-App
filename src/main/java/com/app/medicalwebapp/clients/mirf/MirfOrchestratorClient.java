@@ -41,25 +41,25 @@ public class MirfOrchestratorClient {
 
     @PostConstruct
     public void init() throws URISyntaxException, IOException {
-        try {
-            URI orchestratorUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
-
-            HttpPost post = new HttpPost(orchestratorUri.toString() + mirfRegisterClientEndpoint);
-
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-
-            HttpEntity entity = builder.build();
-            post.setEntity(entity);
-
-            HttpResponse response = httpclient.execute(post);
-
-            System.out.println("Register attempt: " + response.getStatusLine().getStatusCode());
-            if (response.getEntity() != null) {
-                System.out.println("Register client: " + response.getEntity().getContent());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//            URI orchestratorUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
+//
+//            HttpPost post = new HttpPost(orchestratorUri.toString() + mirfRegisterClientEndpoint);
+//
+//            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+//
+//            HttpEntity entity = builder.build();
+//            post.setEntity(entity);
+//
+//            HttpResponse response = httpclient.execute(post);
+//
+//            System.out.println("Register attempt: " + response.getStatusLine().getStatusCode());
+//            if (response.getEntity() != null) {
+//                System.out.println("Register client: " + response.getEntity().getContent());
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     public final static String DEFAULT_PIPELINE = "[\n" +

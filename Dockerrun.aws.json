@@ -136,7 +136,7 @@
         },
         {
           "name": "MEDICAL_WEB_APP_URL",
-          "value": "medwebapp"
+          "value": "medwebapp.us-east-1.elasticbeanstalk.com"
         }
       ],
       "essential": false,
