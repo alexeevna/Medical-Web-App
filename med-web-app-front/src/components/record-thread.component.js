@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
-import RecordCard from "./record-card-preview.component";
+import RecordCard from "./record-card.component";
 import ReplyRecordForm from "./reply-record.form";
 
 export default class RecordThreadComponent extends Component {
@@ -80,9 +80,9 @@ export default class RecordThreadComponent extends Component {
                     <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
                         Создать пост
                     </Link>
-                    {/*<Link to={"/profile"} className="nav-link card-link-custom color-orange">*/}
-                    {/*    Мои посты*/}
-                    {/*</Link>*/}
+                    <Link to={"/records/view"} className="nav-link card-link-custom color-orange">
+                        Обратно к постам
+                    </Link>
                 </div>
             </div>
         );

@@ -48,6 +48,19 @@ class AttachmentService {
     async getPreview(fileId) {
         return axios.get(API_URL + 'preview/' + fileId, {headers: authHeader()});
     }
+
+    async getPreviewNew(fileId) {
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        let token = '';
+        if (user && user.token) {
+            token = user.token;
+        }
+        return axios.get(API_URL + 'preview/' + fileId, {
+            responseType: 'blob',
+            headers: {'Authorization': 'Bearer ' + token}
+        });
+    }
 }
 
 export default new AttachmentService();

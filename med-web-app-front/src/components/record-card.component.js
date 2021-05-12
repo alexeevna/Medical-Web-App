@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import AuthService from "../services/auth.service";
+import AttachmentService from "../services/attachment.service";
 import '../styles/Record.css'
 
 export default class RecordCard extends Component {
@@ -33,20 +34,26 @@ export default class RecordCard extends Component {
     }
 
     componentDidMount() {
-        /*
         let preview = [];
-        if (this.record.attachments !== undefined &&  this.record.attachments !== null)
+        if (this.record.attachments !== undefined &&  this.record.attachments !== null) {
             for (let i = 0; i < this.record.attachments.length; i++) {
-                AttachmentService.getPreview(this.record.attachments[i].id).then(response => {
-                    console.log(response.data);
-                    preview.push({id: this.record.attachments[i].id, image: response.data});
-                    this.setState({filePreviews: preview});
-                }).catch(error => {
-                    console.log(error);
-                })
+                console.log(this.record.attachments[i]);
+                if (this.record.attachments[i].initialName.endsWith(".jpg") ||
+                    this.record.attachments[i].initialName.endsWith(".png")  ||
+                    this.record.attachments[i].initialName.endsWith(".dcm") ) {
+                    AttachmentService.getPreviewNew(this.record.attachments[i].id).then(response => {
+                        preview.push({id: this.record.attachments[i].id, image: URL.createObjectURL(response.data)});
+                        this.setState({filePreviews: preview});
+                    }).catch(error => {
+                        console.log(error);
+                    })
+                }
             }
+        }
+    }
 
-         */
+    endsWith(str, suffix) {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
 
     render() {
@@ -75,12 +82,11 @@ export default class RecordCard extends Component {
                     <div className="bottom-buffer-10">{this.getContent(this.record.content)}</div>
 
                     {!this.isPreview && this.state.filePreviews.map(el => (
-                        <div>A picture...</div>
-                        // <img key={el.id} className="top-buffer-10" src={`data:image/jpeg;base64, ${el.image}`} />
+                        <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image} />
                     ))}
 
 
-                    {!this.isReply &&
+                    {this.isPreview &&
                         <div className="col-sm-4 fa fa-comments" style={{"float": "right"}}> {this.record.numberOfReplies}</div>
                     }
                 </div>

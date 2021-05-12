@@ -3,7 +3,7 @@ import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import Select from 'react-select';
-import RecordCard from "./record-card-preview.component";
+import RecordCard from "./record-card.component";
 
 export default class ViewRecordsList extends Component {
     constructor(props) {
