@@ -52,21 +52,20 @@ export default class RecordThreadComponent extends Component {
             <div className="list row">
                 <div className="col-md-9">
 
-                    {this.state.record ?
-                        (<RecordCard record={this.state.record}/>)
-                     :
-                        (<h4> </h4>)
+                    {this.state.record &&
+                        (<RecordCard record={this.state.record} isPreview={false} isReply={false}/>)
                     }
 
                     <ul className="list-group">
                         {answers !== undefined && this.state.answers !== null &&
                         this.state.answers.map((record, index) => (
                             <li
-                                style={{listStyleType: "none"}}
+                                style={{listStyleType: "none", width: "90%", marginLeft: "auto"}}
                                 key={index}
+
                                 // onClick={() => this.displayRecordThread(record, index)}
                             >
-                                <RecordCard record={record}/>
+                                <RecordCard record={record} isPreview={false} isReply={true}/>
                             </li>
 
                         ))}

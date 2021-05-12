@@ -39,29 +39,6 @@ public class MirfOrchestratorClient {
     private String mirfRegisterClientEndpoint;
 
 
-    @PostConstruct
-    public void init() throws URISyntaxException, IOException {
-//        try {
-//            URI orchestratorUri = new URI("http", null, mirfOrchestratorUrl, Integer.parseInt(mirfOrchestratorPort), null, null, null);
-//
-//            HttpPost post = new HttpPost(orchestratorUri.toString() + mirfRegisterClientEndpoint);
-//
-//            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-//
-//            HttpEntity entity = builder.build();
-//            post.setEntity(entity);
-//
-//            HttpResponse response = httpclient.execute(post);
-//
-//            System.out.println("Register attempt: " + response.getStatusLine().getStatusCode());
-//            if (response.getEntity() != null) {
-//                System.out.println("Register client: " + response.getEntity().getContent());
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-    }
-
     public final static String DEFAULT_PIPELINE = "[\n" +
             "  { \"id\": 0, \"blockType\" : \"DicomImageSeriesReaderAlg\", \"children\": [1, 3] },\n" +
             "  { \"id\": 1, \"blockType\" : \"DicomAddCircleMaskAlg\", \"children\": [2] },\n" +
@@ -112,10 +89,8 @@ public class MirfOrchestratorClient {
             HttpEntity entity = response.getEntity();
             if (response.getStatusLine().getStatusCode() == 200 && entity != null) {
                 String sessionId = EntityUtils.toString(entity);
-                System.out.println(sessionId);
                 return sessionId;
             } else {
-                System.out.println(response.getStatusLine().getStatusCode());
                 throw new Exception("Mirf service unavailable");
             }
         }

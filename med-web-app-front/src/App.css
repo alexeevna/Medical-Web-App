@@ -25,6 +25,10 @@ label {
   margin-top: 10px;
 }
 
+.bottom-buffer-10 {
+  margin-bottom: 10px;
+}
+
 .top-buffer-30 {
   margin-top: 30px;
 }

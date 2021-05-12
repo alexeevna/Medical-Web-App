@@ -166,7 +166,7 @@ export default class ViewRecordsList extends Component {
                                 key={index}
                                 onClick={() => this.displayRecordThread(record, index)}
                             >
-                                <RecordCard record={record}/>
+                                <RecordCard record={record} isPreview={true} isReply={false}/>
                             </li>
 
                         ))}
