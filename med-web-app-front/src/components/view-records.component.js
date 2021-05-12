@@ -112,7 +112,7 @@ export default class ViewRecordsList extends Component {
 
         return (
             <div className="list row">
-                <div className="col-md-8">
+                <div className="col-sm-9">
                     <div className="input-group mb-3">
                         <input
                             type="text"
@@ -135,7 +135,7 @@ export default class ViewRecordsList extends Component {
 
                     <div className="mt-3">
                         <div className="row">
-                            <div>{"Количество постов на странице: "}</div>
+                            <div style={{marginLeft: "17px"}}>{"Количество постов на странице: "}</div>
                             <Select className="col-2"
                                     onChange={this.handlePageSizeChange}
                                     options={this.pageSizes}
@@ -173,7 +173,7 @@ export default class ViewRecordsList extends Component {
                     </ul>
                 </div>
 
-                <div className="col-md-4">
+                <div className="col-sm-2">
                     <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
                         Создать пост
                     </Link>

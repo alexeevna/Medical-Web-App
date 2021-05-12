@@ -47,7 +47,7 @@ public class Record {
     private User creator;
 
     @Column(name="num_replies")
-    private Integer numberOfReplies;
+    private int numberOfReplies;
 
     @Column(name="creation_time")
     private LocalDateTime creationTime;

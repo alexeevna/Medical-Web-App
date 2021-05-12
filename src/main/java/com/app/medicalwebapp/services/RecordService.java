@@ -108,11 +108,7 @@ public class RecordService {
     private void updateNumberOfReplies(Long parentId) throws Exception {
         Record record = recordRepository.findById(parentId)
                 .orElseThrow(() -> new Exception("No record with id: " + parentId));
-        Integer currentNumber = record.getNumberOfReplies();
-        if (currentNumber != null) {
-            record.setNumberOfReplies(currentNumber + 1);
-        } else {
-            record.setNumberOfReplies(1);
-        }
+        int currentNumber = record.getNumberOfReplies();
+        record.setNumberOfReplies(currentNumber + 1);
     }
 }

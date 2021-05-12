@@ -40,7 +40,6 @@ public class RecordController {
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
-            log.info("title: {}, topicId: {}, page: {}, size: {}", title, topicId, page, size);
             RecordsPageResponse responseBody;
             if (topicId == null) {
                 responseBody = recordService.getRecordsPage(page, size, title);

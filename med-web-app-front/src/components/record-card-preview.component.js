@@ -17,13 +17,11 @@ export default class RecordCard extends Component {
         this.isPreview = this.props.isPreview;
         this.isReply = this.props.isReply;
 
-        console.log(this.props.isPreview);
-        console.log(this.props.isReply);
-
         var creationTimestamp = new Date(this.record.creationTime);
         var hours = creationTimestamp.getHours();
         var minutes = creationTimestamp.getMinutes();
         this.creationTime = hours + ':' + minutes;
+
     }
 
 
@@ -83,7 +81,7 @@ export default class RecordCard extends Component {
 
 
                     {!this.isReply &&
-                        <div className="col-sm-4 fa fa-comments" style={{"float": "right"}}>{this.record.numOfReplies}</div>
+                        <div className="col-sm-4 fa fa-comments" style={{"float": "right"}}> {this.record.numberOfReplies}</div>
                     }
                 </div>
             </div>
