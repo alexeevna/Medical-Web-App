@@ -7,6 +7,8 @@ export default class RecordCard extends Component {
     constructor(props) {
         super(props);
 
+        this.download = this.download.bind(this);
+
         this.getContent = this.getContent.bind(this);
 
         this.state = {
@@ -52,6 +54,13 @@ export default class RecordCard extends Component {
         }
     }
 
+    download(fileId, initialFileName) {
+        AttachmentService.downloadAttachment(fileId, initialFileName);
+        //console.log(response.data);
+        //event.preventDefault();
+    }
+
+
     endsWith(str, suffix) {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
@@ -83,6 +92,21 @@ export default class RecordCard extends Component {
 
                     {!this.isPreview && this.state.filePreviews.map(el => (
                         <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image} />
+                    ))}
+
+                    {!this.isPreview && this.record.attachments.map(el => (
+                        // <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image} />
+                        <div key={el.id} className="row color-light-blue top-buffer-10">
+                            {/*<div className="col-sm-5">{el.initialName}</div>*/}
+                            <div>
+                                <button
+                                    style={{marginLeft: "30px", borderStyle: "none"}}
+                                    className="btn-sm btn-primary color-light-blue"
+                                    onClick={() => this.download(el.id, el.initialName)}>
+                                    <i className="fa fa-download"> Скачать {el.initialName}</i>
+                                </button>
+                            </div>
+                        </div>
                     ))}
 
 

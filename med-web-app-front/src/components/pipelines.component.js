@@ -148,6 +148,15 @@ export default class PipelinesComponent extends Component {
                             >Запустить</button>
                         </div>
 
+                        {this.state.submitted && (
+                            <div className="form-group">
+                                <div
+                                    className="alert alert-success top-buffer-10"
+                                    role="alert">
+                                    Отправлено исполняться
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                 </div>
