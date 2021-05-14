@@ -227,7 +227,7 @@
       ],
       "essential": false,
       "image": "ashvyrkova/mirfblockml",
-      "memory": 2000,
+      "memory": 3000,
       "name": "ihdpipelinealg"
     },
     {
