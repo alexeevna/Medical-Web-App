@@ -1,4 +1,5 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
 // const API_URL = "http://localhost:7999/api/auth/";
 
@@ -32,6 +33,10 @@ class AuthService {
             password,
             chosenRole
         });
+    }
+
+    checkTokenIsExpired(token) {
+        return axios.get(API_URL + "checktoken",  {params: {"token": token}})
     }
 
     getCurrentUser() {

@@ -34,9 +34,16 @@ class App extends Component {
     const user = AuthService.getCurrentUser();
 
     if (user) {
-      this.setState({
-        currentUser: user
-      });
+      AuthService.checkTokenIsExpired(user.token)
+          .then(response => {
+            this.setState({
+              currentUser: user
+            });
+          })
+          .catch(error => {
+            this.logOut();
+          }
+      )
     }
   }
 

@@ -198,6 +198,40 @@
     },
     {
       "command": [
+        "sh",
+        "wait-for-orchestrator.sh",
+        "java",
+        "-jar",
+        "block-1.0-SNAPSHOT.jar"
+      ],
+      "environment": [
+        {
+          "name": "SERVER_PORT",
+          "value": "8064"
+        },
+        {
+          "name": "BLOCK_TYPE",
+          "value": "pipelineForDeveloping"
+        },
+        {
+          "name": "ORCHESTRATOR_HOST",
+          "value": "mirforchestrator"
+        },
+        {
+          "name": "ORCHESTRATOR_PORT",
+          "value": "5011"
+        }
+      ],
+      "links": [
+        "mirforchestrator"
+      ],
+      "essential": false,
+      "image": "ashvyrkova/mirfblockml",
+      "memory": 2000,
+      "name": "ihdpipelinealg"
+    },
+    {
+      "command": [
         "medwebuser:secretpassword:::upload"
       ],
       "essential": true,
