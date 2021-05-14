@@ -211,7 +211,7 @@
         },
         {
           "name": "BLOCK_TYPE",
-          "value": "pipelineForDeveloping"
+          "value": "ihdClassifierAlg"
         },
         {
           "name": "ORCHESTRATOR_HOST",
