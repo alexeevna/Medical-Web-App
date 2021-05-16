@@ -31,8 +31,8 @@ export default class RecordCard extends Component {
         let userDate = this.convertTZ(creationTimestamp, Intl.DateTimeFormat().resolvedOptions().timeZone);
         console.log(this.convertTZ(creationTimestamp, "Europe/Moscow"));
 
-        var hours = creationTimestamp.getHours();
-        var minutes = creationTimestamp.getMinutes();
+        var hours = userDate.getHours();
+        var minutes = userDate.getMinutes();
         minutes = minutes >= 10 ? minutes : '0' + minutes;
         this.creationTime = hours + ':' + minutes;
     }
