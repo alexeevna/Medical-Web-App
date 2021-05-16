@@ -23,13 +23,13 @@ export default class RecordCard extends Component {
 
         var creationTimestamp = new Date(this.record.creationTime);
         // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
-        console.log(this.record.creationTime)
-        console.log(creationTimestamp)
+        //console.log(this.record.creationTime)
+        //console.log(creationTimestamp)
 
         // let utcDate = this.convertTZ(creationTimestamp, "Europe/London");
         // console.log(utcDate);
-        let userDate = this.convertTZ(creationTimestamp, Intl.DateTimeFormat().resolvedOptions().timeZone);
-        console.log(userDate);
+        let userDate = this.convertTZ(creationTimestamp, "Asia/Dhaka");
+        //console.log(userDate);
 
         var hours = userDate.getHours();
         var minutes = userDate.getMinutes();
