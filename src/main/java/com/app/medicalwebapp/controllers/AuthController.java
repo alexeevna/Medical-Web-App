@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,8 +49,6 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody SignInRequest signInRequest) {
 
-        log.info(signInRequest.toString());
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
@@ -73,6 +72,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -83,10 +83,11 @@ public class AuthController {
         user.setUsername(signUpRequest.getUsername());
         user.setRole(signUpRequest.getChosenRole());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
-        user.setRealName(signUpRequest.getRealName());
-        user.setMobilePhone(signUpRequest.getMobilePhone());
+//        user.setRealName(signUpRequest.getRealName());
+//        user.setMobilePhone(signUpRequest.getMobilePhone());
         user.setStatus(0);
         user.setRate(0);
+        user.setRegisteredDate(LocalDateTime.now());
 
         userRepository.save(user);
 

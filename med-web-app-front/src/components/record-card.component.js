@@ -8,6 +8,7 @@ export default class RecordCard extends Component {
         super(props);
 
         this.download = this.download.bind(this);
+        this.convertTZ = this.convertTZ.bind(this);
 
         this.getContent = this.getContent.bind(this);
 
@@ -21,12 +22,24 @@ export default class RecordCard extends Component {
         this.isReply = this.props.isReply;
 
         var creationTimestamp = new Date(this.record.creationTime);
+        console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
+        // console.log(this.record.creationTime)
+        // console.log(creationTimestamp)
+
+        // let utcDate = this.convertTZ(creationTimestamp, "Europe/London");
+        // console.log(utcDate);
+        let userDate = this.convertTZ(creationTimestamp, Intl.DateTimeFormat().resolvedOptions().timeZone);
+        console.log(this.convertTZ(creationTimestamp, "Europe/Moscow"));
+
         var hours = creationTimestamp.getHours();
         var minutes = creationTimestamp.getMinutes();
+        minutes = minutes >= 10 ? minutes : '0' + minutes;
         this.creationTime = hours + ':' + minutes;
-
     }
 
+    convertTZ(date, tzString) {
+        return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
+    }
 
     getContent(content) {
         if (this.props.isPreview && content != null && content.length > 40) {

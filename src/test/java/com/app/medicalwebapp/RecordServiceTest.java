@@ -74,7 +74,7 @@ public class RecordServiceTest {
         Assertions.assertEquals(2, recordLoaded.getAttachments().size());
         Assertions.assertEquals(2, recordLoaded.getTopics().size());
         Assertions.assertEquals(5, recordLoaded.getNumberOfReplies());
-        Assertions.assertEquals("Ivan Ivanov", recordLoaded.getCreator().getRealName());
+//        Assertions.assertEquals("Ivan Ivanov", recordLoaded.getCreator().getRealName());
     }
 
     private User saveUser(User user) {
@@ -91,7 +91,7 @@ public class RecordServiceTest {
 
     private User user(String realName) {
         User newUser = new User();
-        newUser.setRealName(realName);
+//        newUser.setRealName(realName);
         return newUser;
     }
 

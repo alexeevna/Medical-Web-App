@@ -27,13 +27,13 @@ public class UserDetailsImpl implements UserDetails {
 
 
     public UserDetailsImpl(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities,
-                           String realName, String mobilePhone, int rate, int status) {
+                           int rate, int status) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
-        this.realName = realName;
-        this.mobilePhone = mobilePhone;
+//        this.realName = realName;
+//        this.mobilePhone = mobilePhone;
         this.rate = rate;
         this.status = status;
     }
@@ -47,8 +47,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getPassword(),
                 authorities,
-                user.getRealName(),
-                user.getMobilePhone(),
+//                user.getRealName(),
+//                user.getMobilePhone(),
                 user.getRate(),
                 user.getStatus());
     }
