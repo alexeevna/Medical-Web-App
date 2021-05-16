@@ -173,40 +173,6 @@
       "environment": [
         {
           "name": "SERVER_PORT",
-          "value": "8063"
-        },
-        {
-          "name": "BLOCK_TYPE",
-          "value": "pipelineForDeveloping"
-        },
-        {
-          "name": "ORCHESTRATOR_HOST",
-          "value": "mirforchestrator"
-        },
-        {
-          "name": "ORCHESTRATOR_PORT",
-          "value": "5011"
-        }
-      ],
-      "links": [
-        "mirforchestrator"
-      ],
-      "essential": false,
-      "image": "ashvyrkova/mirfblock",
-      "memory": 400,
-      "name": "pipelinealg"
-    },
-    {
-      "command": [
-        "sh",
-        "wait-for-orchestrator.sh",
-        "java",
-        "-jar",
-        "block-1.0-SNAPSHOT.jar"
-      ],
-      "environment": [
-        {
-          "name": "SERVER_PORT",
           "value": "8064"
         },
         {
@@ -227,7 +193,7 @@
       ],
       "essential": false,
       "image": "ashvyrkova/mirfblockml",
-      "memory": 3000,
+      "memory": 4000,
       "name": "ihdpipelinealg"
     },
     {
