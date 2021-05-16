@@ -22,14 +22,14 @@ export default class RecordCard extends Component {
         this.isReply = this.props.isReply;
 
         var creationTimestamp = new Date(this.record.creationTime);
-        console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
-        // console.log(this.record.creationTime)
-        // console.log(creationTimestamp)
+        // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
+        console.log(this.record.creationTime)
+        console.log(creationTimestamp)
 
         // let utcDate = this.convertTZ(creationTimestamp, "Europe/London");
         // console.log(utcDate);
         let userDate = this.convertTZ(creationTimestamp, Intl.DateTimeFormat().resolvedOptions().timeZone);
-        console.log(this.convertTZ(creationTimestamp, "Europe/Moscow"));
+        console.log(userDate);
 
         var hours = userDate.getHours();
         var minutes = userDate.getMinutes();
