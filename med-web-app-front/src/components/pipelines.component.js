@@ -80,24 +80,19 @@ export default class PipelinesComponent extends Component {
     }
 
     onPipelineDropdownSelected(selectedValue) {
-        console.log("Selected pipeline", selectedValue);
         this.setState({selectedPipeline: selectedValue.value});
     }
 
     onFileDropdownSelected(selectedValue) {
-        console.log("Selected file", selectedValue);
         this.setState({selectedFile: selectedValue.value});
     }
 
     submitPipeline() {
-        console.log("Submitted pipeline");
         PipelineJobService.sendRequestForPipelineJob(this.state.currentUser.username,
             this.state.selectedPipeline, this.state.selectedFile).then(
                 response => {
-                    console.log("Submit ok");
                 },
                 error => {
-                    console.log("Submit error");
                     this.setState({
                         content: (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
                     });
@@ -153,7 +148,7 @@ export default class PipelinesComponent extends Component {
                                 <div
                                     className="alert alert-success top-buffer-10"
                                     role="alert">
-                                    Отправлено исполняться
+                                    Отправлено исполняться <br/> Результаты можно посмотреть на вкладке "Запущенные конвейеры"
                                 </div>
                             </div>
                         )}
@@ -164,7 +159,12 @@ export default class PipelinesComponent extends Component {
 
                 <div className="col-sm-2 align-center">
                     <Link to={"/pipelines/results"} className="nav-link card-link-custom color-orange">Запущенные конвейеры</Link>
-                    <Link to={"/pipelines/save"} className="nav-link card-link-custom color-orange">Сохранить конфигурацию</Link>
+                    <Link to={"/files/upload"} className="nav-link card-link-custom color-orange">Загрузить файлы для конвейеров</Link>
+                    {this.state.currentUser !== null && this.state.currentUser.username === "alexandra" &&
+                        (<Link to={"/pipelines/save"} className="nav-link card-link-custom color-orange">
+                            Сохранить конфигурацию
+                        </Link>)
+                    }
                 </div>
 
 

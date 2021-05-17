@@ -43,7 +43,7 @@
       "essential": true,
       "image": "ashvyrkova/medwebapp",
       "name": "medwebapp",
-      "memory": 500,
+      "memory": 700,
       "links": [
         "orthanc",
         "medwebpostgres",
@@ -142,7 +142,7 @@
       "essential": false,
       "image": "ashvyrkova/mirforchestrator",
       "name": "mirforchestrator",
-      "memory": 400,
+      "memory": 500,
       "portMappings": [
         {
           "containerPort": 5011,
@@ -193,7 +193,7 @@
       ],
       "essential": false,
       "image": "ashvyrkova/mirfblock",
-      "memory": 400,
+      "memory": 600,
       "name": "pipelinealg"
     },
     {

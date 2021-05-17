@@ -42,7 +42,6 @@ export default class PipelineResultsComponent extends Component {
                 this.setState({
                     pipelineJobs : jobs
                 });
-                console.log(jobs);
             },
             error => {
                 this.setState({
@@ -83,8 +82,8 @@ export default class PipelineResultsComponent extends Component {
                     <div className="pipeline-results-card color-light-blue">
                         {pipelineJobs.map(el => (
                             <div key={el.id} className="row color-light-blue top-buffer-10 bordered-box">
-                                <div className="col-sm-3">{el.pipelineName}</div>
-                                <div className="col-sm-3">{el.inputName}</div>
+                                <div className="col-sm-3 line-break">{el.pipelineName}</div>
+                                <div className="col-sm-3 line-break">{el.inputName}</div>
                                 <div className="col-sm-3">{this.translateStatus(el.status)}</div>
                                 <div className="col-sm-3">
                                     <button

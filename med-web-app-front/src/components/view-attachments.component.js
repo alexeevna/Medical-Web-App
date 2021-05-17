@@ -46,7 +46,7 @@ export default class ViewAttachmentsComponent extends Component {
                         <div className="view-card color-light-blue">
                             {this.state.userFilesInfo.map(el => (
                                 <div key={el.id} className="row color-light-blue top-buffer-10">
-                                    <div className="col-sm-5">{el.initialName}</div>
+                                    <div className="col-sm-5 line-break">{el.initialName}</div>
                                     <div className="col-sm-4">{new Date(el.creationTime).toLocaleDateString()}</div>
                                     <div className="col-sm-3">
                                         <button

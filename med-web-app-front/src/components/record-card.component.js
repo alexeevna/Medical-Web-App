@@ -85,7 +85,7 @@ export default class RecordCard extends Component {
                 <div className="col-sm-3 ">
                     <div className="record-info-box align-content-center">
                         <div className="center-vertical">
-                            <h6 className="fa fa-user"> {this.record.creator.username}</h6>
+                            <h6 className="fa fa-user line-break"> {this.record.creator.username}</h6>
                             <br/>
                             <h6 className="fa fa-calendar"> {new Date(this.record.creationTime).toLocaleDateString()}</h6>
                             <br/>
@@ -96,7 +96,7 @@ export default class RecordCard extends Component {
 
                 <div className="col-sm-9">
                     {!this.props.isReply &&
-                        <header className="record-jumbotron align-center bottom-buffer-10">
+                        <header className="record-jumbotron align-center bottom-buffer-10 line-break">
                             <h3><strong>{this.record.title}</strong></h3>
                         </header>
                     }

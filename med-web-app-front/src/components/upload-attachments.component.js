@@ -77,7 +77,6 @@ export default class UploadAttachmentsComponent extends Component {
 
         let toSend = isDicom ? anonymizedDicomBlob : file;
 
-        console.log(toSend);
         AttachmentService.uploadAttachment(toSend, file.name, isDicom,
             (event) => {
                 _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
