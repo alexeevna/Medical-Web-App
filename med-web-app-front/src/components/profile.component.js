@@ -11,6 +11,8 @@ export default class Profile extends Component {
         this.state = {
             currentUser: AuthService.getCurrentUser()
         };
+
+        console.log(this.state.currentUser);
     }
 
     render() {
@@ -31,7 +33,7 @@ export default class Profile extends Component {
                             </div>
                             <div className="row top-buffer">
                                 <div className="col-sm-5">Дата регистрации:</div>
-                                <div className="col-sm-7"></div>
+                                <div className="col-sm-7">{new Date(currentUser.registeredDate).toLocaleDateString()}</div>
                             </div>
                         </div>
                     </div>

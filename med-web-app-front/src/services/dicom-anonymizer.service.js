@@ -14,9 +14,9 @@ class DicomAnonymizerService {
 
         let arrayBuffer = await readerPromise;
 
-        console.log(file);
-        console.log(arrayBuffer);
-        try {
+        // console.log(file);
+        // console.log(arrayBuffer);
+        // try {
             let dicomContent = dcmjs.data.DicomMessage.readFile(arrayBuffer)
 
             // if (dicomContent.meta['00020010'] === undefined || dicomContent.meta['00020010'] === null) {
@@ -45,9 +45,9 @@ class DicomAnonymizerService {
             dicomContent.dict = dcmjs.data.DicomMetaDictionary.denaturalizeDataset(dicomTagsDataset);
 
             return dicomContent.write();
-        } catch (error)  {
-            console.log(error);
-        }
+        // } catch (error)  {
+        //     console.log(error);
+        // }
     }
 
     anonymizeTag(tagsDataset, tagToAnonymize, replaceValue) {

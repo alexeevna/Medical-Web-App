@@ -112,8 +112,6 @@ public class OrthancInstancesClient {
     }
 
     public String uploadInstance(InputStream dicomFile) throws IOException {
-        System.out.println("Starting uploading");
-
         HttpPost request = new HttpPost(orthancInstancesUrl);
         ByteArrayEntity requestEntity = new ByteArrayEntity(IOUtils.toByteArray(dicomFile));
 
@@ -134,7 +132,6 @@ public class OrthancInstancesClient {
             if (responseEntity != null) {
                 // return it as a String
                 String json = EntityUtils.toString(responseEntity);
-                System.out.println(responseEntity);
                 return getIdFromResponse(json);
             } else {
                 throw new RuntimeException("Pacs server response is empty");

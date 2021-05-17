@@ -59,7 +59,20 @@ export default class UploadAttachmentsComponent extends Component {
 
         let isDicom = file.name.includes(".dcm");
         if (isDicom) {
-            var anonymizedDicomBlob = await DicomAnonymizerService.anonymizeInstance(file);
+            try {
+                var anonymizedDicomBlob = await DicomAnonymizerService.anonymizeInstance(file);
+            } catch (error) {
+                console.log(error)
+                _progressInfos[idx].percentage = 0;
+                this.setState((prev) => {
+                    let nextMessage = [...prev.message, "Не удалось загрузить файл: " + file.name + ". \n Отсутствует Transfer Syntax tag (0002, 0010)"];
+                    return {
+                        progressInfos: _progressInfos,
+                        message: nextMessage
+                    };
+                });
+                return;
+            }
         }
 
         let toSend = isDicom ? anonymizedDicomBlob : file;

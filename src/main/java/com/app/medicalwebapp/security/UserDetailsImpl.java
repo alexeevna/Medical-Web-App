@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -20,14 +21,15 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
-    private String realName;
-    private String mobilePhone;
+//    private String realName;
+//    private String mobilePhone;
     private int rate;
     private int status;
+    private LocalDateTime registeredDate;
 
 
     public UserDetailsImpl(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities,
-                           int rate, int status) {
+                           int rate, int status, LocalDateTime registeredDate) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -36,6 +38,7 @@ public class UserDetailsImpl implements UserDetails {
 //        this.mobilePhone = mobilePhone;
         this.rate = rate;
         this.status = status;
+        this.registeredDate = registeredDate;
     }
 
     public static UserDetailsImpl build(User user) {
@@ -50,7 +53,8 @@ public class UserDetailsImpl implements UserDetails {
 //                user.getRealName(),
 //                user.getMobilePhone(),
                 user.getRate(),
-                user.getStatus());
+                user.getStatus(),
+                user.getRegisteredDate());
     }
 
     @Override
