@@ -19,7 +19,6 @@ before_script:
   - cd ../../../../med-web-app-front
   - npm run build
   - cd ..
-  - ls
 
 script:
   - docker run -d --name sftp           -p 4999:22   --rm atmoz/sftp  medwebuser:secretpassword:::upload
