@@ -26,8 +26,8 @@ script:
   - docker run -d --name ortanc         -p 8042:8042 --rm jodogne/orthanc
   - mvn package
 
-#after_success:
-#  - mvn compile jib:build -Djib.to.auth.username=$DOCKER_ID -Djib.to.auth.password=$DOCKER_PASSWORD
+after_success:
+  - mvn compile jib:build -Djib.to.auth.username=$DOCKER_ID -Djib.to.auth.password=$DOCKER_PASSWORD
 
 deploy:
     provider: elasticbeanstalk
