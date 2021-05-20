@@ -136,7 +136,7 @@
         },
         {
           "name": "MEDICAL_WEB_APP_URL",
-          "value": "medwebapp.us-east-1.elasticbeanstalk.com"
+          "value": "medicalwebapp.us-east-1.elasticbeanstalk.com"
         }
       ],
       "essential": false,
@@ -173,11 +173,11 @@
       "environment": [
         {
           "name": "SERVER_PORT",
-          "value": "8063"
+          "value": "8064"
         },
         {
           "name": "BLOCK_TYPE",
-          "value": "pipelineForDeveloping"
+          "value": "ihdClassifierAlg"
         },
         {
           "name": "ORCHESTRATOR_HOST",
@@ -192,9 +192,9 @@
         "mirforchestrator"
       ],
       "essential": false,
-      "image": "ashvyrkova/mirfblock",
-      "memory": 600,
-      "name": "pipelinealg"
+      "image": "ashvyrkova/mirfblockml",
+      "memory": 4000,
+      "name": "ihdpipelinealg"
     },
     {
       "command": [
