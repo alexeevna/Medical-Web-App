@@ -35,7 +35,7 @@ deploy:
     app: medwebapp
     env: Medwebapp-ihd-env
     bucket_name: elasticbeanstalk-us-east-1-099405913193
-    bucket_path: medwebapp
+    bucket_path: medwebapp-ihd
     on:
         branch: master
     access_key_id: $AWS_ACCESS_KEY
