@@ -44,17 +44,6 @@ public class OrthancInstancesClient {
 
     private CredentialsProvider credentialsProvider;
 
-    /*
-{
-   "ID" : "9cc915b5-45f10448-362710fd-a5c094d9-629b2643",
-   "ParentPatient" : "b6589fc6-ab0dc82c-f12099d1-c2d40ab9-94e8410c",
-   "ParentSeries" : "955c729e-c9eb72b5-9f54451d-e21321c2-bd1c5f5e",
-   "ParentStudy" : "9fcadbc3-58807fe5-05a2969e-ab4aafaa-af735eaa",
-   "Path" : "/instances/9cc915b5-45f10448-362710fd-a5c094d9-629b2643",
-   "Status" : "AlreadyStored"
-}
-     */
-
     @PostConstruct
     public void init() throws IOException {
         credentialsProvider = new BasicCredentialsProvider();
@@ -62,33 +51,7 @@ public class OrthancInstancesClient {
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(orthancUsername, orthancPassword)
         );
-
-//
-//        System.out.println("Hi! Started executing \"uploadInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-//        File dicomForUpload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/ihd001.dcm");
-//        String id = this.uploadInstance(FileUtils.openInputStream(dicomForUpload));
-//
-//        System.out.println("Hi! Started executing \"getAllAvailableInstances\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-//        this.getAllAvailableInstanceIds();
-//        System.out.println("Ended executing \"getAllAvailableInstances\"");
-
-        //9cc915b5-45f10448-362710fd-a5c094d9-629b2643
-//        System.out.println("Hi! Started executing \"deleteInstance\" \n orthancInstancesUrl=" + orthancInstancesUrl);
-//        this.deleteInstance("9cc915b5-45f10448-362710fd-a5c094d9-629b2643");
-//        System.out.println("Ended executing \"deleteInstance\"");
-
-//        System.out.println("Started executing \"downloadInstance\"");
-//        InputStream is = this.downloadInstance(id);
-        //File dicomForDownload = new File("/home/alexandra/DISK/Medical-Web-App/src/main/resources/downloaded_ihd.dcm");
-        //File dicomForDownload = new File("src/main/resources/downloaded_ihd.dcm");
-        //FileUtils.copyInputStreamToFile(is, dicomForDownload);
-
-        //System.out.println("Hi! Started executing \"uploadInstance\"");
-        //System.out.println(this.uploadInstance(FileUtils.openInputStream(dicomForDownload)));
     }
-
-
-
 
     public void getAllAvailableInstanceIds() throws IOException {
 
@@ -99,14 +62,9 @@ public class OrthancInstancesClient {
                 .build();
              CloseableHttpResponse response = httpClient.execute(request)) {
 
-            // 401 if wrong user/password
-            System.out.println(response.getStatusLine().getStatusCode());
-
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                // return it as a String
                 String jsonResponse = EntityUtils.toString(entity);
-                System.out.println(jsonResponse);
             }
         }
     }
@@ -124,13 +82,8 @@ public class OrthancInstancesClient {
                 .build();
              CloseableHttpResponse response = httpClient.execute(request)) {
 
-            // 401 if wrong user/password
-            //TODO handle bad status codes
-            //System.out.println(response.getStatusLine().getStatusCode());
-
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity != null) {
-                // return it as a String
                 String json = EntityUtils.toString(responseEntity);
                 return getIdFromResponse(json);
             } else {
@@ -141,7 +94,6 @@ public class OrthancInstancesClient {
 
     public InputStream downloadInstance(String instanceId) throws IOException {
         HttpGet request = new HttpGet(orthancInstancesUrl + "/" + instanceId + "/file");
-//        ByteArrayEntity requestEntity = new ByteArrayEntity(IOUtils.toByteArray(dicomFile));
 
         request.setHeader("Accept", "application/dicom");
 
@@ -150,51 +102,16 @@ public class OrthancInstancesClient {
                 .build();
              CloseableHttpResponse response = httpClient.execute(request)) {
 
-            // 401 if wrong user/password
-            //TODO handle bad status codes
-            //System.out.println(response.getStatusLine().getStatusCode());
-
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity != null) {
-                //String json = EntityUtils.toString(responseEntity);
                 InputStream is = responseEntity.getContent();
-//                File targetFile = new File("src/main/resources/downloaded_ihd.dcm");
-//                FileUtils.copyInputStreamToFile(is, targetFile);
-                //InputStream is;
                 byte[] bytes = IOUtils.toByteArray(is);
                 return new ByteArrayInputStream(bytes);
-                //return responseEntity.getContent();
             } else {
                 throw new RuntimeException("Pacs server response is empty");
             }
         }
     }
-
-    /*
-    public void uploadInstanceMultipart(File dicomFile) throws IOException {
-        HttpPost request = new HttpPost(orthancInstancesUrl);
-        MultipartEntityBuilder builder2 = MultipartEntityBuilder.create();
-
-        builder2.addBinaryBody(
-                "addressFile",
-                FileUtils.readFileToByteArray(dicomFile),
-                ContentType.DEFAULT_BINARY,
-                "dicom_file.dcm");
-        HttpEntity multipart = builder2.build();
-        request.setEntity(multipart);
-        request.setHeader("Accept", "application/dicom");
-        request.setHeader("Content-type", "application/dicom");
-        //CloseableHttpResponse response = httpClient.execute(request);
-
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
-                .setDefaultCredentialsProvider(credentialsProvider)
-                .build();
-             CloseableHttpResponse response = httpClient.execute(request)) {
-            System.out.println(response.getStatusLine().getStatusCode());
-            System.out.println(response.getEntity());
-        }
-    }
-*/
 
     public ByteArrayInputStream previewInstance(String instanceId) throws IOException {
         HttpGet request = new HttpGet(orthancInstancesUrl + "/" + instanceId + "/rendered");
@@ -206,15 +123,10 @@ public class OrthancInstancesClient {
                 .build();
              CloseableHttpResponse response = httpClient.execute(request)) {
 
-            System.out.println(response.getStatusLine().getStatusCode());
-
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 InputStream is = entity.getContent();
-                //File file = File.createTempFile("downloaded-", "png");
-                //FileUtils.copyInputStreamToFile(is, file);
                 byte[] bytes = IOUtils.toByteArray(is);
-                //file.delete();
                 return new ByteArrayInputStream(bytes);
             }
         }
@@ -229,14 +141,9 @@ public class OrthancInstancesClient {
                 .build();
              CloseableHttpResponse response = httpClient.execute(request)) {
 
-            // 401 if wrong user/password
-            System.out.println(response.getStatusLine().getStatusCode());
-
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                // return it as a String
                 String result = EntityUtils.toString(entity);
-                System.out.println(result);
             }
         }
     }
@@ -244,12 +151,7 @@ public class OrthancInstancesClient {
     private String getIdFromResponse(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultMap = objectMapper.readValue(json, new TypeReference<Map<String,Object>>(){});
-        //TODO add exception handling
         return resultMap.get("ID").toString();
     }
-
-    /*
-    SOP CT Image Storage which is identified by a SOP Class UID of 1.2.840.10008.5.1.4.1.1.2
-     */
 
 }

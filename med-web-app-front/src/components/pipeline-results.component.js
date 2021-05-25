@@ -9,6 +9,7 @@ export default class PipelineResultsComponent extends Component {
         super(props);
 
         this.download = this.download.bind(this);
+        this.updatePipelineResults = this.updatePipelineResults.bind(this);
 
         const user = AuthService.getCurrentUser();
 
@@ -20,6 +21,11 @@ export default class PipelineResultsComponent extends Component {
     }
 
     componentDidMount() {
+        this.updatePipelineResults();
+        setInterval(() => this.updatePipelineResults(), 3000);
+    }
+
+    updatePipelineResults() {
         PipelineJobService.getPipelineJobsForUser(AuthService.getCurrentUser().username).then(
             response => {
                 let jobs = [];

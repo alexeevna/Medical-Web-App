@@ -9,7 +9,7 @@ export default class RecordCard extends Component {
 
         this.download = this.download.bind(this);
         this.convertTZ = this.convertTZ.bind(this);
-
+        this.formatTime = this.formatTime.bind(this);
         this.getContent = this.getContent.bind(this);
 
         this.state = {
@@ -20,21 +20,7 @@ export default class RecordCard extends Component {
         this.record = this.props.record;
         this.isPreview = this.props.isPreview;
         this.isReply = this.props.isReply;
-
-        var creationTimestamp = new Date(this.record.creationTime);
-        // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
-        //console.log(this.record.creationTime)
-        //console.log(creationTimestamp)
-
-        // let utcDate = this.convertTZ(creationTimestamp, "Europe/London");
-        // console.log(utcDate);
-        let userDate = this.convertTZ(creationTimestamp, "Asia/Dhaka");
-        //console.log(userDate);
-
-        var hours = userDate.getHours();
-        var minutes = userDate.getMinutes();
-        minutes = minutes >= 10 ? minutes : '0' + minutes;
-        this.creationTime = hours + ':' + minutes;
+        this.creationTime = this.formatTime(this.record.creationTime);
     }
 
     convertTZ(date, tzString) {
@@ -46,6 +32,16 @@ export default class RecordCard extends Component {
             return content.substring(0, 110) + '...';
         }
         return content;
+    }
+
+    formatTime(creationTime) {
+        var creationTimestamp = new Date(creationTime);
+        let userDate = this.convertTZ(creationTimestamp, "Asia/Dhaka");
+        var hours = userDate.getHours();
+        var minutes = userDate.getMinutes();
+        minutes = minutes >= 10 ? minutes : '0' + minutes;
+        let creationTimeString = hours + ':' + minutes;
+        return creationTimeString;
     }
 
     componentDidMount() {
@@ -69,8 +65,6 @@ export default class RecordCard extends Component {
 
     download(fileId, initialFileName) {
         AttachmentService.downloadAttachment(fileId, initialFileName);
-        //console.log(response.data);
-        //event.preventDefault();
     }
 
 

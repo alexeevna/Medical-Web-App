@@ -13,41 +13,28 @@ class DicomAnonymizerService {
         })
 
         let arrayBuffer = await readerPromise;
+        let dicomContent = dcmjs.data.DicomMessage.readFile(arrayBuffer)
+        let dicomTagsDataset = dcmjs.data.DicomMetaDictionary.naturalizeDataset(dicomContent.dict)
 
-        // console.log(file);
-        // console.log(arrayBuffer);
-        // try {
-            let dicomContent = dcmjs.data.DicomMessage.readFile(arrayBuffer)
+        this.anonymizeTag(dicomTagsDataset, 'PatientID', 'Anonymized_PatientID');
+        this.anonymizeTag(dicomTagsDataset, 'PatientName', 'Anonymized_PatientName');
+        this.anonymizeTag(dicomTagsDataset, 'PatientBirthName', 'Anonymized_PatientBirthName');
+        this.anonymizeTag(dicomTagsDataset, 'PatientAddress', 'Anonymized_PatientAddress');
+        this.anonymizeTag(dicomTagsDataset, 'PersonName', 'Anonymized_PersonName');
+        this.anonymizeTag(dicomTagsDataset, 'ReferringPhysicianName', 'Anonymized_ReferringPhysicianName');
+        this.anonymizeTag(dicomTagsDataset, 'ReferringPhysicianAddress', 'Anonymized_ReferringPhysicianAddress');
+        this.anonymizeTag(dicomTagsDataset, 'ReferringPhysicianTelephoneNumbers', 'Anonymized_ReferringPhysicianTelephoneNumbers');
+        this.anonymizeTag(dicomTagsDataset, 'InstitutionalDepartmentName', 'Anonymized_InstitutionalDepartmentName');
+        this.anonymizeTag(dicomTagsDataset, 'PerformingPhysicianName', 'Anonymized_PerformingPhysicianName');
+        this.anonymizeTag(dicomTagsDataset, 'InstitutionName', 'Anonymized_InstitutionName');
+        this.anonymizeTag(dicomTagsDataset, 'InstitutionAddress', 'Anonymized_InstitutionAddress');
+        this.anonymizeTag(dicomTagsDataset, 'StudyDate', '00/00/0000');
 
-            // if (dicomContent.meta['00020010'] === undefined || dicomContent.meta['00020010'] === null) {
-            //     dicomContent.meta['00020010'] = {Value: ["1.2.840.10008.1.2.4.70"], vr: "UI"}
-            // }
-            // console.log(dicomContent.meta['00020010']);
+        console.log(dicomTagsDataset);
 
-            let dicomTagsDataset = dcmjs.data.DicomMetaDictionary.naturalizeDataset(dicomContent.dict)
+        dicomContent.dict = dcmjs.data.DicomMetaDictionary.denaturalizeDataset(dicomTagsDataset);
 
-            this.anonymizeTag(dicomTagsDataset, 'PatientID', 'Anonymized_PatientID');
-            this.anonymizeTag(dicomTagsDataset, 'PatientName', 'Anonymized_PatientName');
-            this.anonymizeTag(dicomTagsDataset, 'PatientBirthName', 'Anonymized_PatientBirthName');
-            this.anonymizeTag(dicomTagsDataset, 'PatientAddress', 'Anonymized_PatientAddress');
-            this.anonymizeTag(dicomTagsDataset, 'PersonName', 'Anonymized_PersonName');
-            this.anonymizeTag(dicomTagsDataset, 'ReferringPhysicianName', 'Anonymized_ReferringPhysicianName');
-            this.anonymizeTag(dicomTagsDataset, 'ReferringPhysicianAddress', 'Anonymized_ReferringPhysicianAddress');
-            this.anonymizeTag(dicomTagsDataset, 'ReferringPhysicianTelephoneNumbers', 'Anonymized_ReferringPhysicianTelephoneNumbers');
-            this.anonymizeTag(dicomTagsDataset, 'InstitutionalDepartmentName', 'Anonymized_InstitutionalDepartmentName');
-            this.anonymizeTag(dicomTagsDataset, 'PerformingPhysicianName', 'Anonymized_PerformingPhysicianName');
-            this.anonymizeTag(dicomTagsDataset, 'InstitutionName', 'Anonymized_InstitutionName');
-            this.anonymizeTag(dicomTagsDataset, 'InstitutionAddress', 'Anonymized_InstitutionAddress');
-            this.anonymizeTag(dicomTagsDataset, 'StudyDate', '00/00/0000');
-
-            console.log(dicomTagsDataset);
-
-            dicomContent.dict = dcmjs.data.DicomMetaDictionary.denaturalizeDataset(dicomTagsDataset);
-
-            return dicomContent.write();
-        // } catch (error)  {
-        //     console.log(error);
-        // }
+        return dicomContent.write();
     }
 
     anonymizeTag(tagsDataset, tagToAnonymize, replaceValue) {

@@ -1,8 +1,6 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-// const API_URL = 'http://localhost:7999/api/files/';
-
 const API_URL = process.env.REACT_APP_API_URL + '/api/files/';
 
 class AttachmentService {
