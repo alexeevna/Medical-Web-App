@@ -54,9 +54,9 @@ public class PipelineExecutor {
             pipelineJob.setMirfSessionid(sessionId);
 
             FileExtractorStrategy extractorStrategy = extractorStrategyResolver.getFileExtractor(fileObject.getFormat());
-            InputStream fileAsInputStream = extractorStrategy.getFileInActualFormat(fileObject);
+            byte[] fileInBytes = extractorStrategy.getFileInActualFormat(fileObject);
             Object inputInMirfPipeline = resolveMirfInput(fileObject.getFormat(), sessionId);
-            byte[] zipArchive = MirfZipUtils.createZipArchive(inputInMirfPipeline, fileAsInputStream, sessionId);
+            byte[] zipArchive = MirfZipUtils.createZipArchive(inputInMirfPipeline, fileInBytes, sessionId);
             String zipArchiveName = sessionId + ".zip";
 
             mirfRepository.sendArchive(sessionId, zipArchiveName, zipArchive);

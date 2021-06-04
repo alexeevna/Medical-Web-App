@@ -56,28 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/mirf/**").permitAll()
                 .antMatchers("/api/test/all").permitAll()
                 .antMatchers("/api/**").authenticated()
-//                .antMatchers().permitAll("")
-//                .antMatchers().permitAll("")
-//                .antMatchers().permitAll("")
-//                .antMatchers().permitAll("")
-//                .antMatchers().permitAll("")
-//                .antMatchers("/**").permitAll()
-//                .antMatchers("/api/files/download/**").permitAll()
                 .anyRequest().permitAll();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-    /*
-                  <Route exact path={["/", "/home"]} component={Home} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/profile" component={Profile} />
-              <Route path="/pipelines/create" component={PipelinesComponent}/>
-              <Route path="/pipelines/results" component={PipelineResultsComponent}/>
-              <Route path="/files/view" component={ViewAttachmentsComponent}/>
-              <Route path="/files/upload" component={UploadAttachmentsComponent}/>
-              <Route path="/records/view" component={ViewRecordsComponent}/>
-              <Route path="/records/create" component={CreateRecordComponent}/>
-              <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
-     */
 }

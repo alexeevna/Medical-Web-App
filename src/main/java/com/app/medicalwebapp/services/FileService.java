@@ -28,12 +28,12 @@ public class FileService {
     public FileObject saveFile(String originalName, byte[] fileContent, Long ownerId) throws Exception {
         FileSaverStrategy fileSaver = saverStrategyResolver.getFileSaver(originalName, fileContent);
         FileObjectFormat format = FileFormatResolver.resolveFormat(originalName, fileContent);
-        return fileSaver.save(ownerId, originalName, format, new ByteArrayInputStream(fileContent));
+        return fileSaver.save(ownerId, originalName, format, fileContent);
     }
 
     public byte[] extractFile(FileObject fileObject) throws Exception {
         FileExtractorStrategy fileExtractor = extractorStrategyResolver.getFileExtractor(fileObject.getFormat());
-        return fileExtractor.getFileInActualFormat(fileObject).readAllBytes();
+        return fileExtractor.getFileInActualFormat(fileObject);
     }
 
     public byte[] previewFile(FileObject fileObject) throws Exception {

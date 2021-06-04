@@ -69,9 +69,9 @@ public class OrthancInstancesClient {
         }
     }
 
-    public String uploadInstance(InputStream dicomFile) throws IOException {
+    public String uploadInstance(byte[] dicomFile) throws IOException {
         HttpPost request = new HttpPost(orthancInstancesUrl);
-        ByteArrayEntity requestEntity = new ByteArrayEntity(IOUtils.toByteArray(dicomFile));
+        ByteArrayEntity requestEntity = new ByteArrayEntity(dicomFile);
 
         request.setEntity(requestEntity);
         request.setHeader("Accept", "application/dicom");
@@ -92,7 +92,7 @@ public class OrthancInstancesClient {
         }
     }
 
-    public InputStream downloadInstance(String instanceId) throws IOException {
+    public byte[] downloadInstance(String instanceId) throws IOException {
         HttpGet request = new HttpGet(orthancInstancesUrl + "/" + instanceId + "/file");
 
         request.setHeader("Accept", "application/dicom");
@@ -105,8 +105,7 @@ public class OrthancInstancesClient {
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity != null) {
                 InputStream is = responseEntity.getContent();
-                byte[] bytes = IOUtils.toByteArray(is);
-                return new ByteArrayInputStream(bytes);
+                return IOUtils.toByteArray(is);
             } else {
                 throw new RuntimeException("Pacs server response is empty");
             }

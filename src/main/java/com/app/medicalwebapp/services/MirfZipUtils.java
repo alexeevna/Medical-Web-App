@@ -20,7 +20,7 @@ import java.util.zip.ZipOutputStream;
 
 public class MirfZipUtils {
 
-    public static byte[] createZipArchive(Object inputObject, InputStream fileToProcess, String fileToProcessName) throws IOException {
+    public static byte[] createZipArchive(Object inputObject, byte[] fileToProcess, String fileToProcessName) throws IOException {
 
         //write object to tmp file
         File tempFile = File.createTempFile("serialized-object-", "");
@@ -39,7 +39,7 @@ public class MirfZipUtils {
         zipOut.closeEntry();
         ZipEntry zipEntry2 = new ZipEntry(fileToProcessName);
         zipOut.putNextEntry(zipEntry2);
-        zipOut.write(IOUtils.toByteArray(fileToProcess));
+        zipOut.write(fileToProcess);
         zipOut.closeEntry();
         zipOut.close();
 

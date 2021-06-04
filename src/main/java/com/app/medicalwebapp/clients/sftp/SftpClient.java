@@ -38,7 +38,7 @@ public class SftpClient {
     private String password;
     private Session session = null;
 
-    public SftpClient() throws JSchException, SftpException {
+    public SftpClient() {
     }
 
     @PostConstruct
@@ -52,15 +52,16 @@ public class SftpClient {
         session.connect();
     }
 
-    public void saveFile(InputStream fileInputStream, String destination) throws JSchException, SftpException {
+    public void saveFile(byte[] fileInputStream, String destination) throws JSchException, SftpException {
         Channel channel = session.openChannel("sftp");
         channel.connect();
         ChannelSftp sftpChannel = (ChannelSftp) channel;
-        sftpChannel.put(fileInputStream, destination);
+        InputStream inputStream = new ByteArrayInputStream(fileInputStream);
+        sftpChannel.put(inputStream, destination);
         sftpChannel.exit();
     }
 
-    public InputStream getFile(String source) throws Exception {
+    public byte[] getFile(String source) throws Exception {
         Channel channel = session.openChannel("sftp");
         channel.connect();
         ChannelSftp sftpChannel = (ChannelSftp) channel;
@@ -73,15 +74,10 @@ public class SftpClient {
 
 
         byte[] fileContent = FileUtils.readFileToByteArray(tempSftpFile);
-//        PipedInputStream pipedInputStream;
-//        try (PipedOutputStream pipedOutputStream = new PipedOutputStream()) {
-//            sftpChannel.get(source, pipedOutputStream);
-//            pipedInputStream = new PipedInputStream(pipedOutputStream);
-//        }
         tempSftpFile.delete();
         sftpChannel.exit();
 
-        return new ByteArrayInputStream(fileContent);
+        return fileContent;
     }
 
     public void disconnect() {

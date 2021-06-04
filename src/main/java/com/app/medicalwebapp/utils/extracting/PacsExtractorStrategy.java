@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 @Component
 public class PacsExtractorStrategy implements FileExtractorStrategy {
@@ -21,7 +20,7 @@ public class PacsExtractorStrategy implements FileExtractorStrategy {
     }
 
     @Override
-    public InputStream getFileInActualFormat(FileObject fileObject) throws Exception {
+    public byte[] getFileInActualFormat(FileObject fileObject) throws Exception {
         return orthancClient.downloadInstance(fileObject.getPathToFile());
     }
 

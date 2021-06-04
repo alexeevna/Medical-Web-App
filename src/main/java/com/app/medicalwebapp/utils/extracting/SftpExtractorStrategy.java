@@ -6,7 +6,6 @@ import com.app.medicalwebapp.model.FileObjectFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
 import java.util.Set;
 
 @Component
@@ -23,14 +22,14 @@ public class SftpExtractorStrategy implements FileExtractorStrategy {
     }
 
     @Override
-    public InputStream getFileInActualFormat(FileObject fileObject) throws Exception {
+    public byte[] getFileInActualFormat(FileObject fileObject) throws Exception {
         return sftpClient.getFile(fileObject.getPathToFile());
     }
 
     @Override
     public byte[] getHumanReadablePresentation(FileObject fileObject) throws Exception {
         if (fileObject.getFormat() == FileObjectFormat.JPEG || fileObject.getFormat() == FileObjectFormat.PNG) {
-            return sftpClient.getFile(fileObject.getPathToFile()).readAllBytes();
+            return sftpClient.getFile(fileObject.getPathToFile());
         } else {
             throw new UnsupportedOperationException();
         }

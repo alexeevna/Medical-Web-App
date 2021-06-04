@@ -30,7 +30,7 @@ public class PacsSaverStrategy implements FileSaverStrategy {
     }
 
     @Override
-    public FileObject save(Long ownerId, String initialName, FileObjectFormat format, InputStream fileToSave) throws Exception {
+    public FileObject save(Long ownerId, String initialName, FileObjectFormat format, byte[] fileToSave) throws Exception {
         FileObject fileObject = new FileObject();
         fileObject.setOwner(ownerId);
         String idPathInPacs = orthancClient.uploadInstance(fileToSave);
