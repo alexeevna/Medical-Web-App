@@ -1,0 +1,11 @@
+.review-create-form {
+    font-size: medium;
+    max-width: 800px !important;
+    width: 100%;
+    border-style: none;
+    /*background-color: #f7f7f7;*/
+    padding: 10px 5px 20px;
+    margin: 0 auto 25px;
+    margin-top: 30px;
+    border-radius: 4px;
+}
