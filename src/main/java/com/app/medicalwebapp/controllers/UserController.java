@@ -1,29 +1,20 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
-import com.app.medicalwebapp.controllers.requestbody.RecordCreationRequest;
-import com.app.medicalwebapp.controllers.requestbody.RecordsPageResponse;
-import com.app.medicalwebapp.controllers.requestbody.UserResponse;
 import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.security.UserDetailsImpl;
-import com.app.medicalwebapp.services.RecordService;
 import com.app.medicalwebapp.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 604800)
@@ -37,14 +28,22 @@ public class UserController {
 
     @GetMapping("/all/users")
     public ResponseEntity<?> getAllUsers(
-            @RequestParam(required = false) String login
+            @RequestParam(name = "username", required = false, defaultValue = "empty") String username
     ) {
         try {
-            Optional<User> responseBody;
-            responseBody = userService.getByUsername(login);
-            System.out.println("UserController.java");
-            System.out.println(responseBody);
-            return ResponseEntity.ok().body(responseBody);
+            if (username.equals("empty")) {
+                List<User> responseBody;
+                responseBody = userService.getAll();
+                return ResponseEntity.ok().body(responseBody);
+            } else {
+                Optional<User> responseBody;
+                List<Optional<User>> responseBody2 = new ArrayList<>();
+                responseBody = userService.getByUsername(username);
+                if (responseBody.isPresent()){
+                    responseBody2.add(responseBody);
+                }
+                return ResponseEntity.ok().body(responseBody2);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

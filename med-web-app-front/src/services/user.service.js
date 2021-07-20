@@ -10,18 +10,18 @@ class UserService {
         this.createRequestParamsForGet = this.createRequestParamsForGet.bind(this);
     }
 
-    getAll(login) {
-        let parameters = this.createRequestParamsForGet(login);
+    getAll(username) {
+        let parameters = this.createRequestParamsForGet(username);
 
         return axios.get(API_URL + 'all/users',
             {headers: authHeader(), params: parameters});
     }
 
-    createRequestParamsForGet(login) {
+    createRequestParamsForGet(username) {
         let params = {};
 
-        if (login) params["login"] = login;
-        console.log(login)
+        if (username) params["username"] = username;
+        console.log(username)
         console.log("user.service")
         return params;
     }

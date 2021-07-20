@@ -23,8 +23,6 @@ public class UserService {
     }
 
     public Optional<User> getByUsername(String username) {
-        System.out.println("UserService.java");
-        System.out.println(userRepository.findByUsername(username));
         return userRepository.findByUsername(username);
     }
 

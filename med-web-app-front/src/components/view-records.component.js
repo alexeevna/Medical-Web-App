@@ -48,7 +48,7 @@ export default class ViewRecordsList extends Component {
         RecordService.getAll(page, pageSize, searchTitle, null)
             .then((response) => {
                 const { records, totalPages } = response.data;
-                console.log(response.data)
+
                 this.refreshList();
 
                 this.setState({
@@ -109,8 +109,7 @@ export default class ViewRecordsList extends Component {
             page,
             count,
         } = this.state;
-        console.log("view-rec.comp")
-        console.log(this.state.records)
+
         return (
             <div className="list row">
                 <div className="col-sm-9">

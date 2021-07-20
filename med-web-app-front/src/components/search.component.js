@@ -12,6 +12,7 @@ export default class Search extends Component {
         this.refreshList = this.refreshList.bind(this);
         this.state = {
             username: "",
+            users: [],
         };
         console.log("constructor")
     }
@@ -29,14 +30,14 @@ export default class Search extends Component {
         console.log(username)
         UserService.getAll(username)
             .then((response) => {
-                const {username} = response.data;
-                console.log(username)
+                const users = response.data;
+                console.log(users)
                 console.log(response)
                 console.log(response.data)
-                this.refreshList();
+                // this.refreshList();
 
                 this.setState({
-                    username: username,
+                    users: users,
                 });
             })
             .catch((e) => {
@@ -44,11 +45,12 @@ export default class Search extends Component {
             });
     }
 
-    refreshList() {
-        this.setState({
-            username: "",
-        });
-    }
+    // refreshList() {
+    //     this.setState({
+    //         username: "",
+    //         users: [],
+    //     });
+    // }
 
     componentDidMount() {
         this.getUsers();
@@ -61,6 +63,8 @@ export default class Search extends Component {
         console.log("search.comp")
         console.log(this.state.username)
         console.log(username)
+        console.log(this.state.users)
+        console.log(this.state.users.length)
         return (
             <div>
                 <form className="form-search">
@@ -80,49 +84,17 @@ export default class Search extends Component {
 
                 <div>
                     <ul className="list-group">
-                        <li
-                            style={{listStyleType: "none"}}
-                        >
-                            <UserCard username={username} isPreview={true} isReply={false}/>
-                        </li>
+                        {this.state.users &&
+                        this.state.users.map((user) => (
+                            <li
+                                style={{listStyleType: "none"}}
+                            >
+                                <UserCard user={user}/>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
-            // <div className="list row">
-            //     <div className="col-sm-9">
-            //         <div className="input-group mb-3">
-            //             <input
-            //                 type="text"
-            //                 className="form-control"
-            //                 placeholder="Введите часть заголовка"
-            //                 value={username}
-            //                 onChange={this.onChangeLogin}
-            //             />
-            //             <div className="input-group-append">
-            //                 <button
-            //                     className="btn btn-outline-secondary"
-            //                     type="button"
-            //                     onClick={this.getUsers}
-            //                 >
-            //                     Найти
-            //                 </button>
-            //             </div>
-            //         </div>
-            //
-            //         <ul className="list-group">
-            //             {this.state.users &&
-            //             this.state.users.map((user, index) => (
-            //                 <li
-            //                     style={{listStyleType: "none"}}
-            //                     key={index}
-            //                 >
-            //                     <UserCard user={user} isPreview={true} isReply={false}/>
-            //                 </li>
-            //
-            //             ))}
-            //         </ul>
-            //     </div>
-            // </div>
         );
     }
 }
