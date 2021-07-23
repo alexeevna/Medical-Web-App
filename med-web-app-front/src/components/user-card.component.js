@@ -10,7 +10,7 @@ export default class UserCard extends Component {
     render() {
         return (
             <td>
-                {this.user.initials} &nbsp; {this.user.username}
+                {this.user.initials !== null && this.user.initials + " "} {this.user.username}
             </td>
         )
     }

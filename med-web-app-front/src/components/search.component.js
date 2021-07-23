@@ -58,6 +58,7 @@ export default class Search extends Component {
             // const arrayFirstLastName = username.split(" ")
             // const lastName = arrayFirstLastName[0];
             // const firstname = arrayFirstLastName[1];
+            console.log(username)
             UserService.getAllByInitials(username)
                 .then((response) => {
                     const users = response.data;

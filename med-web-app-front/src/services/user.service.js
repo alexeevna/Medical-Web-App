@@ -33,7 +33,7 @@ class UserService {
     // }
 
     getAllByInitials(initials) {
-        let parameters = this.createRequestParamsForGetUsername(initials);
+        let parameters = this.createRequestParamsForGetInitials(initials);
 
         return axios.get(API_URL + 'all/usersByInitials',
             {headers: authHeader(), params: parameters});
