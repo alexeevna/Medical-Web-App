@@ -26,23 +26,51 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/all/users")
-    public ResponseEntity<?> getAllUsers(
+    @GetMapping("/all/usersByUsername")
+    public ResponseEntity<?> getAllUsersByUsername(
             @RequestParam(name = "username", required = false, defaultValue = "empty") String username
     ) {
         try {
             if (username.equals("empty")) {
                 List<User> responseBody;
-                responseBody = userService.getAll();
+                responseBody = userService.getAllByUsername();
                 return ResponseEntity.ok().body(responseBody);
             } else {
                 Optional<User> responseBody;
                 List<Optional<User>> responseBody2 = new ArrayList<>();
                 responseBody = userService.getByUsername(username);
-                if (responseBody.isPresent()){
+                if (responseBody.isPresent()) {
                     responseBody2.add(responseBody);
                 }
                 return ResponseEntity.ok().body(responseBody2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/all/usersByInitials")
+    public ResponseEntity<?> getAllUsersByInitials(
+            @RequestParam(name = "initials", required = false, defaultValue = "empty") String initials
+//            @RequestParam(name = "lastname", required = false, defaultValue = "empty") String lastname,
+//            @RequestParam(name = "firstname", required = false, defaultValue = "empty") String firstname
+    ) {
+        try {
+            if (initials.equals("empty")) {
+                List<User> responseBody;
+                responseBody = userService.getAllByInitials();
+                return ResponseEntity.ok().body(responseBody);
+            } else {
+                List<User> responseBody;
+//                List<Optional<User>> responseBody2 = new ArrayList<>();
+                responseBody = userService.getByInitials(initials);
+//                if (responseBody.isPresent()) {
+//                    responseBody2.add(responseBody);
+//                }
+                System.out.println(initials);
+                System.out.println(responseBody);
+                return ResponseEntity.ok().body(responseBody);
             }
         } catch (Exception e) {
             e.printStackTrace();
