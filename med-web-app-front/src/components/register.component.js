@@ -60,7 +60,6 @@ export default class Register extends Component {
             username: "",
             firstname: null,
             lastname: null,
-            // initials: null,
             // email: "",
             password: "",
             chosenRole: "ROLE_USER",
@@ -125,8 +124,6 @@ export default class Register extends Component {
         } else if (this.state.firstname !== null) {
             initials = this.state.firstname
         }
-        // const initials = this.state.lastname + " " + this.state.firstname
-        console.log(initials)
         if (this.checkBtn.context._errors.length === 0) {
             AuthService.register(
                 this.state.username,
