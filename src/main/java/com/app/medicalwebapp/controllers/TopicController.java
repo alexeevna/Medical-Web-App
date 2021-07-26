@@ -28,7 +28,7 @@ public class TopicController {
         }
     }
 
-    @PostMapping("create")
+    @PostMapping("/create")
     public void createNewTopic(@RequestParam String topicName) {
     }
 
