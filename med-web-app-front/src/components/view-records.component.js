@@ -31,6 +31,10 @@ export default class ViewRecordsList extends Component {
 
     componentDidMount() {
         this.getRecords();
+        // console.log(this.state.records);
+        // this.state.records.map(record =>
+        //     console.log(record.content)
+        // )
     }
 
     onChangeSearchTitle(e) {
@@ -48,7 +52,6 @@ export default class ViewRecordsList extends Component {
         RecordService.getAll(page, pageSize, searchTitle, null)
             .then((response) => {
                 const { records, totalPages } = response.data;
-
                 this.refreshList();
 
                 this.setState({
@@ -59,6 +62,7 @@ export default class ViewRecordsList extends Component {
             .catch((e) => {
                 console.log(e);
             });
+        // console.log(this.state.records)
     }
 
     refreshList() {
@@ -168,7 +172,6 @@ export default class ViewRecordsList extends Component {
                             >
                                 <RecordCard record={record} isPreview={true} isReply={false}/>
                             </li>
-
                         ))}
                     </ul>
                 </div>

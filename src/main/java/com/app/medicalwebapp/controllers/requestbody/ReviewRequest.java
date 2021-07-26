@@ -12,5 +12,5 @@ public class ReviewRequest {
     @NotNull
     String content;
 
-    Long parentId;
+    Long parent;
 }

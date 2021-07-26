@@ -15,15 +15,14 @@ public class ReviewService {
     @Autowired
     ReviewRepository reviewRepository;
 
-    public void saveReview (ReviewRequest request, Long creatorId) throws Exception  {
+    public void saveReview (ReviewRequest request, Long creatorId, Long parentId) throws Exception  {
         User creator = new User();
         creator.setId(creatorId);
         Review review = Review.builder()
                 .content(request.getContent())
                 .creationTime(LocalDateTime.now())
                 .creator(creator)
-                //.edited(false)
-                .parent(request.getParentId())
+                .parent(parentId)
                 .build();
         reviewRepository.save(review);
     }

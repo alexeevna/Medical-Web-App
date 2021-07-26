@@ -39,9 +39,7 @@ export default class Profile extends Component {
                         </div>
 
                         { showReviews && (
-                            <div className="jumbotron align-center color-light-blue">
-                                <Route component={Review}/>
-                            </div>
+                            <Route component={Review}/>
                         )}
 
                     </div>

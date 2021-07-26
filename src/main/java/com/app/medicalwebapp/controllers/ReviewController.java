@@ -1,8 +1,8 @@
 package com.app.medicalwebapp.controllers;
 
 import com.app.medicalwebapp.controllers.requestbody.ReviewRequest;
+import com.app.medicalwebapp.controllers.requestbody.ReviewResponse;
 import com.app.medicalwebapp.model.Review;
-import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.repositories.ReviewRepository;
 import com.app.medicalwebapp.security.UserDetailsImpl;
 import com.app.medicalwebapp.services.ReviewService;
@@ -15,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 604800)
@@ -32,10 +31,13 @@ public class ReviewController {
     ReviewService reviewService;
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllReviews(@PathVariable String profileName) {
+    public ResponseEntity<?> getAllReviews() {
         try {
-            List<Review> reviews = reviewRepository.findAll()/*.orElse(null)*/;;
-            return ResponseEntity.ok().body(reviews);
+            List<Review> reviews = reviewRepository.findByParent(-1L)/*.orElse(null)*/;;
+            ReviewResponse responseBody = ReviewResponse.builder()
+                    .reviews(reviews)
+                    .build();
+            return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -45,7 +47,8 @@ public class ReviewController {
     @PostMapping("/save")
     public ResponseEntity<?> saveReview(@Valid @RequestBody ReviewRequest request)  {
         try {
-            reviewService.saveReview(request, getAuthenticatedUserId());
+            reviewService.saveReview(request, getAuthenticatedUserId(), request.getParent());
+            System.out.println(request.getParent());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
