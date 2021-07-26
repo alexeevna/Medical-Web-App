@@ -12,9 +12,7 @@ export default class Search extends Component {
         this.onChangeParamsSearch = this.onChangeParamsSearch.bind(this)
         this.state = {
             searchParams: "login",
-            username: "",
-            // firstname: null,
-            // lastname: null,
+            searchString: "",
             users: [],
         };
     }
@@ -27,9 +25,9 @@ export default class Search extends Component {
     // }
 
     onChangeUsername(e) {
-        const username = e.target.value;
+        const searchString = e.target.value;
         this.setState({
-            username: username,
+            searchString: searchString,
         });
     }
 
@@ -40,12 +38,11 @@ export default class Search extends Component {
     }
 
     getUsers() {
-        const {username} = this.state
+        const {searchString} = this.state
         if (this.state.searchParams === "login") {
-            UserService.getAllByUsername(username)
+            UserService.getAllByUsername(searchString)
                 .then((response) => {
                     const users = response.data;
-                    console.log(response.data)
                     this.refreshList();
                     this.setState({
                         users: users,
@@ -55,10 +52,7 @@ export default class Search extends Component {
                     console.log(e);
                 });
         } else {
-            // const arrayFirstLastName = username.split(" ")
-            // const lastName = arrayFirstLastName[0];
-            // const firstname = arrayFirstLastName[1];
-            UserService.getAllByInitials(username)
+            UserService.getAllByInitials(searchString)
                 .then((response) => {
                     const users = response.data;
                     this.refreshList();
@@ -83,7 +77,6 @@ export default class Search extends Component {
     }
 
     render() {
-        console.log(this.state.users)
         return (
             <div>
                 <div className="div-search">
@@ -91,7 +84,7 @@ export default class Search extends Component {
                         <input className="input-search"
                                type="text"
                                placeholder="Искать здесь..."
-                               value={this.state.username}
+                               value={this.state.searchString}
                                onChange={this.onChangeUsername}
                         />
                         <button className="button-search"

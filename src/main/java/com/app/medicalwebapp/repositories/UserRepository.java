@@ -14,8 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByUsername(String username);
 
-//    List<User> findByFirstnameOrLastnameContainingOrderByLastnameAscAllIgnoreCase(String firstname, String lastname);
-
     List<User> findByInitialsContainingOrderByInitialsAscAllIgnoreCase(String initials);
 
 }

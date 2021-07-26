@@ -60,7 +60,6 @@ export default class Register extends Component {
             username: "",
             firstname: null,
             lastname: null,
-            // firstAndLastName: null,
             // email: "",
             password: "",
             chosenRole: "ROLE_USER",
@@ -117,11 +116,18 @@ export default class Register extends Component {
         });
 
         this.form.validateAll();
-        const firstAndLastName = this.state.lastname + " " + this.state.firstname
+        let initials = null
+        if (this.state.lastname !== null && this.state.firstname !== null) {
+            initials = this.state.lastname + " " + this.state.firstname
+        } else if (this.state.lastname !== null) {
+            initials = this.state.lastname
+        } else if (this.state.firstname !== null) {
+            initials = this.state.firstname
+        }
         if (this.checkBtn.context._errors.length === 0) {
             AuthService.register(
                 this.state.username,
-                firstAndLastName,
+                initials,
                 this.state.firstname,
                 this.state.lastname,
                 // this.state.email,
@@ -162,7 +168,7 @@ export default class Register extends Component {
                         {!this.state.successful && (
                             <div>
                                 <div className="form-group">
-                                    <label htmlFor="lastname">Фамилия</label>
+                                    <label htmlFor="lastname">Фамилия (необязательно)</label>
                                     <Input
                                         type="text"
                                         className="form-control"
@@ -173,7 +179,7 @@ export default class Register extends Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="firstname">Имя</label>
+                                    <label htmlFor="firstname">Имя (необязательно)</label>
                                     <Input
                                         type="text"
                                         className="form-control"

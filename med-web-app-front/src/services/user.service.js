@@ -25,15 +25,8 @@ class UserService {
         return params;
     }
 
-    // getAllByInitials(lastname, firstname) {
-    //     let parameters = this.createRequestParamsForGetInitials(lastname, firstname);
-    //
-    //     return axios.get(API_URL + 'all/usersByInitials',
-    //         {headers: authHeader(), params: parameters});
-    // }
-
     getAllByInitials(initials) {
-        let parameters = this.createRequestParamsForGetUsername(initials);
+        let parameters = this.createRequestParamsForGetInitials(initials);
 
         return axios.get(API_URL + 'all/usersByInitials',
             {headers: authHeader(), params: parameters});
@@ -45,14 +38,6 @@ class UserService {
         if (initials) params["initials"] = initials;
         return params;
     }
-
-    // createRequestParamsForGetInitials(lastname, firstname) {
-    //     let params = {};
-    //
-    //     if (lastname) params["lastname"] = lastname;
-    //     if (firstname) params["firstname"] = firstname;
-    //     return params;
-    // }
 
 }
 
