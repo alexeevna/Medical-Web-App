@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.security;
 
+import com.app.medicalwebapp.repositories.UserRepository;
 import com.app.medicalwebapp.security.jwt.AuthExceptionProcessor;
 import com.app.medicalwebapp.security.jwt.OncePerRequestFilterImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.time.LocalDateTime;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -26,6 +29,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthExceptionProcessor unauthorizedHandler;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder encoder;
+
     @Bean
     public OncePerRequestFilterImpl authenticationJwtTokenFilter() {
         return new OncePerRequestFilterImpl();
@@ -35,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -48,6 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        createModer();
+        System.out.println("hello");
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -59,5 +71,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    public void createModer() {
+        com.app.medicalwebapp.model.User user = new com.app.medicalwebapp.model.User();
+
+        if (!userRepository.existsByUsername("moderator")) {
+            user.setUsername("moderator");
+            user.setRole("Moderator");
+            user.setPassword(encoder.encode("moderator"));
+            user.setStatus(0);
+            user.setRate(0);
+            user.setRegisteredDate(LocalDateTime.now());
+
+            userRepository.save(user);
+        }
     }
 }
