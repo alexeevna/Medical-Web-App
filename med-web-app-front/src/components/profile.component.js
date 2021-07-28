@@ -1,21 +1,24 @@
 import React, { Component } from "react";
+import { Route } from "react-router-dom";
 import AuthService from "../services/auth.service";
 
 import '../styles/Profile.css'
 import {Link} from "react-router-dom";
+import Review from "./review.component"
 
 export default class Profile extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            currentUser: AuthService.getCurrentUser()
+            currentUser: AuthService.getCurrentUser(),
+            showReviews: true,
         };
     }
 
     render() {
         const { currentUser } = this.state;
-
+        const { showReviews } = this.state;
         return (
             <div className="container">
                 <div className="row">
@@ -34,6 +37,11 @@ export default class Profile extends Component {
                                 <div className="col-sm-7">{new Date(currentUser.registeredDate).toLocaleDateString()}</div>
                             </div>
                         </div>
+
+                        { showReviews && (
+                            <Route component={Review}/>
+                        )}
+
                     </div>
                     <div className="col-sm-2 align-center">
                         <Link to={"/files/view"} className="nav-link card-link-custom color-orange">
@@ -44,7 +52,7 @@ export default class Profile extends Component {
                         </Link>
                     </div>
 
-                    <div className="col-sm-1"></div>
+                    <div className="col-sm-1"/>
                 </div>
             </div>
         );
