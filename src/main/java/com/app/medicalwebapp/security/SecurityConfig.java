@@ -78,10 +78,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         if (!userRepository.existsByUsername("moderator")) {
             user.setUsername("moderator");
-            user.setRole("moderator");
+            user.setRole("Moderator");
             user.setPassword(encoder.encode("moderator"));
-//        user.setRealName(signUpRequest.getRealName());
-//        user.setMobilePhone(signUpRequest.getMobilePhone());
             user.setStatus(0);
             user.setRate(0);
             user.setRegisteredDate(LocalDateTime.now());
