@@ -78,9 +78,6 @@ export default class Search extends Component {
     }
 
     render() {
-        console.log(this.state.searchParamsType)
-        console.log(this.state.searchParamsRole)
-        console.log(this.state.users)
         return (
             <div>
                 <div className="div-search">
