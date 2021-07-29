@@ -25,6 +25,10 @@ export default class UserCard extends Component {
                     {this.user.username}
                 </td>
                 }
+
+                <td className="td-search-role">
+                    {this.user.role}
+                </td>
             </div>
         )
     }

@@ -13,7 +13,7 @@ export default class Search extends Component {
         this.onChangeParamsRoleSearch = this.onChangeParamsRoleSearch.bind(this)
         this.state = {
             searchParamsType: "login",
-            searchParamsRole: "all",
+            searchParamsRole: "Все",
             searchString: "",
             users: [],
         };
@@ -40,7 +40,7 @@ export default class Search extends Component {
 
     getUsers() {
         const {searchString} = this.state
-        if (this.state.searchParamsType === "login") {
+        if (this.state.searchParamsType === "login" && this.state.searchParamsRole === "Все") {
             UserService.getAllByUsername(searchString)
                 .then((response) => {
                     const users = response.data;
@@ -52,8 +52,32 @@ export default class Search extends Component {
                 .catch((e) => {
                     console.log(e);
                 });
-        } else {
+        } else if (this.state.searchParamsType === "login") {
+            UserService.getByUsername(searchString, this.state.searchParamsRole)
+                .then((response) => {
+                    const users = response.data;
+                    this.refreshList();
+                    this.setState({
+                        users: users,
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        } else if (this.state.searchParamsType === "initials" && this.state.searchParamsRole === "Все"){
             UserService.getAllByInitials(searchString)
+                .then((response) => {
+                    const users = response.data;
+                    this.refreshList();
+                    this.setState({
+                        users: users,
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        } else {
+            UserService.getByInitials(searchString, this.state.searchParamsRole)
                 .then((response) => {
                     const users = response.data;
                     this.refreshList();
@@ -120,8 +144,8 @@ export default class Search extends Component {
                 <div className="div-search-left">
                     <p>
                         <input type="radio"
-                               value="all"
-                               checked={this.state.searchParamsRole === "all"}
+                               value="Все"
+                               checked={this.state.searchParamsRole === "Все"}
                                onChange={this.onChangeParamsRoleSearch}
                                name="paramsRole"
                         />
@@ -129,16 +153,16 @@ export default class Search extends Component {
                     </p>
                     <p>
                         <input type="radio"
-                               value="users"
-                               checked={this.state.searchParamsRole === "users"}
+                               value="Пользователь"
+                               checked={this.state.searchParamsRole === "Пользователь"}
                                onChange={this.onChangeParamsRoleSearch}
                                name="paramsRole"/>
                         по пользователям
                     </p>
                     <p>
                         <input type="radio"
-                               value="doctors"
-                               checked={this.state.searchParamsRole === "doctors"}
+                               value="Врач"
+                               checked={this.state.searchParamsRole === "Врач"}
                                onChange={this.onChangeParamsRoleSearch}
                                name="paramsRole"/>
                         по врачам
