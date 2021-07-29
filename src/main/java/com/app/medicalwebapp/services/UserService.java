@@ -16,11 +16,11 @@ public class UserService {
     private UserRepository userRepository;
 
     public List<User> getAll() {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "initials"));
+        return userRepository.findByRoleNotLikeOrderByInitialsAsc("Модератор");
     }
 
     public Optional<User> getOneByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsernameAndRoleNotLike(username, "Модератор");
     }
 
     public Optional<User> getOneByUsernameAndRole(String username, String role) {
@@ -28,11 +28,11 @@ public class UserService {
     }
 
     public List<User> getByInitials(String initials) {
-        return userRepository.findByInitialsContainingOrderByInitialsAscAllIgnoreCase(initials);
+        return userRepository.findByInitialsContainingAndRoleNotLikeOrderByInitialsAscAllIgnoreCase(initials, "Модератор");
     }
 
     public List<User> getAllByRole(String role) {
-        return userRepository.findByRoleOrderByUsernameAsc(role);
+        return userRepository.findByRoleOrderByInitialsAsc(role);
     }
 
     public List<User> getByInitialsAndRole(String initials, String role) {
