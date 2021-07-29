@@ -15,24 +15,32 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> getAllByUsername() {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "username"));
+    public List<User> getAll() {
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "initials"));
     }
 
-    public List<User> getAllByInitials() {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "lastname"));
-    }
-
-    public User getById(Long id) {
-        return userRepository.getOne(id);
-    }
-
-    public Optional<User> getByUsername(String username) {
+    public Optional<User> getOneByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> getOneByUsernameAndRole(String username, String role) {
+        return userRepository.findByUsernameAndRole(username, role);
     }
 
     public List<User> getByInitials(String initials) {
         return userRepository.findByInitialsContainingOrderByInitialsAscAllIgnoreCase(initials);
+    }
+
+    public List<User> getAllByRole(String role) {
+        return userRepository.findByRoleOrderByUsernameAsc(role);
+    }
+
+    public List<User> getByInitialsAndRole(String initials, String role) {
+        return userRepository.findByInitialsContainingAndRoleOrderByInitialsAscAllIgnoreCase(initials, role);
+    }
+
+    public User getById(Long id) {
+        return userRepository.getOne(id);
     }
 
     public User save(User user) {

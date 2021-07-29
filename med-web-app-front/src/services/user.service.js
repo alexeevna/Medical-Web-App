@@ -14,7 +14,7 @@ class UserService {
     getAllByUsername(username) {
         let parameters = this.createRequestParamsForGetUsername(username);
 
-        return axios.get(API_URL + 'all/usersByUsername',
+        return axios.get(API_URL + 'allByUsername',
             {headers: authHeader(), params: parameters});
     }
 
@@ -25,10 +25,25 @@ class UserService {
         return params;
     }
 
+    getByUsername(username, role) {
+        let parameters = this.createRequestParamsForGetUsernameAndRole(username, role);
+
+        return axios.get(API_URL + 'byUsername',
+            {headers: authHeader(), params: parameters});
+    }
+
+    createRequestParamsForGetUsernameAndRole(username, role) {
+        let params = {};
+
+        if (username) params["username"] = username;
+        if (role) params["role"] = role;
+        return params;
+    }
+
     getAllByInitials(initials) {
         let parameters = this.createRequestParamsForGetInitials(initials);
 
-        return axios.get(API_URL + 'all/usersByInitials',
+        return axios.get(API_URL + 'allByInitials',
             {headers: authHeader(), params: parameters});
     }
 
@@ -36,6 +51,21 @@ class UserService {
         let params = {};
 
         if (initials) params["initials"] = initials;
+        return params;
+    }
+
+    getByInitials(initials, role) {
+        let parameters = this.createRequestParamsForGetInitialsAndRole(initials, role);
+
+        return axios.get(API_URL + 'byInitials',
+            {headers: authHeader(), params: parameters});
+    }
+
+    createRequestParamsForGetInitialsAndRole(initials, role) {
+        let params = {};
+
+        if (initials) params["initials"] = initials;
+        if (role) params["role"] = role;
         return params;
     }
 
