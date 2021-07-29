@@ -9,27 +9,27 @@ export default class UserCard extends Component {
 
     render() {
         return (
-            <div>
+            <React.Fragment>
                 {this.user.initials !== null &&
-                <td className="td-search-notnullInitials">
+                <td className="td-search">
                     {this.user.initials + " "}
                 </td>}
                 {this.user.initials !== null &&
-                <td className="td-search-notnullInitials">
+                <td className="td-search">
                     {this.user.username}
                 </td>
                 }
 
                 {this.user.initials === null &&
-                <td className="td-search-nullInitials">
+                <td colSpan="2" className="td-search">
                     {this.user.username}
                 </td>
                 }
 
-                <td className="td-search-role">
+                <td className="td-search">
                     {this.user.role}
                 </td>
-            </div>
+            </React.Fragment>
         )
     }
 }
