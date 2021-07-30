@@ -59,7 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         createModer();
-        System.out.println("hello");
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -78,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         if (!userRepository.existsByUsername("moderator")) {
             user.setUsername("moderator");
-            user.setRole("Moderator");
+            user.setRole("Модератор");
             user.setPassword(encoder.encode("moderator"));
             user.setStatus(0);
             user.setRate(0);
