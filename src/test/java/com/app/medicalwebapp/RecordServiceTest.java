@@ -97,7 +97,9 @@ public class RecordServiceTest {
 
     private Topic topic(Long creatorId, String name) {
         Topic newTopic = new Topic();
-        newTopic.setCreator(creatorId);
+        User creator = new User();
+        creator.setId(creatorId);
+        newTopic.setCreator(creator);
         newTopic.setName(name);
         return newTopic;
     }

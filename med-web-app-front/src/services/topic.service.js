@@ -6,11 +6,11 @@ const API_URL = process.env.REACT_APP_API_URL + '/api/topics/';
 class TopicService {
 
     getAllTopics() {
-        return axios.get(API_URL, { headers: authHeader() });
+        return axios.get(API_URL + 'all', { headers: authHeader() });
     }
 
     saveTopic(topicName) {
-        return axios.post(API_URL + 'save', {topicName: topicName},{ headers: authHeader() });
+        return axios.post(API_URL + 'create', {topicName},{ headers: authHeader() });
     }
 }
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import '../styles/Record.css'
@@ -46,12 +46,11 @@ export default class RecordCard extends Component {
 
     componentDidMount() {
         let preview = [];
-        if (this.record.attachments !== undefined &&  this.record.attachments !== null) {
+        if (this.record.attachments !== undefined && this.record.attachments !== null) {
             for (let i = 0; i < this.record.attachments.length; i++) {
-                console.log(this.record.attachments[i]);
                 if (this.record.attachments[i].initialName.endsWith(".jpg") ||
-                    this.record.attachments[i].initialName.endsWith(".png")  ||
-                    this.record.attachments[i].initialName.endsWith(".dcm") ) {
+                    this.record.attachments[i].initialName.endsWith(".png") ||
+                    this.record.attachments[i].initialName.endsWith(".dcm")) {
                     AttachmentService.getPreviewNew(this.record.attachments[i].id).then(response => {
                         preview.push({id: this.record.attachments[i].id, image: URL.createObjectURL(response.data)});
                         this.setState({filePreviews: preview});
@@ -92,15 +91,21 @@ export default class RecordCard extends Component {
 
                 <div className="col-sm-9">
                     {!this.props.isReply &&
-                        <header className="record-jumbotron align-center bottom-buffer-10 line-break">
-                            <h3><strong>{this.record.title}</strong></h3>
-                        </header>
+                    <header className="record-jumbotron align-center bottom-buffer-10 line-break">
+                        <h3><strong>{this.record.title}</strong></h3>
+                    </header>
                     }
 
                     <div className="bottom-buffer-10">{this.getContent(this.record.content)}</div>
+                    <div className="row top-buffer-10">
+                        Тэги:
+                        {this.record.topics && this.record.topics.map(el => (
+                            <div className="bottom-buffer-4">{el.name }&nbsp;</div>
+                        ))}
+                    </div>
 
                     {!this.isPreview && this.state.filePreviews.map(el => (
-                        <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image} />
+                        <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image}/>
                     ))}
 
                     {!this.isPreview && this.record.attachments.map(el => (
@@ -120,7 +125,8 @@ export default class RecordCard extends Component {
 
 
                     {this.isPreview &&
-                        <div className="col-sm-4 fa fa-comments" style={{"float": "right"}}> {this.record.numberOfReplies}</div>
+                    <div className="col-sm-4 fa fa-comments"
+                         style={{"float": "right"}}> {this.record.numberOfReplies}</div>
                     }
                 </div>
             </div>
