@@ -26,19 +26,19 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/all/usersByUsername")
-    public ResponseEntity<?> getAllUsersByUsername(
+    @GetMapping("/allByUsername")
+    public ResponseEntity<?> getAllByUsername(
             @RequestParam(name = "username", required = false, defaultValue = "empty") String username
     ) {
         try {
             if (username.equals("empty")) {
                 List<User> responseBody;
-                responseBody = userService.getAllByUsername();
+                responseBody = userService.getAll();
                 return ResponseEntity.ok().body(responseBody);
             } else {
                 Optional<User> responseBody;
                 List<Optional<User>> responseBody2 = new ArrayList<>();
-                responseBody = userService.getByUsername(username);
+                responseBody = userService.getOneByUsername(username);
                 if (responseBody.isPresent()) {
                     responseBody2.add(responseBody);
                 }
@@ -50,18 +50,64 @@ public class UserController {
         }
     }
 
-    @GetMapping("/all/usersByInitials")
-    public ResponseEntity<?> getAllUsersByInitials(
+    @GetMapping("/byUsername")
+    public ResponseEntity<?> getByUsername(
+            @RequestParam(name = "username", required = false, defaultValue = "empty") String username,
+            @RequestParam String role
+    ) {
+        try {
+            if (username.equals("empty")) {
+                List<User> responseBody;
+                responseBody = userService.getAllByRole(role);
+                return ResponseEntity.ok().body(responseBody);
+            } else {
+                Optional<User> responseBody;
+                List<Optional<User>> responseBody2 = new ArrayList<>();
+                responseBody = userService.getOneByUsernameAndRole(username, role);
+                if (responseBody.isPresent()) {
+                    responseBody2.add(responseBody);
+                }
+                return ResponseEntity.ok().body(responseBody2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/allByInitials")
+    public ResponseEntity<?> getAllByInitials(
             @RequestParam(name = "initials", required = false, defaultValue = "empty") String initials
     ) {
         try {
             if (initials.equals("empty")) {
                 List<User> responseBody;
-                responseBody = userService.getAllByInitials();
+                responseBody = userService.getAll();
                 return ResponseEntity.ok().body(responseBody);
             } else {
                 List<User> responseBody;
                 responseBody = userService.getByInitials(initials);
+                return ResponseEntity.ok().body(responseBody);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/byInitials")
+    public ResponseEntity<?> getByInitials(
+            @RequestParam(name = "initials", required = false, defaultValue = "empty") String initials,
+            @RequestParam String role
+    ) {
+        try {
+            if (initials.equals("empty")) {
+                List<User> responseBody;
+                responseBody = userService.getAllByRole(role);
+                return ResponseEntity.ok().body(responseBody);
+            } else {
+                List<User> responseBody;
+                responseBody = userService.getByInitialsAndRole(initials, role);
                 return ResponseEntity.ok().body(responseBody);
             }
         } catch (Exception e) {

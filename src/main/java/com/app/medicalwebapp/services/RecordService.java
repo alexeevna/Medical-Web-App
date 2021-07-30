@@ -35,7 +35,7 @@ public class RecordService {
         Page<Record> recordsPage = partOfTitle != null
                 ? recordRepository.findByParentAndTitleContainingIgnoreCase(-1L, partOfTitle, pageable)
                 : recordRepository.findByParent(-1L, pageable);
-//        System.out.println(recordsPage);
+
         return getRecordsResponse(recordsPage, pageNumber);
     }
 

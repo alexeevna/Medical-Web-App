@@ -1,7 +1,7 @@
-import React, {Component} from "react";
-import {Route} from "react-router-dom";
+import React, { Component } from "react";
+import { Route } from "react-router-dom";
 import RecordService from "../services/record.service";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import Select from 'react-select';
 import RecordCard from "./record-card.component";
@@ -58,8 +58,6 @@ export default class ViewRecordsList extends Component {
     }
 
     onChangeSearchTitle(e) {
-        console.log(e.target);
-
         const searchTitle = e.target.value;
 
         this.setState({
@@ -68,8 +66,6 @@ export default class ViewRecordsList extends Component {
     }
 
     onTopicsDropdownSelected(selectedTopic) {
-        console.log(selectedTopic);
-
         this.setState({
             selectedTopic: selectedTopic.value,
             selectedTopicValue: selectedTopic
@@ -78,13 +74,11 @@ export default class ViewRecordsList extends Component {
 
 
     getRecords() {
-        const {searchTitle, page, pageSize, selectedTopic} = this.state;
-        //console.log(searchTitle, page, pageSize);
+        const { searchTitle, page, pageSize, selectedTopic } = this.state;
 
         RecordService.getAll(page, pageSize, searchTitle, selectedTopic)
             .then((response) => {
-                const {records, totalPages} = response.data;
-
+                const { records, totalPages } = response.data;
                 this.refreshList();
 
                 this.setState({
@@ -111,7 +105,7 @@ export default class ViewRecordsList extends Component {
         // });
         this.props.history.push({
             pathname: '/records/thread/' + record.id,
-            state: {recordId: record.id}
+            state: { recordId: record.id }
         });
         window.location.reload();
     }
@@ -138,7 +132,6 @@ export default class ViewRecordsList extends Component {
             }
         );
     }
-
 
     render() {
         const {
@@ -214,12 +207,9 @@ export default class ViewRecordsList extends Component {
                             >
                                 <RecordCard record={record} isPreview={true} isReply={false}/>
                             </li>
-
                         ))}
                     </ul>
-
                 </div>
-
 
                 <div className="col-sm-2">
                     <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
@@ -232,8 +222,10 @@ export default class ViewRecordsList extends Component {
                     {showTopics && (
                         <Route component={Topic}/>
                     )}
+                    {/*<Link to={"/profile"} className="nav-link card-link-custom color-orange">*/}
+                    {/*    Мои посты*/}
+                    {/*</Link>*/}
                 </div>
-
 
             </div>
         );

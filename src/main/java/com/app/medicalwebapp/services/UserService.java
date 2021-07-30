@@ -3,7 +3,6 @@ package com.app.medicalwebapp.services;
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,16 +14,16 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> getAllByUsername() {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "username"));
+    public List<User> getAll() {
+        return userRepository.findByRoleNotLikeOrderByInitialsAsc("Модератор");
     }
 
-    public List<User> getAllByInitials() {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "lastname"));
+    public Optional<User> getOneByUsername(String username) {
+        return userRepository.findByUsernameAndRoleNotLike(username, "Модератор");
     }
 
-    public User getById(Long id) {
-        return userRepository.getOne(id);
+    public Optional<User> getOneByUsernameAndRole(String username, String role) {
+        return userRepository.findByUsernameAndRole(username, role);
     }
 
     public Optional<User> getByUsername(String username) {
@@ -32,7 +31,19 @@ public class UserService {
     }
 
     public List<User> getByInitials(String initials) {
-        return userRepository.findByInitialsContainingOrderByInitialsAscAllIgnoreCase(initials);
+        return userRepository.findByInitialsContainingAndRoleNotLikeOrderByInitialsAscAllIgnoreCase(initials, "Модератор");
+    }
+
+    public List<User> getAllByRole(String role) {
+        return userRepository.findByRoleOrderByInitialsAsc(role);
+    }
+
+    public List<User> getByInitialsAndRole(String initials, String role) {
+        return userRepository.findByInitialsContainingAndRoleOrderByInitialsAscAllIgnoreCase(initials, role);
+    }
+
+    public User getById(Long id) {
+        return userRepository.getOne(id);
     }
 
     public User save(User user) {

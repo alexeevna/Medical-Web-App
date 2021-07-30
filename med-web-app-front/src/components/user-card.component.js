@@ -22,11 +22,15 @@ export default class UserCard extends Component {
                     </td>
                     }
 
-                    {this.user.initials === null &&
-                    <td className="td-search-nullInitials">
-                        {this.user.username}
-                    </td>
-                    }
+                {this.user.initials === null &&
+                <td className="td-search-nullInitials">
+                    {this.user.username}
+                </td>
+                }
+
+                <td className="td-search-role">
+                    {this.user.role}
+                </td>
             </Link>
         )
     }
