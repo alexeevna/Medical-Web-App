@@ -55,7 +55,6 @@ class App extends Component {
 
   render() {
     const { currentUser } = this.state;
-
     return (
         <div>
           <nav className="navbar navbar-expand color-dark-blue">
@@ -91,17 +90,17 @@ class App extends Component {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to={"/profile"} className="nav-link color-dark-blue">
-                      Мой профиль
+                    <Link
+                        to={"/profile/" + AuthService.getCurrentUser().username}
+                        className="nav-link color-dark-blue"
+                    >
+                      Мой Профиль
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link to={"/login"} className="nav-link color-dark-blue" onClick={this.logOut}>
                       Выйти
                     </Link>
-                    {/*<a href="/login" className="nav-link color-dark-blue" onClick={this.logOut}>*/}
-                    {/*  Выйти*/}
-                    {/*</a>*/}
                   </li>
                 </div>
             ) : (
@@ -127,7 +126,7 @@ class App extends Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/search" component={Search} />
-              <Route exact path="/profile" component={Profile} />
+              <Route exact path="/profile/:username" component={Profile} />
               <Route exact path="/pipelines/create" component={PipelinesComponent}/>
               <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
               <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>

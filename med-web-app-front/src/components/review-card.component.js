@@ -47,12 +47,12 @@ export default class ReviewCard extends Component {
         minutes = minutes >= 10 ? minutes : '0' + minutes;
         return hours + ':' + minutes;
     }
-
+//TODO в строке попытался добавить разделение
     render() {
         return(
             <div>
                 <div className="jumbotron align-center color-light-blue">
-                    <div className="row">
+                    <div className="row" style={{wordBreak: 'break-all'}}>
                         <h6 className="fa fa-user line-break"> {this.review.creator.username}</h6>
                         <h6 className="fa fa-calendar"> {new Date(this.review.creationTime).toLocaleDateString()}</h6>
                         <h6>{this.creationTime}</h6>

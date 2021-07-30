@@ -45,7 +45,6 @@ export default class PipelinesComponent extends Component {
             }
         );
 
-        //console.log(this.state.user.username);
         AttachmentService.getAttachmentsForUser(AuthService.getCurrentUser().username).then(
             response => {
                 let filteredDicoms = response.data.filter( function (file) {

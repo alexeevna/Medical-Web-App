@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import '../styles/Record.css'
+import {Link} from "react-router-dom";
 
 export default class RecordCard extends Component {
     constructor(props) {
@@ -40,8 +41,7 @@ export default class RecordCard extends Component {
         var hours = userDate.getHours();
         var minutes = userDate.getMinutes();
         minutes = minutes >= 10 ? minutes : '0' + minutes;
-        let creationTimeString = hours + ':' + minutes;
-        return creationTimeString;
+        return hours + ':' + minutes;
     }
 
     componentDidMount() {
@@ -79,7 +79,9 @@ export default class RecordCard extends Component {
                 <div className="col-sm-3 ">
                     <div className="record-info-box align-content-center">
                         <div className="center-vertical">
-                            <h6 className="fa fa-user line-break"> {this.record.creator.username}</h6>
+                            <Link to={"/profile/" + this.record.creator.username} style={{ textDecoration: 'none', color: 'dark-blue'}}>
+                                <h6 className="fa fa-user line-break"> {this.record.creator.username}</h6>
+                            </Link>
                             <br/>
                             <h6 className="fa fa-calendar"> {new Date(this.record.creationTime).toLocaleDateString()}</h6>
                             <br/>
