@@ -29,7 +29,6 @@ class RecordService {
     saveRecord(title, content, topics, files, parentId= -1) {
         let parameters = this.createRequestParamsForSave(title,content,topics, files);
 
-        console.log(parameters);
         return axios.post(API_URL + 'create', {title, content, topics, files, parentId},{ headers: authHeader() });
     }
 

@@ -23,6 +23,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.logOut = this.logOut.bind(this);
+    // this.displayProfile = this.displayProfile.bind(this);
 
     this.state = {
       showModeratorBoard: false,
@@ -48,6 +49,15 @@ class App extends Component {
     }
   }
 
+  // displayProfile(){
+  //   const username = AuthService.getCurrentUser.username;
+  //   this.props.history.push({
+  //         // pathname: '/profile/' + username,
+  //         state: {username: username}
+  //   });
+  //   window.location.reload();
+  // }
+
   logOut() {
     AuthService.logout();
     this.setState({currentUser: null});
@@ -55,7 +65,6 @@ class App extends Component {
 
   render() {
     const { currentUser } = this.state;
-
     return (
         <div>
           <nav className="navbar navbar-expand color-dark-blue">
@@ -90,9 +99,19 @@ class App extends Component {
                       Поиск
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link to={"/profile"} className="nav-link color-dark-blue">
-                      Мой профиль
+                  {/*<li className="nav-item">*/}
+                  {/*  <Link to={"/my-profile"} className="nav-link color-dark-blue">*/}
+                  {/*    Мой профиль*/}
+                  {/*  </Link>*/}
+                  {/*</li>*/}
+                  <li
+                      className="nav-item"
+                  >
+                    <Link
+                        to={"/profile/" + AuthService.getCurrentUser().username}
+                        className="nav-link color-dark-blue"
+                    >
+                      Мой Профиль
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -127,7 +146,7 @@ class App extends Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/search" component={Search} />
-              <Route exact path="/profile" component={Profile} />
+              <Route exact path="/profile/:username" component={Profile} />
               <Route exact path="/pipelines/create" component={PipelinesComponent}/>
               <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
               <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
