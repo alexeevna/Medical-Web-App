@@ -167,7 +167,7 @@ export default class UploadAttachmentsComponent extends Component {
                 </div>
 
                 <div className="col-sm-2 align-center">
-                    <Link to={"/profile"} className="nav-link card-link-custom color-orange">Профиль</Link>
+                    <Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">Профиль</Link>
                     <Link to={"/files/view"} className="nav-link card-link-custom color-orange">Мои файлы</Link>
                 </div>
 

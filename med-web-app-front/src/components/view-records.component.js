@@ -31,10 +31,6 @@ export default class ViewRecordsList extends Component {
 
     componentDidMount() {
         this.getRecords();
-        // console.log(this.state.records);
-        // this.state.records.map(record =>
-        //     console.log(record.content)
-        // )
     }
 
     onChangeSearchTitle(e) {
@@ -47,7 +43,6 @@ export default class ViewRecordsList extends Component {
 
     getRecords() {
         const { searchTitle, page, pageSize } = this.state;
-        //console.log(searchTitle, page, pageSize);
 
         RecordService.getAll(page, pageSize, searchTitle, null)
             .then((response) => {
@@ -62,7 +57,6 @@ export default class ViewRecordsList extends Component {
             .catch((e) => {
                 console.log(e);
             });
-        // console.log(this.state.records)
     }
 
     refreshList() {
