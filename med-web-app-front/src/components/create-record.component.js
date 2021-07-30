@@ -105,7 +105,7 @@ export default class ReplyRecordForm extends Component {
 
         TopicService.getAllTopics()
             .then(response => {
-                    let topicsForSelect = response.data.map(el => {
+                    let topicsForSelect = response.data.topics.map(el => {
                         return {value: el.id, label: el.name};
                     })
                     this.setState({
@@ -150,16 +150,16 @@ export default class ReplyRecordForm extends Component {
                             </textarea>
                         </div>
 
-                        {/*<div className="row top-buffer-10">*/}
-                        {/*    <label htmlFor="selectedTopics" className="col-sm-2">Тэги:</label>*/}
-                        {/*    <Select className="col-sm-10"*/}
-                        {/*            onChange={this.onTopicsDropdownSelected}*/}
-                        {/*            options={this.state.availableTopics}*/}
-                        {/*            value={this.state.selectedTopicsValue}*/}
-                        {/*            autoFocus={true}*/}
-                        {/*            isMulti={true}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
+                        <div className="row top-buffer-10">
+                            <label htmlFor="selectedTopics" className="col-sm-2">Тэги:</label>
+                            <Select className="col-sm-10"
+                                    onChange={this.onTopicsDropdownSelected}
+                                    options={this.state.availableTopics}
+                                    value={this.state.selectedTopicsValue}
+                                    autoFocus={true}
+                                    isMulti={true}
+                            />
+                        </div>
 
                         <div className="row top-buffer-10">
                             <label htmlFor="selectedFiles" className="col-sm-2">Прикрепить:</label>

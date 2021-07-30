@@ -1,15 +1,23 @@
 package com.app.medicalwebapp.controllers;
 
+import com.app.medicalwebapp.controllers.requestbody.RecordsPageResponse;
+import com.app.medicalwebapp.controllers.requestbody.TopicRequest;
+import com.app.medicalwebapp.controllers.requestbody.TopicResponse;
+import com.app.medicalwebapp.model.Topic;
 import com.app.medicalwebapp.repositories.TopicRepository;
+import com.app.medicalwebapp.security.UserDetailsImpl;
+import com.app.medicalwebapp.services.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 @CrossOrigin(origins = "*", maxAge = 604800)
 @RestController
@@ -19,17 +27,39 @@ public class TopicController {
     @Autowired
     TopicRepository topicRepository;
 
-    @GetMapping
+    @Autowired
+    TopicService topicService;
+
+    @GetMapping("/all")
     public ResponseEntity<?> getAllTopics() {
         try {
-            return ResponseEntity.ok().body(topicRepository.findAll());
+            List<Topic> topics = topicRepository.findAll();
+            TopicResponse responseBody = TopicResponse.builder()
+                    .topics(topics)
+                    .build();
+            return ResponseEntity.ok().body(responseBody);
+
         } catch (Exception ex) {
+            ex.printStackTrace();
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping("create")
-    public void createNewTopic(@RequestParam String topicName) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createNewTopic(@Valid @RequestBody TopicRequest request) {
+        try {
+            topicService.createNewTopic(request, getAuthenticatedUserId());
+            System.out.println(request.getTopicName());
+            System.out.println(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.ok().build();
     }
 
+    private Long getAuthenticatedUserId() {
+        UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal != null ? principal.getId() : null;
+    }
 }

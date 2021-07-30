@@ -44,7 +44,7 @@ public class RecordController {
             if (topicId == null) {
                 responseBody = recordService.getRecordsPage(page, size, title);
             } else {
-                responseBody = recordService.getRecordsPageByTopic(page, size, topicId);
+                responseBody = recordService.getRecordsPageByTopicAndTitle(page, size, title, topicId);
             }
             return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
@@ -79,6 +79,7 @@ public class RecordController {
     public ResponseEntity<?> saveRecord(@Valid @RequestBody RecordCreationRequest request) {
         try {
             recordService.saveRecord(request, getAuthenticatedUserId(), request.getParentId());
+            System.out.println(request.getParentId());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

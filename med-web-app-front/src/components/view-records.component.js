@@ -1,9 +1,12 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
+import {Route} from "react-router-dom";
 import RecordService from "../services/record.service";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import Select from 'react-select';
 import RecordCard from "./record-card.component";
+import Topic from "./topic.component"
+import TopicService from "../services/topic.service";
 
 export default class ViewRecordsList extends Component {
     constructor(props) {
@@ -14,6 +17,8 @@ export default class ViewRecordsList extends Component {
         this.displayRecordThread = this.displayRecordThread.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
+        this.onTopicsDropdownSelected = this.onTopicsDropdownSelected.bind(this);
+
 
         this.state = {
             records: [],
@@ -24,16 +29,37 @@ export default class ViewRecordsList extends Component {
             page: 1,
             count: 0,
             pageSize: 10,
+
+            showTopics: true,
+            availableTopics: [],
+            selectedTopic: null,
+            selectedTopicValue: null,
         };
 
-        this.pageSizes = [{value: 2, label: '2'}, {value: 4, label :'4'}, {value: 10, label: '10'}];
+        this.pageSizes = [{value: 2, label: '2'}, {value: 4, label: '4'}, {value: 10, label: '10'}];
     }
 
     componentDidMount() {
         this.getRecords();
+
+        TopicService.getAllTopics()
+            .then(response => {
+                    let topicsForSelect = response.data.topics.map(el => {
+                        return {value: el.id, label: el.name};
+                    })
+                    this.setState({
+                        availableTopics: topicsForSelect
+                    });
+                },
+                error => {
+                    console.log(error);
+                }
+            );
     }
 
     onChangeSearchTitle(e) {
+        console.log(e.target);
+
         const searchTitle = e.target.value;
 
         this.setState({
@@ -41,13 +67,23 @@ export default class ViewRecordsList extends Component {
         });
     }
 
+    onTopicsDropdownSelected(selectedTopic) {
+        console.log(selectedTopic);
+
+        this.setState({
+            selectedTopic: selectedTopic.value,
+            selectedTopicValue: selectedTopic
+        });
+    }
+
+
     getRecords() {
-        const { searchTitle, page, pageSize } = this.state;
+        const {searchTitle, page, pageSize, selectedTopic} = this.state;
         //console.log(searchTitle, page, pageSize);
 
-        RecordService.getAll(page, pageSize, searchTitle, null)
+        RecordService.getAll(page, pageSize, searchTitle, selectedTopic)
             .then((response) => {
-                const { records, totalPages } = response.data;
+                const {records, totalPages} = response.data;
 
                 this.refreshList();
 
@@ -75,7 +111,7 @@ export default class ViewRecordsList extends Component {
         // });
         this.props.history.push({
             pathname: '/records/thread/' + record.id,
-            state: { recordId: record.id }
+            state: {recordId: record.id}
         });
         window.location.reload();
     }
@@ -103,12 +139,15 @@ export default class ViewRecordsList extends Component {
         );
     }
 
+
     render() {
         const {
             searchTitle,
             page,
             count,
         } = this.state;
+
+        const {showTopics} = this.state;
 
         return (
             <div className="list row">
@@ -130,8 +169,15 @@ export default class ViewRecordsList extends Component {
                                 Найти
                             </button>
                         </div>
+                        <label htmlFor="selectedTopics" className="col-sm-2">Тэги:</label>
+                        <Select className="col-sm-10"
+                                onChange={this.onTopicsDropdownSelected}
+                                options={this.state.availableTopics}
+                                value={this.state.selectedTopicValue}
+                                autoFocus={true}
+                                isMulti={false}
+                        />
                     </div>
-
 
                     <div className="mt-3">
                         <div className="row">
@@ -171,16 +217,23 @@ export default class ViewRecordsList extends Component {
 
                         ))}
                     </ul>
+
                 </div>
+
 
                 <div className="col-sm-2">
                     <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
                         Создать пост
                     </Link>
-                    {/*<Link to={"/profile"} className="nav-link card-link-custom color-orange">*/}
-                    {/*    Мои посты*/}
-                    {/*</Link>*/}
+                    <Link to={"/topics/create"} className="nav-link card-link-custom color-orange">
+                        Страница тэгов
+                    </Link>
+
+                    {showTopics && (
+                        <Route component={Topic}/>
+                    )}
                 </div>
+
 
             </div>
         );

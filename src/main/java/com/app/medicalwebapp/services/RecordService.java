@@ -39,11 +39,24 @@ public class RecordService {
         return getRecordsResponse(recordsPage, pageNumber);
     }
 
-    public RecordsPageResponse getRecordsPageByTopic(Integer pageNumber, Integer sizeOfPage, Long topicId) {
+    /*public RecordsPageResponse getRecordsPageByTopic(Integer pageNumber, Integer sizeOfPage, Long topicId) {
         Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
         Topic topic = new Topic();
         topic.setId(topicId);
         Page<Record> recordsPage = recordRepository.findByTopics(topic, pageable);
+
+        return getRecordsResponse(recordsPage, pageNumber);
+    }*/
+
+    public RecordsPageResponse getRecordsPageByTopicAndTitle(Integer pageNumber, Integer sizeOfPage, String partOfTitle, Long topicId) {
+        Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
+
+        Topic topic = new Topic();
+        topic.setId(topicId);
+
+        Page<Record> recordsPage = partOfTitle != null
+                ? recordRepository.findByParentAndTopicsAndTitleContainingIgnoreCase(-1L, topic, partOfTitle, pageable)
+                : recordRepository.findByParentAndTopics(-1L, topic, pageable);
 
         return getRecordsResponse(recordsPage, pageNumber);
     }

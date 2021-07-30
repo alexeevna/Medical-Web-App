@@ -17,6 +17,7 @@ import ViewRecordsComponent from "./components/view-records.component";
 import CreateRecordComponent from "./components/create-record.component";
 import RecordThreadComponent from "./components/record-thread.component";
 import SavePipelineConfigComponent from "./components/save-pipeline-config.component";
+import TopicComponent from "./components/topic.component";
 
 class App extends Component {
   constructor(props) {
@@ -80,6 +81,7 @@ class App extends Component {
                     </Link>
                   </li>
               )}
+
             </div>
 
             {currentUser ? (
@@ -129,6 +131,7 @@ class App extends Component {
               <Route exact path="/records/view" component={ViewRecordsComponent}/>
               <Route exact path="/records/create" component={CreateRecordComponent}/>
               <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
+              <Route exact path="/topics/create" component={TopicComponent} />
             </Switch>
           </div>
         </div>
