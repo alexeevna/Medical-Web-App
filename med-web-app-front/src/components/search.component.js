@@ -9,20 +9,15 @@ export default class Search extends Component {
         super(props);
         this.getUsers = this.getUsers.bind(this)
         this.onChangeUsername = this.onChangeUsername.bind(this)
-        this.onChangeParamsSearch = this.onChangeParamsSearch.bind(this)
+        this.onChangeParamsTypeSearch = this.onChangeParamsTypeSearch.bind(this)
+        this.onChangeParamsRoleSearch = this.onChangeParamsRoleSearch.bind(this)
         this.state = {
-            searchParams: "login",
+            searchParamsType: "login",
+            searchParamsRole: "Все",
             searchString: "",
             users: [],
         };
     }
-
-    // setLastnameFirstname(arrayFirstLastName) {
-    //     this.setState({
-    //         lastname: arrayFirstLastName[0],
-    //         firstname: arrayFirstLastName[1],
-    //     });
-    // }
 
     onChangeUsername(e) {
         const searchString = e.target.value;
@@ -31,15 +26,21 @@ export default class Search extends Component {
         });
     }
 
-    onChangeParamsSearch(e) {
+    onChangeParamsTypeSearch(e) {
         this.setState({
-            searchParams: e.target.value
+            searchParamsType: e.target.value
+        });
+    }
+
+    onChangeParamsRoleSearch(e) {
+        this.setState({
+            searchParamsRole: e.target.value
         });
     }
 
     getUsers() {
         const {searchString} = this.state
-        if (this.state.searchParams === "login") {
+        if (this.state.searchParamsType === "login" && this.state.searchParamsRole === "Все") {
             UserService.getAllByUsername(searchString)
                 .then((response) => {
                     const users = response.data;
@@ -51,8 +52,32 @@ export default class Search extends Component {
                 .catch((e) => {
                     console.log(e);
                 });
-        } else {
+        } else if (this.state.searchParamsType === "login") {
+            UserService.getByUsername(searchString, this.state.searchParamsRole)
+                .then((response) => {
+                    const users = response.data;
+                    this.refreshList();
+                    this.setState({
+                        users: users,
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        } else if (this.state.searchParamsType === "initials" && this.state.searchParamsRole === "Все"){
             UserService.getAllByInitials(searchString)
+                .then((response) => {
+                    const users = response.data;
+                    this.refreshList();
+                    this.setState({
+                        users: users,
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        } else {
+            UserService.getByInitials(searchString, this.state.searchParamsRole)
                 .then((response) => {
                     const users = response.data;
                     this.refreshList();
@@ -96,28 +121,55 @@ export default class Search extends Component {
                     </form>
                 </div>
 
-                <div className="div-search">
-                    <label>Параметр поиска:</label>
+                <label>Параметры поиска:</label>
+                <div className="div-search-left">
                     <p>
                         <input type="radio"
                                value="login"
-                               checked={this.state.searchParams === "login"}
-                               onChange={this.onChangeParamsSearch}
-                               name="params"
+                               checked={this.state.searchParamsType === "login"}
+                               onChange={this.onChangeParamsTypeSearch}
+                               name="paramsType"
                         />
                         по логину
                     </p>
                     <p>
                         <input type="radio"
                                value="initials"
-                               checked={this.state.searchParams === "initials"}
-                               onChange={this.onChangeParamsSearch}
-                               name="params"/>
+                               checked={this.state.searchParamsType === "initials"}
+                               onChange={this.onChangeParamsTypeSearch}
+                               name="paramsType"/>
                         по фамилии и имени
                     </p>
                 </div>
+                <div className="div-search-left">
+                    <p>
+                        <input type="radio"
+                               value="Все"
+                               checked={this.state.searchParamsRole === "Все"}
+                               onChange={this.onChangeParamsRoleSearch}
+                               name="paramsRole"
+                        />
+                        по всем
+                    </p>
+                    <p>
+                        <input type="radio"
+                               value="Пользователь"
+                               checked={this.state.searchParamsRole === "Пользователь"}
+                               onChange={this.onChangeParamsRoleSearch}
+                               name="paramsRole"/>
+                        по пользователям
+                    </p>
+                    <p>
+                        <input type="radio"
+                               value="Врач"
+                               checked={this.state.searchParamsRole === "Врач"}
+                               onChange={this.onChangeParamsRoleSearch}
+                               name="paramsRole"/>
+                        по врачам
+                    </p>
+                </div>
 
-                <div>
+                <div className="div-search div-search-clear">
                     <table className="table-search">
                         <tbody>
                         {this.state.users &&
@@ -132,6 +184,7 @@ export default class Search extends Component {
                         </tbody>
                     </table>
                 </div>
+
             </div>
         );
     }

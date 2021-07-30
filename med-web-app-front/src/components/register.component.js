@@ -54,7 +54,7 @@ export default class Register extends Component {
         this.onChangeLastname = this.onChangeLastname.bind(this);
         // this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
-        // this.onChangeRole = this.onChangeRole.bind(this);
+        this.onChangeRole = this.onChangeRole.bind(this);
 
         this.state = {
             username: "",
@@ -62,7 +62,7 @@ export default class Register extends Component {
             lastname: null,
             // email: "",
             password: "",
-            chosenRole: "ROLE_USER",
+            chosenRole: "Пользователь",
             successful: false,
             message: ""
         };
@@ -98,14 +98,12 @@ export default class Register extends Component {
         });
     }
 
-    // onChangeRole(e) {
-    //     console.log("onChangeRole")
-    //     this.setState({
-    //         chosenRole: e.target.value
-    //     });
-    //     console.log(e.target.value)
-    //     console.log(this.state.chosenRole)
-    // }
+    onChangeRole(e) {
+        this.setState({
+            chosenRole: e.target.value
+        });
+        console.log(e.target.value)
+    }
 
     handleRegister(e) {
         e.preventDefault();
@@ -225,49 +223,26 @@ export default class Register extends Component {
                                     />
                                 </div>
 
-                                {/*<div>*/}
-                                {/*    <label htmlFor="role">Выберите роль</label>*/}
-                                {/*    <p>*/}
-                                {/*        <input type="radio"*/}
-                                {/*               value="ROLE_USER"*/}
-                                {/*               onChange={this.onChangeRole}*/}
-                                {/*               checked name="role"*/}
-                                {/*        />*/}
-                                {/*        Пользователь*/}
-                                {/*    </p>*/}
-                                {/*    <p>*/}
-                                {/*        <input type="radio"*/}
-                                {/*               value="ROLE_DOCTOR"*/}
-                                {/*               onChange={this.onChangeRole}*/}
-                                {/*               name="role"/>*/}
-                                {/*        Врач*/}
-                                {/*    </p>*/}
-                                {/*</div>*/}
-
-                                {/*<div className="radio">*/}
-                                {/*    <label>*/}
-                                {/*        <p>*/}
-                                {/*            <input*/}
-                                {/*                type="radio"*/}
-                                {/*                value="ROLE_DOCTOR"*/}
-                                {/*                name="role"*/}
-                                {/*                checked={this.state.selectedOption === "ROLE_DOCTOR"}*/}
-                                {/*                onChange={this.onChangeRole}*/}
-                                {/*            />*/}
-                                {/*            Врач*/}
-                                {/*        </p>*/}
-
-                                {/*        <p>*/}
-                                {/*            <input*/}
-                                {/*                type="radio"*/}
-                                {/*                value="ROLE_USER"*/}
-                                {/*                checked={this.state.selectedOption === "ROLE_USER"}*/}
-                                {/*                onChange={this.onChangeRole}*/}
-                                {/*            />*/}
-                                {/*            Пользователь*/}
-                                {/*        </p>*/}
-                                {/*    </label>*/}
-                                {/*</div>*/}
+                                <div>
+                                    <label>Выберете роль</label>
+                                    <p>
+                                        <input type="radio"
+                                               value="Пользователь"
+                                               checked={this.state.chosenRole === "Пользователь"}
+                                               onChange={this.onChangeRole}
+                                               name="role"
+                                        />
+                                        Пользователь
+                                    </p>
+                                    <p>
+                                        <input type="radio"
+                                               value="Врач"
+                                               checked={this.state.chosenRole === "Врач"}
+                                               onChange={this.onChangeRole}
+                                               name="role"/>
+                                        Врач
+                                    </p>
+                                </div>
 
                                 <div className="form-group">
                                     <button className="btn btn-block color-dark-blue">Зарегистрироваться</button>

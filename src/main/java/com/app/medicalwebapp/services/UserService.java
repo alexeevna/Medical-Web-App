@@ -15,24 +15,32 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> getAllByUsername() {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "username"));
+    public List<User> getAll() {
+        return userRepository.findByRoleNotLikeOrderByInitialsAsc("Модератор");
     }
 
-    public List<User> getAllByInitials() {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "lastname"));
+    public Optional<User> getOneByUsername(String username) {
+        return userRepository.findByUsernameAndRoleNotLike(username, "Модератор");
+    }
+
+    public Optional<User> getOneByUsernameAndRole(String username, String role) {
+        return userRepository.findByUsernameAndRole(username, role);
+    }
+
+    public List<User> getByInitials(String initials) {
+        return userRepository.findByInitialsContainingAndRoleNotLikeOrderByInitialsAscAllIgnoreCase(initials, "Модератор");
+    }
+
+    public List<User> getAllByRole(String role) {
+        return userRepository.findByRoleOrderByInitialsAsc(role);
+    }
+
+    public List<User> getByInitialsAndRole(String initials, String role) {
+        return userRepository.findByInitialsContainingAndRoleOrderByInitialsAscAllIgnoreCase(initials, role);
     }
 
     public User getById(Long id) {
         return userRepository.getOne(id);
-    }
-
-    public Optional<User> getByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    public List<User> getByInitials(String initials) {
-        return userRepository.findByInitialsContainingOrderByInitialsAscAllIgnoreCase(initials);
     }
 
     public User save(User user) {

@@ -23,7 +23,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.logOut = this.logOut.bind(this);
-    // this.displayProfile = this.displayProfile.bind(this);
 
     this.state = {
       showModeratorBoard: false,
@@ -90,14 +89,7 @@ class App extends Component {
                       Поиск
                     </Link>
                   </li>
-                  {/*<li className="nav-item">*/}
-                  {/*  <Link to={"/my-profile"} className="nav-link color-dark-blue">*/}
-                  {/*    Мой профиль*/}
-                  {/*  </Link>*/}
-                  {/*</li>*/}
-                  <li
-                      className="nav-item"
-                  >
+                  <li className="nav-item">
                     <Link
                         to={"/profile/" + AuthService.getCurrentUser().username}
                         className="nav-link color-dark-blue"
@@ -109,9 +101,6 @@ class App extends Component {
                     <Link to={"/login"} className="nav-link color-dark-blue" onClick={this.logOut}>
                       Выйти
                     </Link>
-                    {/*<a href="/login" className="nav-link color-dark-blue" onClick={this.logOut}>*/}
-                    {/*  Выйти*/}
-                    {/*</a>*/}
                   </li>
                 </div>
             ) : (

@@ -48,6 +48,7 @@ export default class RecordCard extends Component {
         let preview = [];
         if (this.record.attachments !== undefined &&  this.record.attachments !== null) {
             for (let i = 0; i < this.record.attachments.length; i++) {
+                console.log(this.record.attachments[i]);
                 if (this.record.attachments[i].initialName.endsWith(".jpg") ||
                     this.record.attachments[i].initialName.endsWith(".png")  ||
                     this.record.attachments[i].initialName.endsWith(".dcm") ) {
