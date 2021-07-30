@@ -49,15 +49,6 @@ class App extends Component {
     }
   }
 
-  // displayProfile(){
-  //   const username = AuthService.getCurrentUser.username;
-  //   this.props.history.push({
-  //         // pathname: '/profile/' + username,
-  //         state: {username: username}
-  //   });
-  //   window.location.reload();
-  // }
-
   logOut() {
     AuthService.logout();
     this.setState({currentUser: null});
