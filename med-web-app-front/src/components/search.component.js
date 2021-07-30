@@ -64,7 +64,7 @@ export default class Search extends Component {
                 .catch((e) => {
                     console.log(e);
                 });
-        } else if (this.state.searchParamsType === "initials" && this.state.searchParamsRole === "Все"){
+        } else if (this.state.searchParamsType === "initials" && this.state.searchParamsRole === "Все") {
             UserService.getAllByInitials(searchString)
                 .then((response) => {
                     const users = response.data;
