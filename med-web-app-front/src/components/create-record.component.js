@@ -70,7 +70,6 @@ export default class ReplyRecordForm extends Component {
                         selectedFilesValue: [],
                         selectedTopics: [],
                         selectedTopicsValue: [],
-                        submittedSuccessfuly: true
                     });
                 },
                 error => {
