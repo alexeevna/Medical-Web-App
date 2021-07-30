@@ -10,8 +10,6 @@ export default class RecordThreadComponent extends Component {
 
         this.refreshAnswers = this.refreshAnswers.bind(this);
 
-        console.log(this.props);
-
         this.state = {
             //recordId: null,
             recordId: this.props.match.params.recordId,
@@ -24,7 +22,6 @@ export default class RecordThreadComponent extends Component {
         RecordService.getRecord(this.state.recordId)
             .then(response => {
                     this.setState({record: response.data});
-                    console.log(response.data);
                 }
             )
             .catch(error => {
@@ -46,8 +43,7 @@ export default class RecordThreadComponent extends Component {
     }
 
     render() {
-        const { answers} = this.state;
-
+        const { answers } = this.state;
         return (
             <div className="list row">
                 <div className="col-md-9">

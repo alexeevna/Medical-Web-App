@@ -19,15 +19,12 @@ export default class ViewAttachmentsComponent extends Component {
 
     async componentDidMount(){
         const response = await AttachmentService.getAttachmentsForUser(this.state.currentUser.username);
-        const userFilesInfo = response.data
-        console.log(userFilesInfo);
+        const userFilesInfo = response.data;
         this.setState({userFilesInfo: userFilesInfo});
     }
 
     download(fileId, initialFileName) {
         AttachmentService.downloadAttachment(fileId, initialFileName);
-        //console.log(response.data);
-        //event.preventDefault();
     }
 
 

@@ -36,7 +36,7 @@ public class RecordController {
             if (topicId == null) {
                 responseBody = recordService.getRecordsPage(page, size, title);
             } else {
-                responseBody = recordService.getRecordsPageByTopic(page, size, topicId);
+                responseBody = recordService.getRecordsPageByTopicAndTitle(page, size, title, topicId);
             }
             return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {

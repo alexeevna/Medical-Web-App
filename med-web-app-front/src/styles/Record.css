@@ -17,6 +17,12 @@
     border-right: 2px #1B435D solid;
 }
 
+.topic-info-box {
+    text-align: left;
+    height: 100%;
+    border-right: 2px #1B435D solid;
+}
+
 .record-card {
     font-size: medium;
     width: 100%;
@@ -28,6 +34,11 @@
     border-radius: 4px;
 }
 
+.topic-card {
+    font-size: small;
+    width: 300px;
+    border-style: none;
+}
 
 .record-create-form {
     font-size: medium;
