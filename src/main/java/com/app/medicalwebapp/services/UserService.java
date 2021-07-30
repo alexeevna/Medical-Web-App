@@ -3,7 +3,6 @@ package com.app.medicalwebapp.services;
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +24,10 @@ public class UserService {
 
     public Optional<User> getOneByUsernameAndRole(String username, String role) {
         return userRepository.findByUsernameAndRole(username, role);
+    }
+
+    public Optional<User> getByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public List<User> getByInitials(String initials) {

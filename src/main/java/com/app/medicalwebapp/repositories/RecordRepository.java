@@ -18,8 +18,12 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
     Page<Record> findByParentAndTitleContainingIgnoreCase(Long parent, String title, Pageable pageable);
 
+    Page<Record> findByParentAndTopicsAndTitleContainingIgnoreCase(Long parent, Topic topic, String title, Pageable pageable);
+
     List<Record> findByParent(Long parent);
 
     Page<Record> findByParent(Long parent, Pageable pageable);
+
+    Page<Record> findByParentAndTopics(Long parent, Topic topic, Pageable pageable);
 
 }
