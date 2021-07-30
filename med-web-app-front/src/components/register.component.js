@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
@@ -50,11 +50,16 @@ export default class Register extends Component {
         super(props);
         this.handleRegister = this.handleRegister.bind(this);
         this.onChangeUsername = this.onChangeUsername.bind(this);
+        this.onChangeFirstname = this.onChangeFirstname.bind(this);
+        this.onChangeLastname = this.onChangeLastname.bind(this);
         // this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
+        // this.onChangeRole = this.onChangeRole.bind(this);
 
         this.state = {
             username: "",
+            firstname: null,
+            lastname: null,
             // email: "",
             password: "",
             chosenRole: "ROLE_USER",
@@ -81,6 +86,27 @@ export default class Register extends Component {
         });
     }
 
+    onChangeFirstname(e) {
+        this.setState({
+            firstname: e.target.value
+        });
+    }
+
+    onChangeLastname(e) {
+        this.setState({
+            lastname: e.target.value
+        });
+    }
+
+    // onChangeRole(e) {
+    //     console.log("onChangeRole")
+    //     this.setState({
+    //         chosenRole: e.target.value
+    //     });
+    //     console.log(e.target.value)
+    //     console.log(this.state.chosenRole)
+    // }
+
     handleRegister(e) {
         e.preventDefault();
 
@@ -90,10 +116,20 @@ export default class Register extends Component {
         });
 
         this.form.validateAll();
-
+        let initials = null
+        if (this.state.lastname !== null && this.state.firstname !== null) {
+            initials = this.state.lastname + " " + this.state.firstname
+        } else if (this.state.lastname !== null) {
+            initials = this.state.lastname
+        } else if (this.state.firstname !== null) {
+            initials = this.state.firstname
+        }
         if (this.checkBtn.context._errors.length === 0) {
             AuthService.register(
                 this.state.username,
+                initials,
+                this.state.firstname,
+                this.state.lastname,
                 // this.state.email,
                 this.state.password,
                 this.state.chosenRole
@@ -132,6 +168,28 @@ export default class Register extends Component {
                         {!this.state.successful && (
                             <div>
                                 <div className="form-group">
+                                    <label htmlFor="lastname">Фамилия (необязательно)</label>
+                                    <Input
+                                        type="text"
+                                        className="form-control"
+                                        name="lastname"
+                                        value={this.state.lastname}
+                                        onChange={this.onChangeLastname}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="firstname">Имя (необязательно)</label>
+                                    <Input
+                                        type="text"
+                                        className="form-control"
+                                        name="firstname"
+                                        value={this.state.firstname}
+                                        onChange={this.onChangeFirstname}
+                                    />
+                                </div>
+
+                                <div className="form-group">
                                     <label htmlFor="username">Логин</label>
                                     <Input
                                         type="text"
@@ -167,6 +225,50 @@ export default class Register extends Component {
                                     />
                                 </div>
 
+                                {/*<div>*/}
+                                {/*    <label htmlFor="role">Выберите роль</label>*/}
+                                {/*    <p>*/}
+                                {/*        <input type="radio"*/}
+                                {/*               value="ROLE_USER"*/}
+                                {/*               onChange={this.onChangeRole}*/}
+                                {/*               checked name="role"*/}
+                                {/*        />*/}
+                                {/*        Пользователь*/}
+                                {/*    </p>*/}
+                                {/*    <p>*/}
+                                {/*        <input type="radio"*/}
+                                {/*               value="ROLE_DOCTOR"*/}
+                                {/*               onChange={this.onChangeRole}*/}
+                                {/*               name="role"/>*/}
+                                {/*        Врач*/}
+                                {/*    </p>*/}
+                                {/*</div>*/}
+
+                                {/*<div className="radio">*/}
+                                {/*    <label>*/}
+                                {/*        <p>*/}
+                                {/*            <input*/}
+                                {/*                type="radio"*/}
+                                {/*                value="ROLE_DOCTOR"*/}
+                                {/*                name="role"*/}
+                                {/*                checked={this.state.selectedOption === "ROLE_DOCTOR"}*/}
+                                {/*                onChange={this.onChangeRole}*/}
+                                {/*            />*/}
+                                {/*            Врач*/}
+                                {/*        </p>*/}
+
+                                {/*        <p>*/}
+                                {/*            <input*/}
+                                {/*                type="radio"*/}
+                                {/*                value="ROLE_USER"*/}
+                                {/*                checked={this.state.selectedOption === "ROLE_USER"}*/}
+                                {/*                onChange={this.onChangeRole}*/}
+                                {/*            />*/}
+                                {/*            Пользователь*/}
+                                {/*        </p>*/}
+                                {/*    </label>*/}
+                                {/*</div>*/}
+
                                 <div className="form-group">
                                     <button className="btn btn-block color-dark-blue">Зарегистрироваться</button>
                                 </div>
@@ -188,7 +290,7 @@ export default class Register extends Component {
                             </div>
                         )}
                         <CheckButton
-                            style={{ display: "none" }}
+                            style={{display: "none"}}
                             ref={c => {
                                 this.checkBtn = c;
                             }}

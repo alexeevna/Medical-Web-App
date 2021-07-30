@@ -49,7 +49,6 @@ export default class ReplyRecordForm extends Component {
                         content: "",
                         selectedFiles: [],
                         selectedFilesValue: [],
-                        submittedSuccessfuly: true
                     });
                     this.props.refreshRecords();
                 },

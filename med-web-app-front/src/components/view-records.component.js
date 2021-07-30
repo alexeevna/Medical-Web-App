@@ -95,6 +95,7 @@ export default class ViewRecordsList extends Component {
             .catch((e) => {
                 console.log(e);
             });
+        // console.log(this.state.records)
     }
 
     refreshList() {
@@ -214,7 +215,6 @@ export default class ViewRecordsList extends Component {
                             >
                                 <RecordCard record={record} isPreview={true} isReply={false}/>
                             </li>
-
                         ))}
                     </ul>
 
