@@ -49,23 +49,23 @@
     border: 1px solid #1B435D;
 }
 
-/*.td-search-notnullInitials {*/
-/*    border: 1px solid #1B435D;*/
-/*    height: 30px;*/
-/*    width: 200px;*/
-/*}*/
+.td-search-notnullInitials {
+    border: 1px solid #1B435D;
+    height: 30px;
+    width: 200px;
+}
 
-/*.td-search-nullInitials {*/
-/*    border: 1px solid #1B435D;*/
-/*    height: 30px;*/
-/*    width: 400px;*/
-/*}*/
+.td-search-nullInitials {
+    border: 1px solid #1B435D;
+    height: 30px;
+    width: 400px;
+}
 
-/*.td-search-role {*/
-/*    border: 1px solid #1B435D;*/
-/*    height: 30px;*/
-/*    width: 200px;*/
-/*}*/
+.td-search-role {
+    border: 1px solid #1B435D;
+    height: 30px;
+    width: 200px;
+}
 
 .div-search-left{
     float: left;

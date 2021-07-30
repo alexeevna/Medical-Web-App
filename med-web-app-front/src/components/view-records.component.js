@@ -74,7 +74,7 @@ export default class ViewRecordsList extends Component {
 
 
     getRecords() {
-        const { searchTitle, page, pageSize } = this.state;
+        const { searchTitle, page, pageSize, selectedTopic } = this.state;
 
         RecordService.getAll(page, pageSize, searchTitle, selectedTopic)
             .then((response) => {
