@@ -5,8 +5,6 @@ import "./App.css";
 
 import AuthService from "./services/auth.service";
 
-import Login from "./components/login.component";
-import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
 import Search from "./components/search.component";
@@ -19,6 +17,8 @@ import CreateRecordComponent from "./components/create-record.component";
 import RecordThreadComponent from "./components/record-thread.component";
 import SavePipelineConfigComponent from "./components/save-pipeline-config.component";
 import TopicComponent from "./components/topic.component";
+import Register from "./components/register.component";
+import Login from "./components/login.component";
 
 class App extends Component {
   constructor(props) {
