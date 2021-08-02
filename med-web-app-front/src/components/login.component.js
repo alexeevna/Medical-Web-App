@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -42,7 +41,7 @@ const useStyles = theme => ({
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '100%',
         marginTop: theme.spacing(1),
     },
     submit: {
@@ -113,10 +112,6 @@ class Login extends Component {
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
                 <div className={classes.paper}>
-                    {/*<Avatar className={classes.avatar}>*/}
-                    {/*    /!*<LockOutlinedIcon />*!/*/}
-                    {/*    MED*/}
-                    {/*</Avatar>*/}
                     <Typography component="h1" variant="h5">
                         Вход
                     </Typography>

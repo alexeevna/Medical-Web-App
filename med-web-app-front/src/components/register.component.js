@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -11,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import '../styles/Search.css'
 import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
-// import {createTheme} from '@material-ui/core/styles';
 import AuthService from "../services/auth.service";
 import {createStyles} from "@material-ui/core/styles";
 
@@ -65,7 +63,7 @@ const useStyles = theme => createStyles({
         backgroundColor: '#1B435D',
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '100%',
         marginTop: theme.spacing(2),
     },
     submit: {
@@ -79,17 +77,6 @@ const useStyles = theme => createStyles({
         margin: theme.spacing(2, 0, 1)
     }
 });
-
-// const theme = createTheme({
-//     palette: {
-//         primary: {
-//             main: '#1B435D',
-//         },
-//         secondary: {
-//             main: '#1B435D',
-//         },
-//     },
-// });
 
 class Register extends Component {
 
@@ -123,11 +110,6 @@ class Register extends Component {
     vusername = value => {
         console.log("vusername")
         if (value.length < 3 || value.length > 25) {
-            // return (
-            //     <div className="alert alert-danger" role="alert">
-            //         Имя должно содержать от 3 до 25 символов.
-            //     </div>
-            // );
             this.setState({
                 usernameError: true
             })
@@ -141,11 +123,6 @@ class Register extends Component {
     vpassword = value => {
         console.log("vpassword")
         if (value.length < 6 || value.length > 40) {
-            // return (
-            //     <div className="alert alert-danger" role="alert">
-            //         Пароль должен быть не менее 6 символов.
-            //     </div>
-            // );
             this.setState({
                 passwordError: true
             })
@@ -204,7 +181,6 @@ class Register extends Component {
             successful: false
         });
 
-        // this.form.validateAll();
         let initials = null
         if (this.state.lastname !== null && this.state.firstname !== null) {
             initials = this.state.lastname + " " + this.state.firstname
@@ -249,9 +225,6 @@ class Register extends Component {
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
                 <div className={classes.paper}>
-                    {/*<Avatar className={classes.avatar}>*/}
-                    {/*    med*/}
-                    {/*</Avatar>*/}
                     <Typography component="h1" variant="h5">
                         Регистрация
                     </Typography>
@@ -300,7 +273,6 @@ class Register extends Component {
                                     helperText={this.state.usernameError && "Логин должен быть не менее 3 символов"}
                                     value={this.state.username}
                                     onChange={this.onChangeUsername}
-                                    // validations={[required, vusername]}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -318,7 +290,6 @@ class Register extends Component {
                                     helperText={this.state.passwordError && "Пароль должен быть не менее 6 символов"}
                                     value={this.state.password}
                                     onChange={this.onChangePassword}
-                                    // validations={[required, vpassword]}
                                 />
                             </Grid>
                             {/*<Grid item xs={12}>*/}
@@ -375,12 +346,6 @@ class Register extends Component {
                                 </div>
                             </div>
                         )}
-                        {/*<CheckButton*/}
-                        {/*    style={{display: "none"}}*/}
-                        {/*    ref={c => {*/}
-                        {/*        this.checkBtn = c;*/}
-                        {/*    }}*/}
-                        {/*/>*/}
                     </form>
                 </div>
                 <Box mt={5}>
