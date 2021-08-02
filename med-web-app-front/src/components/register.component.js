@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -46,40 +45,28 @@ function Copyright() {
 //     }
 // };
 
-// const theme = createMuiTheme({
-//     palette: {
-//         primary: {
-//             main: '#1B435D',
-//         },
-//         secondary: {
-//             main: '#1B435D',
-//         },
-//     },
-// });
-
 const useStyles = theme => ({
-    // button: {
-    //     backgroundColor: theme.palette.primary.main,
-    // },
+    root: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        }
+    },
     paper: {
         marginTop: theme.spacing(5),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '100%',
         marginTop: theme.spacing(2),
     },
     submit: {
         margin: theme.spacing(1, 0, 1),
+        backgroundColor: '#1B435D',
     },
-    radio: {
-        marginBottom: theme.spacing(1)
+    formControlLab: {
+        marginBottom: theme.spacing(1),
     },
     label: {
         margin: theme.spacing(2, 0, 1)
@@ -118,11 +105,6 @@ class Register extends Component {
     vusername = value => {
         console.log("vusername")
         if (value.length < 3 || value.length > 25) {
-            // return (
-            //     <div className="alert alert-danger" role="alert">
-            //         Имя должно содержать от 3 до 25 символов.
-            //     </div>
-            // );
             this.setState({
                 usernameError: true
             })
@@ -136,11 +118,6 @@ class Register extends Component {
     vpassword = value => {
         console.log("vpassword")
         if (value.length < 6 || value.length > 40) {
-            // return (
-            //     <div className="alert alert-danger" role="alert">
-            //         Пароль должен быть не менее 6 символов.
-            //     </div>
-            // );
             this.setState({
                 passwordError: true
             })
@@ -199,7 +176,6 @@ class Register extends Component {
             successful: false
         });
 
-        // this.form.validateAll();
         let initials = null
         if (this.state.lastname !== null && this.state.firstname !== null) {
             initials = this.state.lastname + " " + this.state.firstname
@@ -244,10 +220,6 @@ class Register extends Component {
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
                 <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        {/*<LockOutlinedIcon/>*/}
-                        MED
-                    </Avatar>
                     <Typography component="h1" variant="h5">
                         Регистрация
                     </Typography>
@@ -257,6 +229,7 @@ class Register extends Component {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    className={classes.root}
                                     autoComplete="fname"
                                     name="firstName"
                                     variant="outlined"
@@ -270,6 +243,7 @@ class Register extends Component {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    className={classes.root}
                                     variant="outlined"
                                     fullWidth
                                     id="lastName"
@@ -282,6 +256,7 @@ class Register extends Component {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    className={classes.root}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -293,11 +268,11 @@ class Register extends Component {
                                     helperText={this.state.usernameError && "Логин должен быть не менее 3 символов"}
                                     value={this.state.username}
                                     onChange={this.onChangeUsername}
-                                    // validations={[required, vusername]}
                                 />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    className={classes.root}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -310,7 +285,6 @@ class Register extends Component {
                                     helperText={this.state.passwordError && "Пароль должен быть не менее 6 символов"}
                                     value={this.state.password}
                                     onChange={this.onChangePassword}
-                                    // validations={[required, vpassword]}
                                 />
                             </Grid>
                             {/*<Grid item xs={12}>*/}
@@ -323,10 +297,17 @@ class Register extends Component {
                         <FormControl>
                             <FormLabel className={classes.label}>Выберите роль:</FormLabel>
                             <RadioGroup value={this.state.chosenRole} onChange={this.onChangeRole}>
-                                <FormControlLabel className={classes.radio} control={<Radio/>} value="Пользователь"
-                                                  label="Пользователь"/>
-                                <FormControlLabel className={classes.radio} control={<Radio/>} value="Врач"
-                                                  label="Врач"/>
+                                <FormControlLabel className={classes.formControlLab}
+                                                  control={<Radio color="primary"/>}
+                                                  value="Пользователь"
+                                                  label="Пользователь"
+                                />
+                                <FormControlLabel className={classes.formControlLab}
+                                                  control={<Radio color="primary"/>}
+                                                  value="Врач"
+                                                  label="Врач"
+                                                  labelPlacement='end'
+                                />
                             </RadioGroup>
                         </FormControl>
                         <Button
@@ -360,12 +341,6 @@ class Register extends Component {
                                 </div>
                             </div>
                         )}
-                        {/*<CheckButton*/}
-                        {/*    style={{display: "none"}}*/}
-                        {/*    ref={c => {*/}
-                        {/*        this.checkBtn = c;*/}
-                        {/*    }}*/}
-                        {/*/>*/}
                     </form>
                 </div>
                 <Box mt={5}>
