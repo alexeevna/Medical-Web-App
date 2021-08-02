@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -11,7 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import '../styles/Search.css'
 import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
+// import {createTheme} from '@material-ui/core/styles';
 import AuthService from "../services/auth.service";
+import {createStyles} from "@material-ui/core/styles";
 
 function Copyright() {
     return (
@@ -46,7 +48,39 @@ function Copyright() {
 //     }
 // };
 
-// const theme = createMuiTheme({
+const useStyles = theme => createStyles({
+    root: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        }
+    },
+    paper: {
+        marginTop: theme.spacing(5),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    avatar: {
+        margin: theme.spacing(1),
+        backgroundColor: '#1B435D',
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(2),
+    },
+    submit: {
+        margin: theme.spacing(1, 0, 1),
+        backgroundColor: '#1B435D',
+    },
+    formControlLab: {
+        marginBottom: theme.spacing(1),
+    },
+    label: {
+        margin: theme.spacing(2, 0, 1)
+    }
+});
+
+// const theme = createTheme({
 //     palette: {
 //         primary: {
 //             main: '#1B435D',
@@ -56,35 +90,6 @@ function Copyright() {
 //         },
 //     },
 // });
-
-const useStyles = theme => ({
-    // button: {
-    //     backgroundColor: theme.palette.primary.main,
-    // },
-    paper: {
-        marginTop: theme.spacing(5),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(2),
-    },
-    submit: {
-        margin: theme.spacing(1, 0, 1),
-    },
-    radio: {
-        marginBottom: theme.spacing(1)
-    },
-    label: {
-        margin: theme.spacing(2, 0, 1)
-    }
-});
 
 class Register extends Component {
 
@@ -244,10 +249,9 @@ class Register extends Component {
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
                 <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        {/*<LockOutlinedIcon/>*/}
-                        MED
-                    </Avatar>
+                    {/*<Avatar className={classes.avatar}>*/}
+                    {/*    med*/}
+                    {/*</Avatar>*/}
                     <Typography component="h1" variant="h5">
                         Регистрация
                     </Typography>
@@ -257,6 +261,7 @@ class Register extends Component {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    className={classes.root}
                                     autoComplete="fname"
                                     name="firstName"
                                     variant="outlined"
@@ -270,6 +275,7 @@ class Register extends Component {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    className={classes.root}
                                     variant="outlined"
                                     fullWidth
                                     id="lastName"
@@ -282,6 +288,7 @@ class Register extends Component {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    className={classes.root}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -298,6 +305,7 @@ class Register extends Component {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    className={classes.root}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -323,10 +331,17 @@ class Register extends Component {
                         <FormControl>
                             <FormLabel className={classes.label}>Выберите роль:</FormLabel>
                             <RadioGroup value={this.state.chosenRole} onChange={this.onChangeRole}>
-                                <FormControlLabel className={classes.radio} control={<Radio/>} value="Пользователь"
-                                                  label="Пользователь"/>
-                                <FormControlLabel className={classes.radio} control={<Radio/>} value="Врач"
-                                                  label="Врач"/>
+                                <FormControlLabel className={classes.formControlLab}
+                                                  control={<Radio color="primary"/>}
+                                                  value="Пользователь"
+                                                  label="Пользователь"
+                                />
+                                <FormControlLabel className={classes.formControlLab}
+                                                  control={<Radio color="primary"/>}
+                                                  value="Врач"
+                                                  label="Врач"
+                                                  labelPlacement='end'
+                                />
                             </RadioGroup>
                         </FormControl>
                         <Button

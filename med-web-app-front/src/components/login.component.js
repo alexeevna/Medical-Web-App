@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -26,6 +26,11 @@ function Copyright() {
 }
 
 const useStyles = theme => ({
+    root: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        }
+    },
     paper: {
         marginTop: theme.spacing(5),
         display: 'flex',
@@ -42,6 +47,7 @@ const useStyles = theme => ({
     },
     submit: {
         margin: theme.spacing(2, 0, 2),
+        backgroundColor: '#1B435D',
     },
 });
 
@@ -107,10 +113,10 @@ class Login extends Component {
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
                 <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        {/*<LockOutlinedIcon />*/}
-                        MED
-                    </Avatar>
+                    {/*<Avatar className={classes.avatar}>*/}
+                    {/*    /!*<LockOutlinedIcon />*!/*/}
+                    {/*    MED*/}
+                    {/*</Avatar>*/}
                     <Typography component="h1" variant="h5">
                         Вход
                     </Typography>
@@ -118,6 +124,7 @@ class Login extends Component {
                           onSubmit={this.handleLogin}
                     >
                         <TextField
+                            className={classes.root}
                             variant="outlined"
                             margin="normal"
                             required
@@ -131,6 +138,7 @@ class Login extends Component {
                             onChange={this.onChangeUsername}
                         />
                         <TextField
+                            className={classes.root}
                             variant="outlined"
                             margin="normal"
                             required
