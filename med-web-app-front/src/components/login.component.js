@@ -1,21 +1,53 @@
-import React, { Component } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-
+import React, {Component} from 'react';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Link from '@material-ui/core/Link';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
 import AuthService from "../services/auth.service";
+import {withStyles} from "@material-ui/core";
 
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
+function Copyright() {
+    return (
+        <Typography variant="body2" color="textSecondary" align="center">
+            {'Copyright © '}
+            <Link color="inherit" href="https://material-ui.com/">
+                Your Website
+            </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
+    );
+}
 
-export default class Login extends Component {
+const useStyles = theme => ({
+    root: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        }
+    },
+    paper: {
+        marginTop: theme.spacing(5),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    form: {
+        width: '100%',
+        marginTop: theme.spacing(1),
+    },
+    submit: {
+        margin: theme.spacing(2, 0, 2),
+        backgroundColor: '#1B435D',
+    },
+});
+
+class Login extends Component {
+
     constructor(props) {
         super(props);
         this.handleLogin = this.handleLogin.bind(this);
@@ -25,7 +57,6 @@ export default class Login extends Component {
         this.state = {
             username: "",
             password: "",
-            loading: false,
             message: ""
         };
     }
@@ -44,88 +75,98 @@ export default class Login extends Component {
 
     handleLogin(e) {
         e.preventDefault();
-
+        console.log("handleLogin")
         this.setState({
             message: "",
-            loading: true
         });
 
-        this.form.validateAll();
+        AuthService.login(this.state.username, this.state.password).then(
+            () => {
+                this.props.history.push("/profile/" + AuthService.getCurrentUser().username);
+                window.location.reload();
+            },
+            error => {
+                const resMessage =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message || error.toString();
+                console.log(error.response)
+                console.log(error.message)
+                console.log(error.toString())
+                console.log(resMessage)
+                this.setState({
+                    loading: false,
+                    message: resMessage
+                });
+            }
+        );
 
-        if (this.checkBtn.context._errors.length === 0) {
-            AuthService.login(this.state.username, this.state.password).then(
-                () => {
-                    this.props.history.push("/profile");
-                    window.location.reload();
-                },
-                error => {
-                    const resMessage =
-                        (error.response && error.response.data && error.response.data.message) ||
-                        error.message || error.toString();
-
-                    this.setState({
-                        loading: false,
-                        message: resMessage
-                    });
-                }
-            );
-        } else {
-            this.setState({
-                loading: false
-            });
-        }
     }
 
     render() {
+        const {classes} = this.props;
         return (
-            <div className="col-md-12">
-                <div className="card card-container color-light-blue">
-                    {/*<img*/}
-                    {/*    src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"*/}
-                    {/*    alt="profile-img"*/}
-                    {/*    className="profile-img-card"*/}
-                    {/*/>*/}
-
-                    <Form
-                        onSubmit={this.handleLogin}
-                        ref={c => {this.form = c;}}
+            <Container component="main" maxWidth="xs">
+                <CssBaseline/>
+                <div className={classes.paper}>
+                    <Typography component="h1" variant="h5">
+                        Вход
+                    </Typography>
+                    <form className={classes.form}
+                          onSubmit={this.handleLogin}
                     >
-                        <div className="form-group">
-                            <label htmlFor="username">Логин</label>
-                            <Input
-                                type="text"
-                                className="form-control"
-                                name="username"
-                                value={this.state.username}
-                                onChange={this.onChangeUsername}
-                                validations={[required]}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password">Пароль</label>
-                            <Input
-                                type="password"
-                                className="form-control"
-                                name="password"
-                                value={this.state.password}
-                                onChange={this.onChangePassword}
-                                validations={[required]}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <button
-                                className="btn btn-primary btn-block color-dark-blue"
-                                disabled={this.state.loading}
-                            >
-                                {this.state.loading && (
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                )}
-                                <span>Войти</span>
-                            </button>
-                        </div>
-
+                        <TextField
+                            className={classes.root}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="login"
+                            label="Логин"
+                            name="login"
+                            autoComplete="login"
+                            autoFocus
+                            value={this.state.username}
+                            onChange={this.onChangeUsername}
+                        />
+                        <TextField
+                            className={classes.root}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Пароль"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={this.state.password}
+                            onChange={this.onChangePassword}
+                        />
+                        <FormControlLabel
+                            control={<Checkbox value="remember" color="primary"/>}
+                            label="Запомнить"
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Войти
+                        </Button>
+                        {/*<Grid container>*/}
+                        {/*    <Grid item xs>*/}
+                        {/*        <Link href="#" variant="body2">*/}
+                        {/*            Забыли пароль?*/}
+                        {/*        </Link>*/}
+                        {/*    </Grid>*/}
+                        {/*    <Grid item>*/}
+                        {/*        <Link href="#" variant="body2">*/}
+                        {/*            {"Нет аккаунта? Зарегистрируйтесь."}*/}
+                        {/*        </Link>*/}
+                        {/*    </Grid>*/}
+                        {/*</Grid>*/}
                         {this.state.message && (
                             <div className="form-group">
                                 <div className="alert alert-danger" role="alert">
@@ -133,13 +174,14 @@ export default class Login extends Component {
                                 </div>
                             </div>
                         )}
-                        <CheckButton
-                            style={{ display: "none" }}
-                            ref={c => {this.checkBtn = c;}}
-                        />
-                    </Form>
+                    </form>
                 </div>
-            </div>
+                <Box mt={8}>
+                    <Copyright/>
+                </Box>
+            </Container>
         );
     }
 }
+
+export default withStyles(useStyles)(Login)

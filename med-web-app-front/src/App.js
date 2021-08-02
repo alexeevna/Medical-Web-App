@@ -5,8 +5,6 @@ import "./App.css";
 
 import AuthService from "./services/auth.service";
 
-import Login from "./components/login.component";
-import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
 import Search from "./components/search.component";
@@ -18,6 +16,9 @@ import ViewRecordsComponent from "./components/view-records.component";
 import CreateRecordComponent from "./components/create-record.component";
 import RecordThreadComponent from "./components/record-thread.component";
 import SavePipelineConfigComponent from "./components/save-pipeline-config.component";
+import TopicComponent from "./components/topic.component";
+import Register from "./components/register.component";
+import Login from "./components/login.component";
 
 class App extends Component {
   constructor(props) {
@@ -55,7 +56,6 @@ class App extends Component {
 
   render() {
     const { currentUser } = this.state;
-
     return (
         <div>
           <nav className="navbar navbar-expand color-dark-blue">
@@ -81,6 +81,7 @@ class App extends Component {
                     </Link>
                   </li>
               )}
+
             </div>
 
             {currentUser ? (
@@ -91,17 +92,17 @@ class App extends Component {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to={"/profile"} className="nav-link color-dark-blue">
-                      Мой профиль
+                    <Link
+                        to={"/profile/" + AuthService.getCurrentUser().username}
+                        className="nav-link color-dark-blue"
+                    >
+                      Мой Профиль
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link to={"/login"} className="nav-link color-dark-blue" onClick={this.logOut}>
                       Выйти
                     </Link>
-                    {/*<a href="/login" className="nav-link color-dark-blue" onClick={this.logOut}>*/}
-                    {/*  Выйти*/}
-                    {/*</a>*/}
                   </li>
                 </div>
             ) : (
@@ -127,7 +128,7 @@ class App extends Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/search" component={Search} />
-              <Route exact path="/profile" component={Profile} />
+              <Route exact path="/profile/:username" component={Profile} />
               <Route exact path="/pipelines/create" component={PipelinesComponent}/>
               <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
               <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
@@ -136,6 +137,7 @@ class App extends Component {
               <Route exact path="/records/view" component={ViewRecordsComponent}/>
               <Route exact path="/records/create" component={CreateRecordComponent}/>
               <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
+              <Route exact path="/topics/create" component={TopicComponent} />
             </Switch>
           </div>
         </div>

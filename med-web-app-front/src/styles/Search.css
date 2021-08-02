@@ -45,6 +45,10 @@
     width: 600px;
 }
 
+.td-search {
+    border: 1px solid #1B435D;
+}
+
 .td-search-notnullInitials {
     border: 1px solid #1B435D;
     height: 30px;
