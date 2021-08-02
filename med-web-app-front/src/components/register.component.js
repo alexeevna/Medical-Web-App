@@ -11,7 +11,6 @@ import Container from '@material-ui/core/Container';
 import '../styles/Search.css'
 import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
 import AuthService from "../services/auth.service";
-import {createStyles} from "@material-ui/core/styles";
 
 function Copyright() {
     return (
@@ -46,7 +45,7 @@ function Copyright() {
 //     }
 // };
 
-const useStyles = theme => createStyles({
+const useStyles = theme => ({
     root: {
         "& .MuiFormLabel-root": {
             margin: 0
