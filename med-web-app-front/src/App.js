@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { Switch, Route, Link } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import AuthService from "./services/auth.service";
-
+import NavigationBar from "./components/navigation-bar.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
 import Search from "./components/search.component";
@@ -19,109 +18,14 @@ import SavePipelineConfigComponent from "./components/save-pipeline-config.compo
 import TopicComponent from "./components/topic.component";
 import Register from "./components/register.component";
 import Login from "./components/login.component";
+import NotExist from "./components/not-exist.component";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.logOut = this.logOut.bind(this);
-
-    this.state = {
-      showModeratorBoard: false,
-      showAdminBoard: false,
-      currentUser: undefined,
-    };
-  }
-
-  componentDidMount() {
-    const user = AuthService.getCurrentUser();
-
-    if (user) {
-      AuthService.checkTokenIsExpired(user.token)
-          .then(response => {
-            this.setState({
-              currentUser: user
-            });
-          })
-          .catch(error => {
-            this.logOut();
-          }
-      )
-    }
-  }
-
-  logOut() {
-    AuthService.logout();
-    this.setState({currentUser: null});
-  }
 
   render() {
-    const { currentUser } = this.state;
     return (
         <div>
-          <nav className="navbar navbar-expand color-dark-blue">
-            <div className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link to={"/home"} className="nav-link color-dark-blue">
-                  Главная
-                </Link>
-              </li>
-
-              {currentUser && (
-                  <li className="nav-item">
-                    <Link to={"/pipelines/create"} className="nav-link color-dark-blue">
-                      Конвейеры
-                    </Link>
-                  </li>
-              )}
-
-              {currentUser && (
-                  <li className="nav-item">
-                    <Link to={"/records/view"} className="nav-link color-dark-blue">
-                      Посты
-                    </Link>
-                  </li>
-              )}
-
-            </div>
-
-            {currentUser ? (
-                <div className="navbar-nav ml-auto">
-                  <li className="nav-item">
-                    <Link to={"/search"} className="nav-link color-dark-blue">
-                      Поиск
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link
-                        to={"/profile/" + AuthService.getCurrentUser().username}
-                        className="nav-link color-dark-blue"
-                    >
-                      Мой Профиль
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to={"/login"} className="nav-link color-dark-blue" onClick={this.logOut}>
-                      Выйти
-                    </Link>
-                  </li>
-                </div>
-            ) : (
-                <div className="navbar-nav ml-auto">
-                  <li className="nav-item">
-                    <Link to={"/login"} className="nav-link color-dark-blue">
-                      Войти
-                    </Link>
-                  </li>
-
-                  <li className="nav-item">
-                    <Link to={"/register"} className="nav-link color-dark-blue">
-                      Зарегистрироваться
-                    </Link>
-                  </li>
-                </div>
-            )}
-          </nav>
-
+          <Route component = {NavigationBar} />
           <div className="container mt-3">
             <Switch>
               <Route exact path={["/", "/home"]} component={Home} />
@@ -138,6 +42,7 @@ class App extends Component {
               <Route exact path="/records/create" component={CreateRecordComponent}/>
               <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
               <Route exact path="/topics/create" component={TopicComponent} />
+              <Route component={NotExist} />
             </Switch>
           </div>
         </div>

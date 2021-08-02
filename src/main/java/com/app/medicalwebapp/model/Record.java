@@ -36,7 +36,7 @@ public class Record {
     @Column(name="parent")
     private Long parent;
 
-    @Column(name="title")
+    @Column(name="title", length = 100)
     private String title;
 
     @Column(name="content", length = 1500)
