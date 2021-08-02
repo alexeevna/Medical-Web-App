@@ -57,10 +57,6 @@ const useStyles = theme => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: '#1B435D',
-    },
     form: {
         width: '100%',
         marginTop: theme.spacing(2),
