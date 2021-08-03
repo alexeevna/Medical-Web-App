@@ -54,7 +54,8 @@ const useStyles = theme => ({
         marginBottom: theme.spacing(1),
     },
     label: {
-        margin: theme.spacing(2, 0, 1)
+        margin: theme.spacing(2, 0, 1),
+        color: "black"
     }
 });
 
@@ -276,8 +277,8 @@ class Register extends Component {
                             {/*    />*/}
                             {/*</Grid>*/}
                         </Grid>
+                        <FormLabel className={classes.label}>Выберите роль:</FormLabel>
                         <FormControl>
-                            <FormLabel className={classes.label}>Выберите роль:</FormLabel>
                             <RadioGroup value={this.state.chosenRole} onChange={this.onChangeRole}>
                                 <FormControlLabel className={classes.formControlLab}
                                                   control={<Radio color="primary"/>}
