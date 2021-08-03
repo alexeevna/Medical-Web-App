@@ -5,14 +5,16 @@ const API_URL = process.env.REACT_APP_API_URL + '/api/reviews/';
 
 class ReviewService {
 
-    getAllReviews() {
+    getAllReviews(targetId) {
+        let params = {};
+        if (targetId) params["targetId"] = targetId;
         return axios.get(API_URL + 'all',
-            {headers: authHeader()});
+            {headers: authHeader(), params: params});
     }
 
-    saveReview(content, parent= -1) {
+    saveReview(content, targetId, parent= -1) {
         return axios.post(API_URL + 'save',
-            {content, parent},{ headers: authHeader() });
+            {content, parent, targetId},{ headers: authHeader() });
     }
 
 }
