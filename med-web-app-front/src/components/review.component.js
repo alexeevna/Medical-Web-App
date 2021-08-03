@@ -3,6 +3,7 @@ import ReviewService from "../services/review.service"
 import Form from "react-validation/build/form";
 import CheckButton from "react-validation/build/button";
 import ReviewCard from "./review-card.component";
+import AuthService from "../services/auth.service";
 
 export default class reviewComponent extends Component {
     constructor(props) {
@@ -14,6 +15,7 @@ export default class reviewComponent extends Component {
         this.refreshList = this.refreshList.bind(this);
 
         this.state = {
+            targetId: this.props.targetId,
             reviews: [],
             content: "",
             submittedSuccessfully: false,
@@ -24,7 +26,7 @@ export default class reviewComponent extends Component {
     handleSubmitReview(e) {
         e.preventDefault();
         if (this.checkBtn.context._errors.length === 0) {
-            ReviewService.saveReview(this.state.content).then(
+            ReviewService.saveReview(this.state.content, this.state.targetId).then(
                 () => {
                     this.setState({
                         submittedSuccessfully: true,
@@ -61,7 +63,8 @@ export default class reviewComponent extends Component {
     }
 
     getReviews() {
-        ReviewService.getAllReviews()
+        console.log(this.state.targetId);
+        ReviewService.getAllReviews(this.state.targetId)
             .then(response => {
                 const { reviews } = response.data;
                 this.refreshList();
@@ -82,7 +85,6 @@ export default class reviewComponent extends Component {
     render() {
         return (
             <div>
-
                 <ul className="list-group">
                     {this.state.reviews &&
                     this.state.reviews.map((review, index) => (
@@ -97,6 +99,7 @@ export default class reviewComponent extends Component {
                 </ul>
 
 
+                {this.state.targetId !== AuthService.getCurrentUser().id &&
                 <div className="jumbotron align-center color-light-blue">
                     <Form
                         onSubmit={this.handleSubmitReview}
@@ -144,7 +147,7 @@ export default class reviewComponent extends Component {
                         />
 
                     </Form>
-                </div>
+                </div>}
             </div>
         )
     }
