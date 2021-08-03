@@ -50,14 +50,17 @@ export default class ReplyRecordForm extends Component {
     }
 
     onTopicsDropdownSelected(selectedValues) {
+
         let topicIds = selectedValues.map(topic => topic.value);
+        console.log(selectedValues);
+        console.log(topicIds);
         this.setState({selectedTopics: topicIds,
                             selectedTopicsValue: selectedValues});
     }
 
     handleSubmitRecord(e) {
         e.preventDefault();
-
+        console.log(this.state.selectedTopics);
         if (this.checkBtn.context._errors.length === 0) {
             RecordService.saveRecord(this.state.title, this.state.content, this.state.selectedTopics, this.state.selectedFiles).then(
                 () => {
