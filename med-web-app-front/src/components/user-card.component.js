@@ -1,37 +1,47 @@
 import React, {Component} from "react";
 import '../styles/Search.css'
-import {Link} from "react-router-dom";
+import {TableCell, withStyles} from "@material-ui/core";
 
-export default class UserCard extends Component {
+const useStyles = theme => ({
+    cells: {
+        fontSize: 17
+    },
+});
+
+class UserCard extends Component {
     constructor(props) {
         super(props);
         this.user = this.props.user;
     }
 
     render() {
+        const {classes} = this.props;
         return (
-            <Link to={"/profile/" + this.user.username} style={{ textDecoration: 'none', color: 'black'}}>
-
-                    {this.user.initials !== null &&
-                    <td className="td-search-notnullInitials">
+            <React.Fragment>
+                {this.user.initials !== null &&
+                <TableCell className={classes.cells}>
                         {this.user.initials + " "}
-                    </td>}
-                    {this.user.initials !== null &&
-                    <td className="td-search-notnullInitials">
-                        {this.user.username}
-                    </td>
-                    }
-
-                {this.user.initials === null &&
-                <td className="td-search-nullInitials">
+                </TableCell>}
+                {this.user.initials !== null &&
+                <TableCell className={classes.cells} align="right">
                     {this.user.username}
-                </td>
+                </TableCell>
                 }
 
-                <td className="td-search-role">
+                {this.user.initials === null &&
+                <TableCell className={classes.cells} colSpan={2} align="right">
+                    {this.user.username}
+                </TableCell>
+                }
+
+                <TableCell className={classes.cells} align="right">
                     {this.user.role}
-                </td>
-            </Link>
-        )
+                </TableCell>
+
+            </React.Fragment>
+        );
     }
+
 }
+
+export default withStyles(useStyles)(UserCard)

@@ -122,10 +122,10 @@ class Login extends Component {
                             value={this.state.password}
                             onChange={this.onChangePassword}
                         />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary"/>}
-                            label="Запомнить"
-                        />
+                        {/*<FormControlLabel*/}
+                        {/*    control={<Checkbox value="remember" color="primary"/>}*/}
+                        {/*    label="Запомнить"*/}
+                        {/*/>*/}
                         <Button
                             type="submit"
                             fullWidth
