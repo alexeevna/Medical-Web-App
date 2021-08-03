@@ -3,27 +3,12 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import '../styles/Search.css'
 import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
 import AuthService from "../services/auth.service";
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 // const required = value => {
 //     if (!value) {
@@ -52,7 +37,7 @@ const useStyles = theme => ({
         }
     },
     paper: {
-        marginTop: theme.spacing(5),
+        marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -69,7 +54,8 @@ const useStyles = theme => ({
         marginBottom: theme.spacing(1),
     },
     label: {
-        margin: theme.spacing(2, 0, 1)
+        margin: theme.spacing(2, 0, 1),
+        color: "black"
     }
 });
 
@@ -103,7 +89,6 @@ class Register extends Component {
     }
 
     vusername = value => {
-        console.log("vusername")
         if (value.length < 3 || value.length > 25) {
             this.setState({
                 usernameError: true
@@ -116,7 +101,6 @@ class Register extends Component {
     };
 
     vpassword = value => {
-        console.log("vpassword")
         if (value.length < 6 || value.length > 40) {
             this.setState({
                 passwordError: true
@@ -165,7 +149,6 @@ class Register extends Component {
         this.setState({
             chosenRole: e.target.value
         });
-        console.log(e.target.value)
     }
 
     handleRegister(e) {
@@ -294,8 +277,8 @@ class Register extends Component {
                             {/*    />*/}
                             {/*</Grid>*/}
                         </Grid>
+                        <FormLabel className={classes.label}>Выберите роль:</FormLabel>
                         <FormControl>
-                            <FormLabel className={classes.label}>Выберите роль:</FormLabel>
                             <RadioGroup value={this.state.chosenRole} onChange={this.onChangeRole}>
                                 <FormControlLabel className={classes.formControlLab}
                                                   control={<Radio color="primary"/>}
@@ -343,9 +326,6 @@ class Register extends Component {
                         )}
                     </form>
                 </div>
-                <Box mt={5}>
-                    <Copyright/>
-                </Box>
             </Container>
         );
     }

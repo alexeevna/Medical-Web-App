@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import AuthService from "../services/auth.service";
+import {Link} from "react-router-dom";
 
 export default class ReviewCard extends Component {
     constructor(props) {
@@ -53,7 +54,9 @@ export default class ReviewCard extends Component {
             <div>
                 <div className="jumbotron align-center color-light-blue">
                     <div className="row" style={{wordBreak: 'break-all'}}>
-                        <h6 className="fa fa-user line-break"> {this.review.creator.username}</h6>
+                        <Link to={"/profile/" + this.review.creator.username} style={{ textDecoration: 'none', color: 'dark-blue'}}>
+                            <h6 className="fa fa-user line-break"> {this.review.creator.username}</h6>
+                        </Link>
                         <h6 className="fa fa-calendar"> {new Date(this.review.creationTime).toLocaleDateString()}</h6>
                         <h6>{this.creationTime}</h6>
                     </div>
