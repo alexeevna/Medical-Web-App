@@ -4,25 +4,10 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import AuthService from "../services/auth.service";
 import {withStyles} from "@material-ui/core";
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const useStyles = theme => ({
     root: {
@@ -31,7 +16,7 @@ const useStyles = theme => ({
         }
     },
     paper: {
-        marginTop: theme.spacing(5),
+        marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -75,24 +60,19 @@ class Login extends Component {
 
     handleLogin(e) {
         e.preventDefault();
-        console.log("handleLogin")
         this.setState({
             message: "",
         });
 
         AuthService.login(this.state.username, this.state.password).then(
             () => {
-                this.props.history.push("/profile/" + AuthService.getCurrentUser().username);
+                this.props.history.push("/records/view");
                 window.location.reload();
             },
             error => {
                 const resMessage =
                     (error.response && error.response.data && error.response.data.message) ||
                     error.message || error.toString();
-                console.log(error.response)
-                console.log(error.message)
-                console.log(error.toString())
-                console.log(resMessage)
                 this.setState({
                     loading: false,
                     message: resMessage
@@ -142,10 +122,10 @@ class Login extends Component {
                             value={this.state.password}
                             onChange={this.onChangePassword}
                         />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary"/>}
-                            label="Запомнить"
-                        />
+                        {/*<FormControlLabel*/}
+                        {/*    control={<Checkbox value="remember" color="primary"/>}*/}
+                        {/*    label="Запомнить"*/}
+                        {/*/>*/}
                         <Button
                             type="submit"
                             fullWidth
@@ -176,9 +156,6 @@ class Login extends Component {
                         )}
                     </form>
                 </div>
-                <Box mt={8}>
-                    <Copyright/>
-                </Box>
             </Container>
         );
     }
