@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Link, Route } from "react-router-dom";
+import {Link} from "react-router-dom";
 import AuthService from "../services/auth.service";
 import ProfileService from "../services/profile.service";
 
@@ -84,7 +84,7 @@ export default class Profile extends Component {
                         </div>
 
                         { showReviews && (
-                            <Route component={Review}/>
+                            <Review targetId={user.id}/>
                         )}
 
                     </div>

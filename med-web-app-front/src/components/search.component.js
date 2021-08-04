@@ -2,9 +2,55 @@ import React, {Component} from "react";
 import '../styles/Search.css'
 import UserService from "../services/user.service";
 import UserCard from "./user-card.component";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import {Link} from "react-router-dom";
 
 
-export default class Search extends Component {
+const StyledTableRow = withStyles((theme) => ({
+    root: {
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
+    },
+}))(TableRow);
+
+const useStyles = theme => ({
+    root: {
+        "& .MuiPaper-root": {
+            width: 800,
+            backgroundColor: '#F9F0DA'
+        },
+        "& .MuiTableRow-root": {
+            color: "black",
+        }
+    },
+    header: {
+        backgroundColor: '#1B435D',
+        color: 'white',
+        fontSize: 17
+    },
+    table: {
+        width: 800,
+    },
+    formControlLab: {
+        marginBottom: theme.spacing(0),
+    },
+    label: {
+        margin: theme.spacing(2, 0, 1),
+        color: "black"
+    }
+});
+
+
+class Search extends Component {
     constructor(props) {
         super(props);
         this.getUsers = this.getUsers.bind(this)
@@ -102,6 +148,7 @@ export default class Search extends Component {
     }
 
     render() {
+        const {classes} = this.props;
         return (
             <div>
                 <div className="div-search">
@@ -120,72 +167,80 @@ export default class Search extends Component {
                         </button>
                     </form>
                 </div>
-
-                <label>Параметры поиска:</label>
-                <div className="div-search-left">
-                    <p>
-                        <input type="radio"
-                               value="login"
-                               checked={this.state.searchParamsType === "login"}
-                               onChange={this.onChangeParamsTypeSearch}
-                               name="paramsType"
-                        />
-                        по логину
-                    </p>
-                    <p>
-                        <input type="radio"
-                               value="initials"
-                               checked={this.state.searchParamsType === "initials"}
-                               onChange={this.onChangeParamsTypeSearch}
-                               name="paramsType"/>
-                        по фамилии и имени
-                    </p>
-                </div>
-                <div className="div-search-left">
-                    <p>
-                        <input type="radio"
-                               value="Все"
-                               checked={this.state.searchParamsRole === "Все"}
-                               onChange={this.onChangeParamsRoleSearch}
-                               name="paramsRole"
-                        />
-                        по всем
-                    </p>
-                    <p>
-                        <input type="radio"
-                               value="Пользователь"
-                               checked={this.state.searchParamsRole === "Пользователь"}
-                               onChange={this.onChangeParamsRoleSearch}
-                               name="paramsRole"/>
-                        по пользователям
-                    </p>
-                    <p>
-                        <input type="radio"
-                               value="Врач"
-                               checked={this.state.searchParamsRole === "Врач"}
-                               onChange={this.onChangeParamsRoleSearch}
-                               name="paramsRole"/>
-                        по врачам
-                    </p>
+                <div className="div-search">
+                    <FormLabel className={classes.label}>Параметры поиска:</FormLabel>
+                    <FormControl>
+                        <RadioGroup value={this.state.searchParamsType} onChange={this.onChangeParamsTypeSearch}>
+                            <FormControlLabel className={classes.formControlLab}
+                                              control={<Radio color="primary"/>}
+                                              value="login"
+                                              label="по логину"
+                            />
+                            <FormControlLabel className={classes.formControlLab}
+                                              control={<Radio color="primary"/>}
+                                              value="initials"
+                                              label="по фамилии и имени"
+                                              labelPlacement='end'
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                    <FormControl>
+                        <RadioGroup value={this.state.searchParamsRole} onChange={this.onChangeParamsRoleSearch}>
+                            <FormControlLabel className={classes.formControlLab}
+                                              control={<Radio color="primary"/>}
+                                              value="Все"
+                                              label="по всем"
+                            />
+                            <FormControlLabel className={classes.formControlLab}
+                                              control={<Radio color="primary"/>}
+                                              value="Пользователь"
+                                              label="по пользователям"
+                                              labelPlacement='end'
+                            />
+                            <FormControlLabel className={classes.formControlLab}
+                                              control={<Radio color="primary"/>}
+                                              value="Врач"
+                                              label="по врачам"
+                                              labelPlacement='end'
+                            />
+                        </RadioGroup>
+                    </FormControl>
                 </div>
 
-                <div className="div-search div-search-clear">
-                    <table className="table-search">
-                        <tbody>
-                        {this.state.users &&
-                        this.state.users.map((user, index) => (
-                            <tr
-                                className="tr-search"
-                                key={index}
-                            >
-                                <UserCard user={user}/>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                <div className={classes.root}>
+                    <TableContainer component={Paper}>
+                        <Table className={classes.table} aria-label="spanning table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell className={classes.header} width={300}>
+                                        Фамилия Имя
+                                    </TableCell>
+                                    <TableCell className={classes.header} width={250} align={"right"}>
+                                        Логин
+                                    </TableCell>
+                                    <TableCell className={classes.header} width={250} align={"right"}>
+                                        Роль
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {this.state.users &&
+                                this.state.users.map((user, index) => (
+                                    <StyledTableRow
+                                        component={Link}
+                                        to={"profile/" + user.username}
+                                        key={index}
+                                    >
+                                        <UserCard user={user}/>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </div>
-
             </div>
         );
     }
 }
+
+export default withStyles(useStyles)(Search)

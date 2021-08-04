@@ -25,7 +25,7 @@ class App extends Component {
   render() {
     return (
         <div>
-          <Route component = {NavigationBar} />
+          <NavigationBar />
           <div className="container mt-3">
             <Switch>
               <Route exact path={["/", "/home"]} component={Home} />
