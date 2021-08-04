@@ -19,6 +19,7 @@ import TopicComponent from "./components/topic.component";
 import Register from "./components/register.component";
 import Login from "./components/login.component";
 import NotExist from "./components/not-exist.component";
+import ProfileOld from "./components/profile.component(old vers)";
 
 class App extends Component {
 

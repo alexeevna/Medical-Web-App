@@ -159,14 +159,8 @@ class Register extends Component {
             successful: false
         });
 
-        let initials = null
-        if (this.state.lastname !== null && this.state.firstname !== null) {
-            initials = this.state.lastname + " " + this.state.firstname
-        } else if (this.state.lastname !== null) {
-            initials = this.state.lastname
-        } else if (this.state.firstname !== null) {
-            initials = this.state.firstname
-        }
+        let initials
+        initials = this.state.lastname + " " + this.state.firstname
         if (!this.state.usernameError && !this.state.passwordError) {
             AuthService.register(
                 this.state.username,
@@ -212,6 +206,7 @@ class Register extends Component {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    required
                                     className={classes.root}
                                     autoComplete="fname"
                                     name="firstName"
@@ -226,6 +221,7 @@ class Register extends Component {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    required
                                     className={classes.root}
                                     variant="outlined"
                                     fullWidth

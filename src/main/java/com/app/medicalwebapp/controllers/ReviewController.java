@@ -26,7 +26,6 @@ public class ReviewController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllReviewsByTarget(@Valid long targetId) {
         try {
-            System.out.println(targetId);
             return ResponseEntity.ok().body(reviewService.getReviewsByTarget(-1L, targetId));
         } catch (Exception e) {
             e.printStackTrace();
