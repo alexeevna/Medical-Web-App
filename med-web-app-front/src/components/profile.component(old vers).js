@@ -4,7 +4,7 @@ import AuthService from "../services/auth.service";
 import ProfileService from "../services/profile.service";
 
 import '../styles/Profile.css'
-import Review from "./review.component"
+import Review from "./review.component(old vers)"
 
 
 export default class ProfileOld extends Component {

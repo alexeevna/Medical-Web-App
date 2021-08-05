@@ -1,14 +1,12 @@
 import React, {Component} from "react";
-import {Link} from "react-router-dom";
 import AuthService from "../services/auth.service";
 import ProfileService from "../services/profile.service";
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import '../styles/Profile.css'
 import Review from "./review.component"
-import {Card, CardContent, CssBaseline, TextField, withStyles} from "@material-ui/core";
+import {ButtonBase, Card, TextField, withStyles} from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
-import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
     txtField: {
@@ -33,11 +31,20 @@ const useStyles = theme => ({
         }
     },
     paper: {
-        // width: 700,
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+        padding: theme.spacing(1),
+        color: "black",
+        // display: 'flex',
+    },
+    paper2: {
         margin: theme.spacing(3),
         padding: theme.spacing(3),
         color: "black",
+    },
+    mainGrid: {
         display: 'flex',
+        minWidth: 1000,
     },
     avatar: {
         width: 130,
@@ -46,15 +53,28 @@ const useStyles = theme => ({
         marginRight: theme.spacing(4),
         marginLeft: theme.spacing(4),
     },
-    div: {
-        width: 100,
-        height: 100,
-        marginRight: 0,
+    button: {
+        width: 200,
+        margin: theme.spacing(1),
+        backgroundColor: 'orange'
     },
     grid: {
         margin: theme.spacing(1),
         alignItems: 'center',
         flexDirection: 'column',
+        display: 'flex',
+    },
+    gridData: {
+        marginLeft: theme.spacing(8),
+        alignItems: 'center',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    gridInPaper: {
+        marginTop: theme.spacing(1),
+        marginLeft: theme.spacing(1),
+        padding: theme.spacing(1),
+        color: "black",
         display: 'flex',
     }
 });
@@ -114,80 +134,84 @@ class Profile extends Component {
             this.getUser(this.props.match.params.username);
         }
         const {user} = this.state;
-        console.log(user)
         const {showReviews} = this.state;
         const {classes} = this.props;
         return (
             <div>
-                <CssBaseline/>
-                <Grid container spacing={3}>
-                    {
-                        user &&
-                        <Grid xs={12} className={classes.paper}>
+                {
+                    user &&
+                    <Grid container spacing={3}>
+                        <Grid xs={12} className={classes.mainGrid}>
                             <Grid xs={8}>
                                 <Card className={classes.paper}>
-                                    <Grid className={classes.grid}>
-                                        <Avatar className={classes.avatar}>
-                                            Photo
-                                        </Avatar>
-                                        <div>Дата регистрации:</div>
-                                        <div>{new Date(user.registeredDate).toLocaleDateString()}</div>
-                                    </Grid>
-                                    <Grid className={classes.grid}>
-                                        <TextField
-                                            multiline
-                                            className={classes.txtField}
-                                            id="standard-read-only-input"
-                                            maxRows={4}
-                                            defaultValue={user.initials}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                        />
-                                        <TextField
-                                            multiline
-                                            className={classes.txtFieldUsername}
-                                            id="standard-read-only-input"
-                                            maxRows={4}
-                                            defaultValue={user.username}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                        />
-                                        <TextField
-                                            className={classes.txtFieldRole}
-                                            id="standard-read-only-input"
-                                            defaultValue={user.role}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                        />
+                                    <Grid className={classes.gridInPaper}>
+                                        <Grid className={classes.grid}>
+                                            <ButtonBase>
+                                                <Avatar className={classes.avatar}>
+                                                    Photo
+                                                </Avatar>
+                                            </ButtonBase>
+                                            <div>Дата регистрации:</div>
+                                            <div>{new Date(user.registeredDate).toLocaleDateString()}</div>
+                                        </Grid>
+                                        <Grid className={classes.gridData}>
+                                            <TextField
+                                                multiline
+                                                className={classes.txtField}
+                                                id="standard-read-only-input"
+                                                maxRows={4}
+                                                defaultValue={user.initials}
+                                                InputProps={{
+                                                    readOnly: true,
+                                                }}
+                                            />
+                                            <TextField
+                                                multiline
+                                                className={classes.txtFieldUsername}
+                                                id="standard-read-only-input"
+                                                maxRows={4}
+                                                defaultValue={user.username}
+                                                InputProps={{
+                                                    readOnly: true,
+                                                }}
+                                            />
+                                            <TextField
+                                                className={classes.txtFieldRole}
+                                                id="standard-read-only-input"
+                                                defaultValue={user.role}
+                                                InputProps={{
+                                                    readOnly: true,
+                                                }}
+                                            />
+                                        </Grid>
                                     </Grid>
                                 </Card>
                             </Grid>
                             {user && user.username === AuthService.getCurrentUser().username &&
                             <Grid xs={4}>
-                                <Card className={classes.paper}>
-                                    <div>
-                                        <Link to={"/files/view"} className="nav-link card-link-custom color-orange">
+                                <Card className={classes.paper2}>
+                                    <Grid className={classes.grid}>
+                                        <Button variant="contained" href="#/files/view" className={classes.button}>
                                             Мои файлы
-                                        </Link>
-                                        <Link to={"/files/upload"} className="nav-link card-link-custom color-orange">
+                                        </Button>
+                                        <Button variant="contained" href="#/files/upload" className={classes.button}>
                                             Загрузить файл
-                                        </Link>
-                                    </div>
+                                        </Button>
+                                    </Grid>
                                 </Card>
                             </Grid>
                             }
                         </Grid>
-                    }
-                    {/*{showReviews && (*/}
-                    {/*    <Review targetId={user.id}/>*/}
-                    {/*)}*/}
-                </Grid>
+
+                        {showReviews && (
+                            <Review targetId={user.id}/>
+                        )}
+                    </Grid>
+                }
             </div>
         );
     }
+
 }
 
 export default withStyles(useStyles)(Profile)
