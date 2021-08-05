@@ -24,7 +24,7 @@ public class ReviewService {
     public ReviewResponse getReviewsByTarget(long parent, long targetId) {
         User target = new User();
         target.setId(targetId);
-        List<Review> reviews = reviewRepository.findByParentAndTarget(parent, target);
+        List<Review> reviews = reviewRepository.findByParentAndTargetOrderByCreationTimeDesc(parent, target);
         return ReviewResponse.builder()
                 .reviews(reviews)
                 .build();

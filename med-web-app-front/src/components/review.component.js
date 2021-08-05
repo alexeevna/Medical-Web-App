@@ -35,8 +35,7 @@ const useStyles = theme => ({
     },
     submit: {
         width: 50,
-        height: 55,
-        // margin: theme.spacing(1, 0, 0),
+        height: 73,
         backgroundColor: '#1B435D',
     },
 });
@@ -129,6 +128,7 @@ class reviewComponent extends Component {
                                 <TextField
                                     className={classes.root}
                                     multiline
+                                    minRows={2}
                                     maxRows={10}
                                     variant="outlined"
                                     fullWidth
@@ -171,12 +171,12 @@ class reviewComponent extends Component {
                     <Grid>
                         {this.state.reviews &&
                         this.state.reviews.map((review, index) => (
-                            <li
+                            <Grid
                                 style={{listStyleType: "none"}}
                                 key={index}
                             >
                                 <ReviewCard review={review} isPreview={true} isReply={false}/>
-                            </li>
+                            </Grid>
 
                         ))}
                     </Grid>

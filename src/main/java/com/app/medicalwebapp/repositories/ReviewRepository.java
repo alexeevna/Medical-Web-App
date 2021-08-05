@@ -12,6 +12,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByParent(Long parent);
 
-    List<Review> findByParentAndTarget(Long parent, User target);
+    List<Review> findByParentAndTargetOrderByCreationTimeDesc(Long parent, User target);
 
 }

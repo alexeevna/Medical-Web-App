@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {Card, withStyles} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = theme => ({
     hMargin:{
@@ -28,7 +29,10 @@ const useStyles = theme => ({
         margin: theme.spacing(3),
         borderRadius: 20,
         backgroundColor: "#eeeeee"
-    }
+    },
+    content: {
+        wordWrap: 'break-word',
+    },
 });
 
 class ReviewCard extends Component {
@@ -63,8 +67,8 @@ class ReviewCard extends Component {
     }
 
     getContent(content) {
-        if (this.props.isPreview && content != null && content.length > 500) {
-            return content.substring(0, 500) + '...';
+        if (this.props.isPreview && content != null && content.length > 1000) {
+            return content.substring(0, 1000) + '...';
         }
         return content;
     }
@@ -104,7 +108,9 @@ class ReviewCard extends Component {
                         </Grid>
                     </Grid>
                     <Grid className={classes.gridContent}>
-                        {this.getContent(this.review.content)}
+                        <Typography className={classes.content}>
+                            {this.getContent(this.review.content)}
+                        </Typography>
                     </Grid>
                 </Card>
             </Grid>
