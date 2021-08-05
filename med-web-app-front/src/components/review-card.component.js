@@ -1,8 +1,41 @@
 import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import {Link} from "react-router-dom";
+import {Card, withStyles} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
 
-export default class ReviewCard extends Component {
+const useStyles = theme => ({
+    hMargin:{
+        margin: 0
+    },
+    mainGrid: {
+        display: 'flex',
+    },
+    grid: {
+        margin: theme.spacing(1.5,0,0,1),
+        display: 'flex',
+    },
+    gridContent: {
+        margin: theme.spacing(2),
+    },
+    avatar: {
+        width: 30,
+        height: 30,
+        margin: theme.spacing(2,0,0,2),
+    },
+    paper:{
+        margin: theme.spacing(3),
+        borderRadius: 20,
+        backgroundColor: "#eeeeee"
+    },
+    content: {
+        wordWrap: 'break-word',
+    },
+});
+
+class ReviewCard extends Component {
     constructor(props) {
         super(props);
 
@@ -34,8 +67,8 @@ export default class ReviewCard extends Component {
     }
 
     getContent(content) {
-        if (this.props.isPreview && content != null && content.length > 40) {
-            return content.substring(0, 110) + '...';
+        if (this.props.isPreview && content != null && content.length > 1000) {
+            return content.substring(0, 1000) + '...';
         }
         return content;
     }
@@ -48,22 +81,41 @@ export default class ReviewCard extends Component {
         minutes = minutes >= 10 ? minutes : '0' + minutes;
         return hours + ':' + minutes;
     }
-//TODO в строке попытался добавить разделение
-    render() {
-        return(
-            <div>
-                <div className="jumbotron align-center color-light-blue">
-                    <div className="row" style={{wordBreak: 'break-all'}}>
-                        <Link to={"/profile/" + this.review.creator.username} style={{ textDecoration: 'none', color: 'dark-blue'}}>
-                            <h6 className="fa fa-user line-break"> {this.review.creator.username}</h6>
-                        </Link>
-                        <h6 className="fa fa-calendar"> {new Date(this.review.creationTime).toLocaleDateString()}</h6>
-                        <h6>{this.creationTime}</h6>
-                    </div>
 
-                    <div className="bottom-buffer-10"> {this.getContent(this.review.content)}</div>
-                </div>
-            </div>
+    render() {
+        const {classes} = this.props;
+        return(
+            <Grid spacing={1}>
+                <Card className={classes.paper}>
+                    <Grid className={classes.mainGrid}>
+                        <Grid>
+                            <Avatar className={classes.avatar}>
+                                Photo
+                            </Avatar>
+                        </Grid>
+                        <Grid className={classes.grid}>
+                            <Grid className={classes.grid}>
+                                <Link to={"/profile/" + this.review.creator.username} style={{ textDecoration: 'none', color: 'dark-blue'}}>
+                                    <h6 className={classes.hMargin}> {this.review.creator.username}</h6>
+                                </Link>
+                            </Grid>
+                            <Grid className={classes.grid}>
+                                <h6 className={classes.hMargin}> {new Date(this.review.creationTime).toLocaleDateString()}</h6>
+                            </Grid>
+                            <Grid className={classes.grid}>
+                                <h6 className={classes.hMargin}>{this.creationTime}</h6>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid className={classes.gridContent}>
+                        <Typography className={classes.content}>
+                            {this.getContent(this.review.content)}
+                        </Typography>
+                    </Grid>
+                </Card>
+            </Grid>
         )
     }
 }
+
+export default withStyles(useStyles)(ReviewCard)

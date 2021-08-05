@@ -33,9 +33,9 @@ public class Review {
     @JoinColumn(name="creator", nullable=false)
     private User creator;
 
-//    @ManyToOne
-//    @JoinColumn(name="target", nullable=false)
-//    private User target;
+    @ManyToOne
+    @JoinColumn(name="target"/*, nullable=false*/)
+    private User target;
 
     @Column(name="num_replies")
     private int numberOfReplies;

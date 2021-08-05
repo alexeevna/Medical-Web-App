@@ -1,10 +1,46 @@
 import React, {Component} from "react";
 import ReviewService from "../services/review.service"
-import Form from "react-validation/build/form";
-import CheckButton from "react-validation/build/button";
 import ReviewCard from "./review-card.component";
+import AuthService from "../services/auth.service";
+import {Card, Grid, withStyles} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 
-export default class reviewComponent extends Component {
+const useStyles = theme => ({
+    root: {
+        width: 635,
+        marginRight: theme.spacing(1),
+        "& .MuiFormLabel-root": {
+            margin: 0,
+            color: "black"
+        }
+    },
+    grid: {
+        margin: theme.spacing(1),
+        display: 'flex',
+    },
+    gridMessage: {
+        margin: theme.spacing(1),
+    },
+    mainGrid: {
+        minWidth: 668,
+    },
+    paper: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+        padding: theme.spacing(1),
+        color: "black",
+        // display: 'flex',
+    },
+    submit: {
+        width: 50,
+        height: 73,
+        backgroundColor: '#1B435D',
+    },
+});
+
+class reviewComponent extends Component {
     constructor(props) {
         super(props);
         this.handleSubmitReview = this.handleSubmitReview.bind(this);
@@ -14,6 +50,7 @@ export default class reviewComponent extends Component {
         this.refreshList = this.refreshList.bind(this);
 
         this.state = {
+            targetId: this.props.targetId,
             reviews: [],
             content: "",
             submittedSuccessfully: false,
@@ -23,31 +60,26 @@ export default class reviewComponent extends Component {
 
     handleSubmitReview(e) {
         e.preventDefault();
-        if (this.checkBtn.context._errors.length === 0) {
-            ReviewService.saveReview(this.state.content).then(
-                () => {
-                    this.setState({
-                        submittedSuccessfully: true,
-                        message: "Успешно опубликовано",
-                        content: "",
-                    });
-                    this.getReviews();
-                },
-                error => {
-                    const resMessage =
-                        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        ReviewService.saveReview(this.state.content, this.state.targetId).then(
+            () => {
+                this.setState({
+                    submittedSuccessfully: true,
+                    message: "Успешно опубликовано",
+                    content: "",
+                });
+                this.getReviews();
+            },
+            error => {
+                const resMessage =
+                    (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
 
-                    this.setState({
-                        submittedSuccessfully: false,
-                        message: resMessage
-                    });
-                }
-            )
-        } else {
-            this.setState({
-                loading: false
-            });
-        }
+                this.setState({
+                    submittedSuccessfully: false,
+                    message: resMessage
+                });
+            }
+        )
+
     }
 
     onChangeContent(e) {
@@ -61,12 +93,12 @@ export default class reviewComponent extends Component {
     }
 
     getReviews() {
-        ReviewService.getAllReviews()
+        ReviewService.getAllReviews(this.state.targetId)
             .then(response => {
-                const { reviews } = response.data;
+                const {reviews} = response.data;
                 this.refreshList();
 
-                this.setState({reviews: reviews })
+                this.setState({reviews: reviews})
             })
             .catch((e) => {
                 console.log(e);
@@ -80,72 +112,82 @@ export default class reviewComponent extends Component {
     }
 
     render() {
+        const {classes} = this.props;
         return (
-            <div>
+            <Grid xs={8} >
+                <Grid className={classes.mainGrid}>
+                {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
 
-                <ul className="list-group">
-                    {this.state.reviews &&
-                    this.state.reviews.map((review, index) => (
-                        <li
-                            style={{listStyleType: "none"}}
-                            key={index}
+                <Card className={classes.paper}>
+                    {this.state.targetId !== AuthService.getCurrentUser().id &&
+                    <div>
+                        <form className={classes.form}
+                              onSubmit={this.handleSubmitReview}
                         >
-                            <ReviewCard review={review} isPreview={true} isReply={false}/>
-                        </li>
-
-                    ))}
-                </ul>
-
-
-                <div className="jumbotron align-center color-light-blue">
-                    <Form
-                        onSubmit={this.handleSubmitReview}
-                        ref={c => {this.inputForm = c;}}
-                    >
-                        <div className="form-group">
-                            <label htmlFor="content">Оставить отзыв:</label>
-                            <textarea className="form-control"
-                                      id="exampleFormControlTextarea1"
-                                      rows="4"
-                                      onChange={this.onChangeContent}
-                                      value={this.state.content}
-                                      autoComplete="off"
-                            >
-                            </textarea>
-                        </div>
-
-                        <div className="form-group top-buffer-10">
-                            <button
-                                className="btn btn-primary btn-block color-dark-blue"
-                                disabled={!this.state.content}
-                            >
-                                <span>Опубликовать</span>
-                            </button>
-                        </div>
-
-                        {this.state.message && (
-                            <div className="form-group">
-                                <div
-                                    className={
-                                        this.state.submittedSuccessfully
-                                            ? "alert alert-success"
-                                            : "alert alert-danger"
-                                    }
-                                    role="alert"
+                            <Grid className={classes.grid}>
+                                <TextField
+                                    className={classes.root}
+                                    multiline
+                                    minRows={2}
+                                    maxRows={10}
+                                    variant="outlined"
+                                    fullWidth
+                                    id="content"
+                                    label="Оставьте отзыв..."
+                                    name="content"
+                                    autoComplete="off"
+                                    value={this.state.content}
+                                    onChange={this.onChangeContent}
+                                />
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    // onClick={this.handleRegister}
+                                    className={classes.submit}
+                                    disabled={!this.state.content}
                                 >
-                                    {this.state.message}
-                                </div>
-                            </div>
-                        )}
+                                    <DoneOutlineIcon/>
+                                </Button>
+                            </Grid>
 
-                        <CheckButton
-                            style={{ display: "none" }}
-                            ref={c => {this.checkBtn = c;}}
-                        />
+                            {this.state.message && (
+                                <Grid className={classes.gridMessage}>
+                                    <div
+                                        className={
+                                            this.state.submittedSuccessfully
+                                                ? "alert alert-success"
+                                                : "alert alert-danger"
+                                        }
+                                        role="alert"
+                                    >
+                                        {this.state.message}
+                                    </div>
+                                </Grid>
+                            )}
+                        </form>
+                    </div>}
+                    <Grid>
+                        {this.state.reviews &&
+                        this.state.reviews.map((review, index) => (
+                            <Grid
+                                style={{listStyleType: "none"}}
+                                key={index}
+                            >
+                                <ReviewCard review={review} isPreview={true} isReply={false}/>
+                            </Grid>
 
-                    </Form>
-                </div>
-            </div>
+                        ))}
+                    </Grid>
+
+                </Card>
+                }
+                </Grid>
+            </Grid>
         )
     }
+
 }
+
+export default withStyles(useStyles)(reviewComponent)

@@ -17,7 +17,7 @@ import {Link} from "react-router-dom";
 const StyledTableRow = withStyles((theme) => ({
     root: {
         '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
+            backgroundColor: "#e0e0e0",
         },
     },
 }))(TableRow);
@@ -26,7 +26,7 @@ const useStyles = theme => ({
     root: {
         "& .MuiPaper-root": {
             width: 800,
-            backgroundColor: '#F9F0DA'
+            backgroundColor: '#ffffff'
         },
         "& .MuiTableRow-root": {
             color: "black",
