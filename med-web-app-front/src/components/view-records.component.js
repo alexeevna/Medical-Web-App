@@ -4,9 +4,10 @@ import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import Select from 'react-select';
-import RecordCard from "./record-card.component";
+import RecordCardNew from "./record-card-new.component";
 import Topic from "./topic.component"
 import TopicService from "../services/topic.service";
+import {Grid} from "@material-ui/core";
 
 export default class ViewRecordsList extends Component {
     constructor(props) {
@@ -98,7 +99,7 @@ export default class ViewRecordsList extends Component {
         });
     }
 
-    displayRecordThread(record, index) {
+    displayRecordThread(record) {
         // this.setState({
         //     currentRecord: record,
         //     currentIndex: index,
@@ -197,18 +198,18 @@ export default class ViewRecordsList extends Component {
                     </div>
 
 
-                    <ul className="list-group">
+                    <Grid container spacing={2} direction={"column"}>
                         {this.state.records &&
                         this.state.records.map((record, index) => (
-                            <li
+                            <Grid item
                                 style={{listStyleType: "none"}}
                                 key={index}
-                                onClick={() => this.displayRecordThread(record, index)}
+                                onClick={() => this.displayRecordThread(record)}
                             >
-                                <RecordCard record={record} isPreview={true} isReply={false}/>
-                            </li>
+                                <RecordCardNew record={record} isPreview={true} isReply={false} />
+                            </Grid>
                         ))}
-                    </ul>
+                    </Grid>
                 </div>
 
                 <div className="col-sm-2">

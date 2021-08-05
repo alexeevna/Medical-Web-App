@@ -125,8 +125,19 @@ label {
   background-color: #FF895D;
   color: #1B435D;
 }
+.color-white {
+  background-color: #FFFFFF;
+  color: #495057;
+}
 
 .progress-bar-orange {
   background-color: #FF895D !important;
 }
 
+.main-background-color{
+  position: fixed;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  background-color: #f5f5f5;
+}

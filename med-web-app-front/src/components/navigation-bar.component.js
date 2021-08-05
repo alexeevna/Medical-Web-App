@@ -39,17 +39,17 @@ export default class navigationBar extends Component {
     render() {
         const { currentUser } = this.state;
         return (
-            <nav className="navbar navbar-expand color-dark-blue">
+            <nav className="navbar navbar-expand color-white">
                 <div className="navbar-nav mr-auto">
                     <li className="nav-item">
-                        <Link to={"/home"} className="nav-link color-dark-blue">
+                        <Link to={"/home"} className="nav-link color-white">
                             Главная
                         </Link>
                     </li>
 
                     {currentUser && (
                         <li className="nav-item">
-                            <Link to={"/pipelines/create"} className="nav-link color-dark-blue">
+                            <Link to={"/pipelines/create"} className="nav-link color-white">
                                 Конвейеры
                             </Link>
                         </li>
@@ -57,7 +57,7 @@ export default class navigationBar extends Component {
 
                     {currentUser && (
                         <li className="nav-item">
-                            <Link to={"/records/view"} className="nav-link color-dark-blue">
+                            <Link to={"/records/view"} className="nav-link color-white">
                                 Посты
                             </Link>
                         </li>
@@ -68,20 +68,20 @@ export default class navigationBar extends Component {
                 {currentUser ? (
                     <div className="navbar-nav ml-auto">
                         <li className="nav-item">
-                            <Link to={"/search"} className="nav-link color-dark-blue">
+                            <Link to={"/search"} className="nav-link color-white">
                                 Поиск
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link
                                 to={"/profile/" + AuthService.getCurrentUser().username}
-                                className="nav-link color-dark-blue"
+                                className="nav-link color-white"
                             >
                                 Мой Профиль
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link to={"/login"} className="nav-link color-dark-blue" onClick={this.logOut}>
+                            <Link to={"/login"} className="nav-link color-white" onClick={this.logOut}>
                                 Выйти
                             </Link>
                         </li>
@@ -89,13 +89,13 @@ export default class navigationBar extends Component {
                 ) : (
                     <div className="navbar-nav ml-auto">
                         <li className="nav-item">
-                            <Link to={"/login"} className="nav-link color-dark-blue">
+                            <Link to={"/login"} className="nav-link color-white">
                                 Войти
                             </Link>
                         </li>
 
                         <li className="nav-item">
-                            <Link to={"/register"} className="nav-link color-dark-blue">
+                            <Link to={"/register"} className="nav-link color-white">
                                 Зарегистрироваться
                             </Link>
                         </li>

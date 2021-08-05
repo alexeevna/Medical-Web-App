@@ -24,7 +24,7 @@ class App extends Component {
 
   render() {
     return (
-        <div>
+        <div className="main-background-color" >
           <NavigationBar />
           <div className="container mt-3">
             <Switch>

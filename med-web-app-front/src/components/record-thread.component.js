@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
-import RecordCard from "./record-card.component";
+import RecordCardNew from "./record-card-new.component";
 import ReplyRecordForm from "./reply-record.form";
 
 export default class RecordThreadComponent extends Component {
@@ -49,7 +49,7 @@ export default class RecordThreadComponent extends Component {
                 <div className="col-md-9">
 
                     {this.state.record &&
-                        (<RecordCard record={this.state.record} isPreview={false} isReply={false}/>)
+                        (<RecordCardNew record={this.state.record} isPreview={false} isReply={false}/>)
                     }
 
                     <ul className="list-group">
@@ -61,7 +61,7 @@ export default class RecordThreadComponent extends Component {
 
                                 // onClick={() => this.displayRecordThread(record, index)}
                             >
-                                <RecordCard record={record} isPreview={false} isReply={true}/>
+                                <RecordCardNew record={record} isPreview={false} isReply={true}/>
                             </li>
 
                         ))}
