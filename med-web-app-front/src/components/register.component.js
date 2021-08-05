@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import '../styles/Search.css'
-import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
+import {Card, FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
 import AuthService from "../services/auth.service";
 
 // const required = value => {
@@ -36,11 +35,16 @@ const useStyles = theme => ({
             margin: 0
         }
     },
-    paper: {
-        marginTop: theme.spacing(8),
+    div: {
+        margin: theme.spacing(4),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+    },
+    paper: {
+        marginTop: theme.spacing(8),
+        minWidth: 300,
+        minHeight: 300
     },
     form: {
         width: '100%',
@@ -159,14 +163,8 @@ class Register extends Component {
             successful: false
         });
 
-        let initials = null
-        if (this.state.lastname !== null && this.state.firstname !== null) {
-            initials = this.state.lastname + " " + this.state.firstname
-        } else if (this.state.lastname !== null) {
-            initials = this.state.lastname
-        } else if (this.state.firstname !== null) {
-            initials = this.state.firstname
-        }
+        let initials
+        initials = this.state.lastname + " " + this.state.firstname
         if (!this.state.usernameError && !this.state.passwordError) {
             AuthService.register(
                 this.state.username,
@@ -200,132 +198,135 @@ class Register extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Container component="main" maxWidth="xs">
-                <CssBaseline/>
-                <div className={classes.paper}>
-                    <Typography component="h1" variant="h5">
-                        Регистрация
-                    </Typography>
-                    <form className={classes.form}
-                          onSubmit={this.handleRegister}
-                    >
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    className={classes.root}
-                                    autoComplete="fname"
-                                    name="firstName"
-                                    variant="outlined"
-                                    fullWidth
-                                    id="firstName"
-                                    label="Имя"
-                                    autoFocus
-                                    value={this.state.firstname}
-                                    onChange={this.onChangeFirstname}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    className={classes.root}
-                                    variant="outlined"
-                                    fullWidth
-                                    id="lastName"
-                                    label="Фамилия"
-                                    name="lastName"
-                                    autoComplete="lname"
-                                    value={this.state.lastname}
-                                    onChange={this.onChangeLastname}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    className={classes.root}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="username"
-                                    label="Логин"
-                                    name="username"
-                                    autoComplete="username"
-                                    error={this.state.usernameError}
-                                    helperText={this.state.usernameError && "Логин должен быть не менее 3 символов"}
-                                    value={this.state.username}
-                                    onChange={this.onChangeUsername}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    className={classes.root}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Пароль"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="current-password"
-                                    error={this.state.passwordError}
-                                    helperText={this.state.passwordError && "Пароль должен быть не менее 6 символов"}
-                                    value={this.state.password}
-                                    onChange={this.onChangePassword}
-                                />
-                            </Grid>
-                            {/*<Grid item xs={12}>*/}
-                            {/*    <FormControlLabel*/}
-                            {/*        control={<Checkbox value="allowExtraEmails" color="primary"/>}*/}
-                            {/*        label="I want to receive inspiration, marketing promotions and updates via email."*/}
-                            {/*    />*/}
-                            {/*</Grid>*/}
-                        </Grid>
-                        <FormLabel className={classes.label}>Выберите роль:</FormLabel>
-                        <FormControl>
-                            <RadioGroup value={this.state.chosenRole} onChange={this.onChangeRole}>
-                                <FormControlLabel className={classes.formControlLab}
-                                                  control={<Radio color="primary"/>}
-                                                  value="Пользователь"
-                                                  label="Пользователь"
-                                />
-                                <FormControlLabel className={classes.formControlLab}
-                                                  control={<Radio color="primary"/>}
-                                                  value="Врач"
-                                                  label="Врач"
-                                                  labelPlacement='end'
-                                />
-                            </RadioGroup>
-                        </FormControl>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            // onClick={this.handleRegister}
-                            className={classes.submit}
+            <Container component="main" maxWidth="sm">
+                <Card className={classes.paper}>
+                    <div className={classes.div}>
+                        <Typography component="h1" variant="h5">
+                            Регистрация
+                        </Typography>
+                        <form className={classes.form}
+                              onSubmit={this.handleRegister}
                         >
-                            Зарегистрироваться
-                        </Button>
-                        {/*<Grid container justifyContent="flex-end">*/}
-                        {/*    <Grid item>*/}
-                        {/*        <Link href="#" variant="body2">*/}
-                        {/*            Already have an account? Sign in*/}
-                        {/*        </Link>*/}
-                        {/*    </Grid>*/}
-                        {/*</Grid>*/}
-                        {this.state.message && (
-                            <div className="form-group">
-                                <div
-                                    className={
-                                        this.state.successful
-                                            ? "alert alert-success"
-                                            : "alert alert-danger"
-                                    }
-                                    role="alert"
-                                >
-                                    {this.state.message}
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        className={classes.root}
+                                        autoComplete="fname"
+                                        name="firstName"
+                                        variant="outlined"
+                                        fullWidth
+                                        id="firstName"
+                                        label="Имя"
+                                        autoFocus
+                                        value={this.state.firstname}
+                                        onChange={this.onChangeFirstname}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        className={classes.root}
+                                        variant="outlined"
+                                        fullWidth
+                                        id="lastName"
+                                        label="Фамилия"
+                                        name="lastName"
+                                        autoComplete="lname"
+                                        value={this.state.lastname}
+                                        onChange={this.onChangeLastname}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        className={classes.root}
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        id="username"
+                                        label="Логин"
+                                        name="username"
+                                        autoComplete="username"
+                                        error={this.state.usernameError}
+                                        helperText={this.state.usernameError && "Логин должен быть не менее 3 символов"}
+                                        value={this.state.username}
+                                        onChange={this.onChangeUsername}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        className={classes.root}
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        name="password"
+                                        label="Пароль"
+                                        type="password"
+                                        id="password"
+                                        autoComplete="current-password"
+                                        error={this.state.passwordError}
+                                        helperText={this.state.passwordError && "Пароль должен быть не менее 6 символов"}
+                                        value={this.state.password}
+                                        onChange={this.onChangePassword}
+                                    />
+                                </Grid>
+                                {/*<Grid item xs={12}>*/}
+                                {/*    <FormControlLabel*/}
+                                {/*        control={<Checkbox value="allowExtraEmails" color="primary"/>}*/}
+                                {/*        label="I want to receive inspiration, marketing promotions and updates via email."*/}
+                                {/*    />*/}
+                                {/*</Grid>*/}
+                            </Grid>
+                            <FormLabel className={classes.label}>Выберите роль:</FormLabel>
+                            <FormControl>
+                                <RadioGroup value={this.state.chosenRole} onChange={this.onChangeRole}>
+                                    <FormControlLabel className={classes.formControlLab}
+                                                      control={<Radio color="primary"/>}
+                                                      value="Пользователь"
+                                                      label="Пользователь"
+                                    />
+                                    <FormControlLabel className={classes.formControlLab}
+                                                      control={<Radio color="primary"/>}
+                                                      value="Врач"
+                                                      label="Врач"
+                                                      labelPlacement='end'
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                // onClick={this.handleRegister}
+                                className={classes.submit}
+                            >
+                                Зарегистрироваться
+                            </Button>
+                            {/*<Grid container justifyContent="flex-end">*/}
+                            {/*    <Grid item>*/}
+                            {/*        <Link href="#" variant="body2">*/}
+                            {/*            Already have an account? Sign in*/}
+                            {/*        </Link>*/}
+                            {/*    </Grid>*/}
+                            {/*</Grid>*/}
+                            {this.state.message && (
+                                <div className="form-group">
+                                    <div
+                                        className={
+                                            this.state.successful
+                                                ? "alert alert-success"
+                                                : "alert alert-danger"
+                                        }
+                                        role="alert"
+                                    >
+                                        {this.state.message}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </form>
-                </div>
+                            )}
+                        </form>
+                    </div>
+                </Card>
             </Container>
         );
     }
