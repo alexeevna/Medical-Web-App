@@ -1,30 +1,103 @@
-import React, { Component } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-
-import AuthService from "../services/auth.service";
-import Select from "react-select";
+import React, {Component} from 'react';
+import RecordService from "../services/record.service";
 import AttachmentService from "../services/attachment.service";
-import RecordService from "../services/record.service"
+import AuthService from "../services/auth.service";
 import TopicService from "../services/topic.service";
+import {withStyles} from "@material-ui/core";
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Input from '@material-ui/core/Input';
+import Container from '@material-ui/core/Container';
+import Chip from '@material-ui/core/Chip';
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from '@material-ui/core/InputLabel';
 
-export default class ReplyRecordForm extends Component {
+
+const useStyles = theme => ({
+    paper: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+        padding: theme.spacing(2),
+        [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+            marginTop: theme.spacing(6),
+            marginBottom: theme.spacing(6),
+            padding: theme.spacing(3),
+        },
+    },
+    layout: {
+        width: 'auto',
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2),
+        [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
+            width: 600,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    buttons: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: 0,
+        backgroundColor: '#01579b',
+    },
+    root: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        }
+    },
+    form: {
+        width: '100%',
+        marginTop: theme.spacing(1),
+    },
+    formControl: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        },
+        width: '100%',
+    },
+    chips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    chip: {
+        margin: 2,
+    },
+})
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+class ReplyRecordForm extends Component {
     constructor(props) {
         super(props);
         this.handleSubmitRecord = this.handleSubmitRecord.bind(this);
         this.onChangeTitle = this.onChangeTitle.bind(this);
         this.onChangeContent = this.onChangeContent.bind(this);
-        this.onFileDropdownSelected = this.onFileDropdownSelected.bind(this);
-        this.onTopicsDropdownSelected = this.onTopicsDropdownSelected.bind(this);
+        this.handleTopics = this.handleTopics.bind(this);
+        this.handleFiles = this.handleFiles.bind(this);
 
         this.state = {
             content: "",
             availableFiles: [],
-            selectedFiles: null,
+            selectedFilesId: null,
             selectedFilesValue: [],
             availableTopics: [],
-            selectedTopics: null,
+            selectedTopicsID: null,
             selectedTopicsValue: [],
             submittedSuccessfully: false,
             message: null,
@@ -43,53 +116,62 @@ export default class ReplyRecordForm extends Component {
         });
     }
 
-    onFileDropdownSelected(selectedValues) {
-        let fileIds = selectedValues.map(file => file.value);
-        this.setState({selectedFiles: fileIds,
-            selectedFilesValue: selectedValues});
+    handleTopics(e) {
+        let topicIds = [];
+        this.state.availableTopics.map(topic => {
+            if (e.target.value.indexOf(topic.label) !== -1) {
+                topicIds.push(topic.value)
+            }
+        });
+
+        this.setState({
+            selectedTopicsId: topicIds,
+            selectedTopicsValue: e.target.value
+        })
+
     }
 
-    onTopicsDropdownSelected(selectedValues) {
-
-        let topicIds = selectedValues.map(topic => topic.value);
-        console.log(selectedValues);
-        console.log(topicIds);
-        this.setState({selectedTopics: topicIds,
-                            selectedTopicsValue: selectedValues});
+    handleFiles(e) {
+        let filesIds = [];
+        this.state.availableFiles.map(file => {
+            if (e.target.value.indexOf(file.label) !== -1) {
+                filesIds.push(file.value)
+            }
+        });
+        this.setState({
+            selectedFilesId: filesIds,
+            selectedFilesValue: e.target.value
+        })
     }
 
     handleSubmitRecord(e) {
         e.preventDefault();
-        console.log(this.state.selectedTopics);
-        if (this.checkBtn.context._errors.length === 0) {
-            RecordService.saveRecord(this.state.title, this.state.content, this.state.selectedTopics, this.state.selectedFiles).then(
-                () => {
-                    this.setState({
-                        submittedSuccessfully: true,
-                        message: "Успешно опубликовано",
-                        content: "",
-                        title: "",
-                        selectedFiles: [],
-                        selectedFilesValue: [],
-                        selectedTopics: [],
-                        selectedTopicsValue: [],
-                    });
-                },
-                error => {
-                    const resMessage =
-                        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
 
-                    this.setState({
-                        submittedSuccessfully: false,
-                        message: resMessage
-                    });
-                }
-            );
-        } else {
-            this.setState({
-                loading: false
-            });
-        }
+        RecordService.saveRecord(this.state.title, this.state.content, this.state.selectedTopicsId, this.state.selectedFilesId).then(
+            () => {
+                console.log("Сохранено");
+                this.setState({
+                    submittedSuccessfully: true,
+                    message: "Успешно опубликовано",
+                    content: "",
+                    title: "",
+                    selectedFilesId: [],
+                    selectedFilesValue: [],
+                    selectedTopicsId: [],
+                    selectedTopicsValue: [],
+                });
+            },
+            error => {
+                const resMessage =
+                    (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+
+                this.setState({
+                    submittedSuccessfully: false,
+                    message: resMessage
+                });
+            }
+        );
+
     }
 
     componentDidMount() {
@@ -99,10 +181,12 @@ export default class ReplyRecordForm extends Component {
                         return {value: el.id, label: el.initialName};
                     })
                     this.setState({
-                        availableFiles : filteredDicomsForSelect
+                        availableFiles: filteredDicomsForSelect
                     });
                 },
-                error => { console.log(error); }
+                error => {
+                    console.log(error);
+                }
             );
 
         TopicService.getAllTopics()
@@ -111,101 +195,151 @@ export default class ReplyRecordForm extends Component {
                         return {value: el.id, label: el.name};
                     })
                     this.setState({
-                        availableTopics : topicsForSelect
+                        availableTopics: topicsForSelect
                     });
                 },
-                error => { console.log(error); }
+                error => {
+                    console.log(error);
+                }
             );
     }
 
     render() {
+        const {classes} = this.props;
 
         return (
-            <div className="col-md-12">
-                <div className="card record-create-form color-light-blue">
-                    <Form
-                        onSubmit={this.handleSubmitRecord}
-                        ref={c => {this.inputForm = c;}}
-                    >
+            <Container component="main">
+                <main className={classes.layout}>
+                    <Paper className={classes.paper}>
+                        <Typography variant="h6" gutterBottom>
+                            Создание поста
+                        </Typography>
 
-                        <div className="form-group">
-                            <label htmlFor="title">Заголовок:</label>
-                            <Input
-                                type="text"
-                                autoComplete="off"
-                                className="form-control"
+                        <form className={classes.form}
+                              onSubmit={this.handleSubmitRecord}
+                        >
+                            <TextField
+                                className={classes.root}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="title"
+                                label="Заголовок"
                                 name="title"
+                                autoComplete="off"
+                                autoFocus
                                 value={this.state.title}
                                 onChange={this.onChangeTitle}
                             />
-                        </div>
 
-                        <div className="form-group">
-                            <label htmlFor="content">Содержание:</label>
-                            <textarea className="form-control"
-                                      id="exampleFormControlTextarea1"
-                                      rows="4"
-                                      onChange={this.onChangeContent}
-                                      value={this.state.content}
-                                      autoComplete="off"
-                            >
-                            </textarea>
-                        </div>
+                            <TextField
+                                className={classes.root}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="content"
+                                label="Содержание"
+                                multiline
+                                name="content"
+                                autoComplete="off"
+                                rows={4}
+                                value={this.state.content}
+                                onChange={this.onChangeContent}
+                            />
 
-                        <div className="row top-buffer-10">
-                            <label htmlFor="selectedTopics" className="col-sm-2">Тэги:</label>
-                            <Select className="col-sm-10"
-                                    onChange={this.onTopicsDropdownSelected}
-                                    options={this.state.availableTopics}
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="selected-topics">Прикрепить тэги</InputLabel>
+                                <Select
+                                    className={classes.root}
+                                    multiple
+                                    labelId="selected-topics"
+                                    //variant="outlined"
                                     value={this.state.selectedTopicsValue}
-                                    autoFocus={true}
-                                    isMulti={true}
-                            />
-                        </div>
-
-                        <div className="row top-buffer-10">
-                            <label htmlFor="selectedFiles" className="col-sm-2">Прикрепить:</label>
-                            <Select
-                                className="col-sm-10"
-                                onChange={this.onFileDropdownSelected}
-                                options={this.state.availableFiles}
-                                value={this.state.selectedFilesValue}
-                                autoFocus={true}
-                                isMulti={true}
-                            />
-                        </div>
-
-                        <div className="form-group top-buffer-10">
-                            <button
-                                className="btn btn-primary btn-block color-dark-blue"
-                                disabled={!this.state.content || !this.state.title}
-                            >
-                                <span>Опубликовать</span>
-                            </button>
-                        </div>
-
-                        {this.state.message && (
-                            <div className="form-group">
-                                <div
-                                    className={
-                                        this.state.submittedSuccessfully
-                                            ? "alert alert-success"
-                                            : "alert alert-danger"
-                                    }
-                                    role="alert"
+                                    onChange={this.handleTopics}
+                                    input={<Input id="select-multiple-chip-for-topics"/>}
+                                    renderValue={(selected) => (
+                                        <div className={classes.chips}>
+                                            {selected.map((value) => (
+                                                <Chip key={value} label={value} className={classes.chip}/>
+                                            ))}
+                                        </div>
+                                    )}
+                                    MenuProps={MenuProps}
                                 >
-                                    {this.state.message}
-                                </div>
-                            </div>
-                        )}
+                                    {this.state.availableTopics.map(x => (
+                                        <MenuItem key={x.value} value={x.label} id={x.value}>
+                                            {x.label}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                        <CheckButton
-                            style={{ display: "none" }}
-                            ref={c => {this.checkBtn = c;}}
-                        />
-                    </Form>
-                </div>
-            </div>
-        );
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="selected-files">Прикрепить файлы</InputLabel>
+                                <Select
+                                    className={classes.root}
+                                    multiple
+                                    labelId="selected-files"
+                                    //variant="outlined"
+                                    value={this.state.selectedFilesValue}
+                                    onChange={this.handleFiles}
+                                    input={<Input id="select-multiple-chip-for-files"/>}
+                                    renderValue={(selected) => (
+                                        <div className={classes.chips}>
+                                            {selected.map((value) => (
+                                                <Chip key={value} label={value} className={classes.chip}/>
+                                            ))}
+                                        </div>
+                                    )}
+                                    MenuProps={MenuProps}
+                                >
+
+                                    {this.state.availableFiles.map(x => (
+                                        <MenuItem key={x.value} value={x.label} id={x.value}>
+                                            {x.label}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+
+                            {/*<Button
+                                    onClick={handleBack}
+                                    className={classes.button}
+                                >
+                                    Назад к постам
+                                </Button>*/}
+
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                            >
+                                Опубликовать
+                            </Button>
+                            {this.state.message && (
+                                <div className="form-group">
+                                    <div
+                                        className={
+                                            this.state.submittedSuccessfully
+                                                ? "alert alert-success"
+                                                : "alert alert-danger"
+                                        }
+                                        role="alert"
+                                    >
+                                        {this.state.message}
+                                    </div>
+                                </div>
+                            )}
+                        </form>
+                    </Paper>
+                </main>
+            </Container>
+        )
     }
 }
+
+export default withStyles(useStyles)(ReplyRecordForm)
