@@ -53,6 +53,8 @@ class reviewComponent extends Component {
             targetId: this.props.targetId,
             reviews: [],
             content: "",
+            contentPresence: false,
+            contentCorrect: "",
             submittedSuccessfully: false,
             message: null,
         };
@@ -60,12 +62,14 @@ class reviewComponent extends Component {
 
     handleSubmitReview(e) {
         e.preventDefault();
-        ReviewService.saveReview(this.state.content, this.state.targetId).then(
+        ReviewService.saveReview(this.state.contentCorrect, this.state.targetId).then(
             () => {
                 this.setState({
                     submittedSuccessfully: true,
                     message: "Успешно опубликовано",
                     content: "",
+                    contentCorrect: "",
+                    contentPresence: false,
                 });
                 this.getReviews();
             },
@@ -83,9 +87,22 @@ class reviewComponent extends Component {
     }
 
     onChangeContent(e) {
-        this.setState({
-            content: e.target.value
-        });
+        let str = e.target.value
+        str = str.replace(/ +/g, ' ').trim();
+        str = str.replace(/[\n\r]+/g, '\n\r\n\r');
+        if (str.charCodeAt(0)>32){
+            this.setState({
+                content: e.target.value,
+                contentCorrect: str,
+                contentPresence: true
+            });
+        }else {
+            this.setState({
+                content: e.target.value,
+                contentCorrect: str,
+                contentPresence: false
+            });
+        }
     }
 
     componentDidMount() {
@@ -146,7 +163,7 @@ class reviewComponent extends Component {
                                     color="primary"
                                     // onClick={this.handleRegister}
                                     className={classes.submit}
-                                    disabled={!this.state.content}
+                                    disabled={!this.state.contentPresence}
                                 >
                                     <DoneOutlineIcon/>
                                 </Button>
