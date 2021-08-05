@@ -56,7 +56,7 @@ export default class ViewAttachmentsComponent extends Component {
                     </div>
 
                     <div className="col-sm-2 align-center">
-                        <Link to={"/profile"} className="nav-link card-link-custom color-orange">
+                        <Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">
                             Профиль
                         </Link>
                         <Link to={"/files/upload"} className="nav-link card-link-custom color-orange">

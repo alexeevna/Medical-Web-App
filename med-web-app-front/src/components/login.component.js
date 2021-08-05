@@ -1,13 +1,10 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import AuthService from "../services/auth.service";
-import {withStyles} from "@material-ui/core";
+import {Card, withStyles} from "@material-ui/core";
 
 const useStyles = theme => ({
     root: {
@@ -15,11 +12,17 @@ const useStyles = theme => ({
             margin: 0
         }
     },
-    paper: {
-        marginTop: theme.spacing(8),
+    div: {
+        margin: theme.spacing(4),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+    },
+    paper: {
+        marginTop: theme.spacing(8),
+        // width: 500,
+        minWidth: 300,
+        minHeight: 300
     },
     form: {
         width: '100%',
@@ -86,76 +89,77 @@ class Login extends Component {
         const {classes} = this.props;
         return (
             <Container component="main" maxWidth="xs">
-                <CssBaseline/>
-                <div className={classes.paper}>
-                    <Typography component="h1" variant="h5">
-                        Вход
-                    </Typography>
-                    <form className={classes.form}
-                          onSubmit={this.handleLogin}
-                    >
-                        <TextField
-                            className={classes.root}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="login"
-                            label="Логин"
-                            name="login"
-                            autoComplete="login"
-                            autoFocus
-                            value={this.state.username}
-                            onChange={this.onChangeUsername}
-                        />
-                        <TextField
-                            className={classes.root}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Пароль"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            value={this.state.password}
-                            onChange={this.onChangePassword}
-                        />
-                        {/*<FormControlLabel*/}
-                        {/*    control={<Checkbox value="remember" color="primary"/>}*/}
-                        {/*    label="Запомнить"*/}
-                        {/*/>*/}
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
+                <Card className={classes.paper}>
+                    <div className={classes.div}>
+                        <Typography component="h1" variant="h5">
+                            Вход
+                        </Typography>
+                        <form className={classes.form}
+                              onSubmit={this.handleLogin}
                         >
-                            Войти
-                        </Button>
-                        {/*<Grid container>*/}
-                        {/*    <Grid item xs>*/}
-                        {/*        <Link href="#" variant="body2">*/}
-                        {/*            Забыли пароль?*/}
-                        {/*        </Link>*/}
-                        {/*    </Grid>*/}
-                        {/*    <Grid item>*/}
-                        {/*        <Link href="#" variant="body2">*/}
-                        {/*            {"Нет аккаунта? Зарегистрируйтесь."}*/}
-                        {/*        </Link>*/}
-                        {/*    </Grid>*/}
-                        {/*</Grid>*/}
-                        {this.state.message && (
-                            <div className="form-group">
-                                <div className="alert alert-danger" role="alert">
-                                    {this.state.message}
+                            <TextField
+                                className={classes.root}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="login"
+                                label="Логин"
+                                name="login"
+                                autoComplete="login"
+                                autoFocus
+                                value={this.state.username}
+                                onChange={this.onChangeUsername}
+                            />
+                            <TextField
+                                className={classes.root}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Пароль"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                                value={this.state.password}
+                                onChange={this.onChangePassword}
+                            />
+                            {/*<FormControlLabel*/}
+                            {/*    control={<Checkbox value="remember" color="primary"/>}*/}
+                            {/*    label="Запомнить"*/}
+                            {/*/>*/}
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}
+                            >
+                                Войти
+                            </Button>
+                            {/*<Grid container>*/}
+                            {/*    <Grid item xs>*/}
+                            {/*        <Link href="#" variant="body2">*/}
+                            {/*            Забыли пароль?*/}
+                            {/*        </Link>*/}
+                            {/*    </Grid>*/}
+                            {/*    <Grid item>*/}
+                            {/*        <Link href="#" variant="body2">*/}
+                            {/*            {"Нет аккаунта? Зарегистрируйтесь."}*/}
+                            {/*        </Link>*/}
+                            {/*    </Grid>*/}
+                            {/*</Grid>*/}
+                            {this.state.message && (
+                                <div className="form-group">
+                                    <div className="alert alert-danger" role="alert">
+                                        {this.state.message}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </form>
-                </div>
+                            )}
+                        </form>
+                    </div>
+                </Card>
             </Container>
         );
     }
