@@ -130,13 +130,11 @@ class reviewComponent extends Component {
     }
 
     render() {
-        console.log(this.state.reviews)
         const {classes} = this.props;
         return (
             <Grid xs={8} item>
                 <Grid className={classes.mainGrid}>
                     {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
-
                     <Card className={classes.paper}>
                         {this.state.targetId !== AuthService.getCurrentUser().id &&
                         <div>
