@@ -2,8 +2,19 @@ import React, { Component } from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import {Link} from "react-router-dom";
+import Button from "@material-ui/core/Button";
+import {withStyles} from "@material-ui/core";
 
-export default class ViewAttachmentsComponent extends Component {
+const useStyles = theme => ({
+    button: {
+        width: 200,
+        margin: theme.spacing(1),
+        backgroundColor: '#f50057',
+        color: 'white',
+    },
+})
+
+class ViewAttachmentsComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -30,7 +41,7 @@ export default class ViewAttachmentsComponent extends Component {
 
     render() {
         // const { currentState } = this.state;
-
+        const {classes} = this.props;
         return (
             <div className="container">
 
@@ -56,12 +67,18 @@ export default class ViewAttachmentsComponent extends Component {
                     </div>
 
                     <div className="col-sm-2 align-center">
-                        <Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">
+                        <Button variant="contained" href={"#/profile/" + AuthService.getCurrentUser().username} className={classes.button}>
                             Профиль
-                        </Link>
-                        <Link to={"/files/upload"} className="nav-link card-link-custom color-orange">
+                        </Button>
+                        <Button variant="contained" href="#/files/upload" className={classes.button}>
                             Загрузить файл
-                        </Link>
+                        </Button>
+                        {/*<Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">*/}
+                        {/*    Профиль*/}
+                        {/*</Link>*/}
+                        {/*<Link to={"/files/upload"} className="nav-link card-link-custom color-orange">*/}
+                        {/*    Загрузить файл*/}
+                        {/*</Link>*/}
                     </div>
 
                     <div className="col-sm-1"></div>
@@ -71,3 +88,5 @@ export default class ViewAttachmentsComponent extends Component {
         );
     }
 }
+
+export default withStyles(useStyles)(ViewAttachmentsComponent)

@@ -126,7 +126,7 @@ class RecordCardNew extends Component {
                 <Grid xs={12} sm direction={"column"} className={classes.mainGrid}>
                     <Grid className={classes.ggrid} xs direction={"row"} spacing={1}>
                         <Grid>
-                            <Link variant={"subtitle2"} color={"#000000"} href={"#/profile/" + this.record.creator.username}>
+                            <Link variant={"subtitle2"} href={"#/profile/" + this.record.creator.username}>
                                 {this.record.creator.username}
                             </Link>
                         </Grid>
@@ -184,7 +184,7 @@ class RecordCardNew extends Component {
 
 
                     {this.isPreview &&
-                    <div className="col-sm-4 fa fa-comments"
+                    <div className="col-sm-1 fa fa-comments"
                          style={{"float": "right"}}> {this.record.numberOfReplies}</div>
                     }
 
