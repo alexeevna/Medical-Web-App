@@ -8,6 +8,7 @@ import ReviewCard from "./review-card.component";
 
 const useStyles = theme => ({
     mainGrid: {
+        marginTop: theme.spacing(1),
         minWidth: 712,
         maxWidth: 712,
     },
