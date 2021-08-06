@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
     txtField: {
-        width: 320,
+        width: 350,
         margin: theme.spacing(1),
         "& .MuiInputBase-input": {
             textAlign: 'center'
@@ -140,9 +140,9 @@ class Profile extends Component {
             <div>
                 {
                     user &&
-                    <Grid container spacing={3}>
-                        <Grid xs={12} className={classes.mainGrid}>
-                            <Grid xs={8}>
+                    <Grid>
+                        <Grid xs={12} item className={classes.mainGrid}>
+                            <Grid xs={8} item>
                                 <Card className={classes.paper}>
                                     <Grid className={classes.gridInPaper}>
                                         <Grid className={classes.grid}>
@@ -188,7 +188,7 @@ class Profile extends Component {
                                 </Card>
                             </Grid>
                             {user && user.username === AuthService.getCurrentUser().username &&
-                            <Grid xs={4}>
+                            <Grid xs={4} item>
                                 <Card className={classes.paper2}>
                                     <Grid className={classes.grid}>
                                         <Button variant="contained" href="#/files/view" className={classes.button}>

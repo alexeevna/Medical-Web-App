@@ -244,7 +244,7 @@ class ReplyRecordForm extends Component {
                                 multiline
                                 name="content"
                                 autoComplete="off"
-                                rows={4}
+                                rows={7}
                                 value={this.state.content}
                                 onChange={this.onChangeContent}
                             />
