@@ -79,17 +79,18 @@ class reviewComponent extends Component {
 
                 this.setState({
                     submittedSuccessfully: false,
-                    message: resMessage
+                    message: resMessage,
+                    content: "",
+                    contentCorrect: "",
                 });
             }
         )
-
     }
 
     onChangeContent(e) {
         let str = e.target.value
-        str = str.replace(/ +/g, ' ').trim();
-        str = str.replace(/[\n\r]+/g, '\n\r\n\r');
+        str = str.replace(/ {2,}/g, ' ').trim();
+        str = str.replace(/[\n\r]{3,}/g, '\n\r\n\r');
         if (str.charCodeAt(0)>32){
             this.setState({
                 content: e.target.value,
@@ -112,10 +113,9 @@ class reviewComponent extends Component {
     getReviews() {
         ReviewService.getAllReviews(this.state.targetId)
             .then(response => {
-                const {reviews} = response.data;
-                this.refreshList();
+                this.refreshList()
+                this.setState({reviews: response.data})
 
-                this.setState({reviews: reviews})
             })
             .catch((e) => {
                 console.log(e);
@@ -129,18 +129,16 @@ class reviewComponent extends Component {
     }
 
     render() {
+        console.log(this.state.reviews)
         const {classes} = this.props;
         return (
-            <Grid xs={8} >
+            <Grid xs={8} item >
                 <Grid className={classes.mainGrid}>
                 {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
 
                 <Card className={classes.paper}>
                     {this.state.targetId !== AuthService.getCurrentUser().id &&
                     <div>
-                        <form className={classes.form}
-                              onSubmit={this.handleSubmitReview}
-                        >
                             <Grid className={classes.grid}>
                                 <TextField
                                     className={classes.root}
@@ -157,11 +155,10 @@ class reviewComponent extends Component {
                                     onChange={this.onChangeContent}
                                 />
                                 <Button
-                                    type="submit"
                                     fullWidth
                                     variant="contained"
                                     color="primary"
-                                    // onClick={this.handleRegister}
+                                    onClick={this.handleSubmitReview}
                                     className={classes.submit}
                                     disabled={!this.state.contentPresence}
                                 >
@@ -183,7 +180,6 @@ class reviewComponent extends Component {
                                     </div>
                                 </Grid>
                             )}
-                        </form>
                     </div>}
                     <Grid>
                         {this.state.reviews &&
