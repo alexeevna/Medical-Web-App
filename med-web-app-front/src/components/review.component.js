@@ -90,6 +90,7 @@ class reviewComponent extends Component {
     onChangeContent(e) {
         let str = e.target.value
         str = str.replace(/ {2,}/g, ' ').trim();
+        str = str.replace(/[\n\r ]{2,}/g, '\n\r');
         str = str.replace(/[\n\r]{3,}/g, '\n\r\n\r');
         if (str.charCodeAt(0) > 32) {
             this.setState({
@@ -129,13 +130,11 @@ class reviewComponent extends Component {
     }
 
     render() {
-        console.log(this.state.reviews)
         const {classes} = this.props;
         return (
             <Grid xs={8} item>
                 <Grid className={classes.mainGrid}>
                     {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
-
                     <Card className={classes.paper}>
                         {this.state.targetId !== AuthService.getCurrentUser().id &&
                         <div>

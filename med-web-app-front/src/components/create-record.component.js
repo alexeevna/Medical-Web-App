@@ -93,6 +93,8 @@ class ReplyRecordForm extends Component {
 
         this.state = {
             content: "",
+            contentPresence: false,
+            contentCorrect: "",
             availableFiles: [],
             selectedFilesId: null,
             selectedFilesValue: [],
@@ -111,9 +113,22 @@ class ReplyRecordForm extends Component {
     }
 
     onChangeContent(e) {
-        this.setState({
-            content: e.target.value
-        });
+        let str = e.target.value
+        str = str.replace(/ {2,}/g, ' ').trim();
+        str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r');
+        if (str.charCodeAt(0) > 32) {
+            this.setState({
+                content: e.target.value,
+                contentCorrect: str,
+                contentPresence: true
+            });
+        } else {
+            this.setState({
+                content: e.target.value,
+                contentCorrect: str,
+                contentPresence: false
+            });
+        }
     }
 
     handleTopics(e) {
@@ -147,12 +162,14 @@ class ReplyRecordForm extends Component {
     handleSubmitRecord(e) {
         e.preventDefault();
 
-        RecordService.saveRecord(this.state.title, this.state.content, this.state.selectedTopicsId, this.state.selectedFilesId).then(
+        RecordService.saveRecord(this.state.title, this.state.contentCorrect, this.state.selectedTopicsId, this.state.selectedFilesId).then(
             () => {
                 this.setState({
                     submittedSuccessfully: true,
                     message: "Успешно опубликовано",
                     content: "",
+                    contentCorrect: "",
+                    contentPresence: false,
                     title: "",
                     selectedFilesId: [],
                     selectedFilesValue: [],
@@ -166,7 +183,9 @@ class ReplyRecordForm extends Component {
 
                 this.setState({
                     submittedSuccessfully: false,
-                    message: resMessage
+                    message: resMessage,
+                    contentCorrect: "",
+                    contentPresence: false,
                 });
             }
         );
@@ -316,6 +335,7 @@ class ReplyRecordForm extends Component {
                                 variant="contained"
                                 color="primary"
                                 className={classes.button}
+                                disabled={!this.state.contentPresence}
                             >
                                 Опубликовать
                             </Button>
