@@ -36,7 +36,7 @@ const useStyles = theme => ({
     submit: {
         width: 50,
         height: 73,
-        backgroundColor: '#f50057',
+        backgroundColor: '#1B435D',
     },
 });
 
@@ -89,10 +89,9 @@ class reviewComponent extends Component {
 
     onChangeContent(e) {
         let str = e.target.value
-        
         str = str.replace(/ {2,}/g, ' ').trim();
         str = str.replace(/[\n\r]{3,}/g, '\n\r\n\r');
-        if (str.charCodeAt(0)>32){
+        if (str.charCodeAt(0) > 32) {
             this.setState({
                 content: e.target.value,
                 contentCorrect: str,
@@ -133,14 +132,13 @@ class reviewComponent extends Component {
         console.log(this.state.reviews)
         const {classes} = this.props;
         return (
-
-            <Grid xs={8} item >
+            <Grid xs={8} item>
                 <Grid className={classes.mainGrid}>
-                {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
+                    {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
 
-                <Card className={classes.paper}>
-                    {this.state.targetId !== AuthService.getCurrentUser().id &&
-                    <div>
+                    <Card className={classes.paper}>
+                        {this.state.targetId !== AuthService.getCurrentUser().id &&
+                        <div>
                             <Grid className={classes.grid}>
                                 <TextField
                                     className={classes.root}
@@ -177,27 +175,11 @@ class reviewComponent extends Component {
                                                 : "alert alert-danger"
                                         }
                                         role="alert"
-
                                     >
-                                        <DoneOutlineIcon/>
-                                    </Button>
+                                        {this.state.message}
+                                    </div>
                                 </Grid>
-
-                                {this.state.message && (
-                                    <Grid className={classes.gridMessage}>
-                                        <div
-                                            className={
-                                                this.state.submittedSuccessfully
-                                                    ? "alert alert-success"
-                                                    : "alert alert-danger"
-                                            }
-                                            role="alert"
-                                        >
-                                            {this.state.message}
-                                        </div>
-                                    </Grid>
-                                )}
-                            </form>
+                            )}
                         </div>}
                         <Grid>
                             {this.state.reviews &&
@@ -208,18 +190,6 @@ class reviewComponent extends Component {
                                 >
                                     <ReviewCard review={review} isPreview={true} isReply={false}/>
                                 </Grid>
-
-                            )}
-                    </div>}
-                    <Grid>
-                        {this.state.reviews &&
-                        this.state.reviews.map((review, index) => (
-                            <Grid
-                                style={{listStyleType: "none"}}
-                                key={index}
-                            >
-                                <ReviewCard review={review} isPreview={true} isReply={false}/>
-                            </Grid>
 
                             ))}
                         </Grid>
