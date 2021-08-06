@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import RecordService from "../services/record.service";
 import AttachmentService from "../services/attachment.service";
 import AuthService from "../services/auth.service";
-import TopicService from "../services/topic.service";
 import {withStyles} from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -45,7 +44,7 @@ const useStyles = theme => ({
     button: {
         marginTop: theme.spacing(3),
         marginLeft: 0,
-        backgroundColor: '#3f51b5',
+        backgroundColor: '#01579b',
     },
     root: {
         "& .MuiFormLabel-root": {
@@ -85,10 +84,8 @@ const MenuProps = {
 class ReplyRecordForm extends Component {
     constructor(props) {
         super(props);
-        this.handleSubmitRecord = this.handleSubmitRecord.bind(this);
-        this.onChangeTitle = this.onChangeTitle.bind(this);
+        this.handleSubmitReply = this.handleSubmitReply.bind(this);
         this.onChangeContent = this.onChangeContent.bind(this);
-        this.handleTopics = this.handleTopics.bind(this);
         this.handleFiles = this.handleFiles.bind(this);
 
         this.state = {
@@ -96,39 +93,15 @@ class ReplyRecordForm extends Component {
             availableFiles: [],
             selectedFilesId: null,
             selectedFilesValue: [],
-            availableTopics: [],
-            selectedTopicsID: null,
-            selectedTopicsValue: [],
             submittedSuccessfully: false,
             message: null,
         };
-    }
-
-    onChangeTitle(e) {
-        this.setState({
-            title: e.target.value
-        });
     }
 
     onChangeContent(e) {
         this.setState({
             content: e.target.value
         });
-    }
-
-    handleTopics(e) {
-        let topicIds = [];
-        this.state.availableTopics.map(topic => {
-            if (e.target.value.indexOf(topic.label) !== -1) {
-                topicIds.push(topic.value)
-            }
-        });
-
-        this.setState({
-            selectedTopicsId: topicIds,
-            selectedTopicsValue: e.target.value
-        })
-
     }
 
     handleFiles(e) {
@@ -144,21 +117,19 @@ class ReplyRecordForm extends Component {
         })
     }
 
-    handleSubmitRecord(e) {
+    handleSubmitReply(e) {
         e.preventDefault();
 
-        RecordService.saveRecord(this.state.title, this.state.content, this.state.selectedTopicsId, this.state.selectedFilesId).then(
+        RecordService.saveRecord(null, this.state.content, null, this.state.selectedFilesId, this.props.parentId).then(
             () => {
                 this.setState({
                     submittedSuccessfully: true,
                     message: "Успешно опубликовано",
                     content: "",
-                    title: "",
                     selectedFilesId: [],
                     selectedFilesValue: [],
-                    selectedTopicsId: [],
-                    selectedTopicsValue: [],
                 });
+                this.props.refreshRecords();
             },
             error => {
                 const resMessage =
@@ -187,20 +158,6 @@ class ReplyRecordForm extends Component {
                     console.log(error);
                 }
             );
-
-        TopicService.getAllTopics()
-            .then(response => {
-                    let topicsForSelect = response.data.topics.map(el => {
-                        return {value: el.id, label: el.name};
-                    })
-                    this.setState({
-                        availableTopics: topicsForSelect
-                    });
-                },
-                error => {
-                    console.log(error);
-                }
-            );
     }
 
     render() {
@@ -211,26 +168,12 @@ class ReplyRecordForm extends Component {
                 <main className={classes.layout}>
                     <Paper className={classes.paper}>
                         <Typography variant="h6" gutterBottom>
-                            Создание поста
+                            Комментарий
                         </Typography>
 
                         <form className={classes.form}
-                              onSubmit={this.handleSubmitRecord}
+                              onSubmit={this.handleSubmitReply}
                         >
-                            <TextField
-                                className={classes.root}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="title"
-                                label="Заголовок"
-                                name="title"
-                                autoComplete="off"
-                                autoFocus
-                                value={this.state.title}
-                                onChange={this.onChangeTitle}
-                            />
 
                             <TextField
                                 className={classes.root}
@@ -243,45 +186,17 @@ class ReplyRecordForm extends Component {
                                 multiline
                                 name="content"
                                 autoComplete="off"
-                                rows={7}
+                                rows={4}
                                 value={this.state.content}
                                 onChange={this.onChangeContent}
                             />
 
                             <FormControl className={classes.formControl}>
-                                <InputLabel id="selected-topics">Прикрепить тэги</InputLabel>
-                                <Select
-                                    className={classes.root}
-                                    multiple
-                                    labelId="selected-topics"
-                                    //variant="outlined"
-                                    value={this.state.selectedTopicsValue}
-                                    onChange={this.handleTopics}
-                                    input={<Input id="select-multiple-chip-for-topics"/>}
-                                    renderValue={(selected) => (
-                                        <div className={classes.chips}>
-                                            {selected.map((value) => (
-                                                <Chip key={value} label={value} className={classes.chip}/>
-                                            ))}
-                                        </div>
-                                    )}
-                                    MenuProps={MenuProps}
-                                >
-                                    {this.state.availableTopics.map(x => (
-                                        <MenuItem key={x.value} value={x.label} id={x.value}>
-                                            {x.label}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-
-                            <FormControl className={classes.formControl}>
-                                <InputLabel id="selected-files">Прикрепить файлы</InputLabel>
+                                <InputLabel id="selected-files">Прикрепить:</InputLabel>
                                 <Select
                                     className={classes.root}
                                     multiple
                                     labelId="selected-files"
-                                    //variant="outlined"
                                     value={this.state.selectedFilesValue}
                                     onChange={this.handleFiles}
                                     input={<Input id="select-multiple-chip-for-files"/>}
@@ -303,13 +218,6 @@ class ReplyRecordForm extends Component {
                                 </Select>
                             </FormControl>
 
-                            {/*<Button
-                                    onClick={handleBack}
-                                    className={classes.button}
-                                >
-                                    Назад к постам
-                                </Button>*/}
-
                             <Button
                                 type="submit"
                                 fullWidth
@@ -317,7 +225,7 @@ class ReplyRecordForm extends Component {
                                 color="primary"
                                 className={classes.button}
                             >
-                                Опубликовать
+                                Опубликовать комментарий
                             </Button>
                             {this.state.message && (
                                 <div className="form-group">
