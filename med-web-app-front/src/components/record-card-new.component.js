@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import '../styles/Record.css'
-import {Card, Divider, Grid, Link, Paper, withStyles} from "@material-ui/core";
+import {Grid, Link, Paper, withStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {purple} from "@material-ui/core/colors";
 
@@ -20,6 +20,16 @@ const useStyles = theme => ({
             main: "#1B435D",
         }
     },
+    grid: {
+        margin: theme.spacing(1.5,0,0,1),
+    },
+    ggrid: {
+        margin: theme.spacing(0,0,0,1),
+        display: 'flex',
+    },
+    gridContent: {
+        margin: theme.spacing(1),
+    },
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
@@ -36,7 +46,6 @@ const useStyles = theme => ({
     },
     content: {
         wordWrap: 'break-word',
-        maxWidth: 666,
     },
     titleStyle: {
         size: 15,
@@ -114,38 +123,35 @@ class RecordCardNew extends Component {
         const {classes} = this.props;
         return (
             <Paper className={classes.paper} variant="outlined" >
-                <Grid item xs={12} sm container direction={"column"} spacing={1} className={classes.mainGrid}>
-                    <Grid item xs container direction={"row"} spacing={1}>
-                        <Grid item>
+                <Grid xs={12} sm direction={"column"} className={classes.mainGrid}>
+                    <Grid className={classes.ggrid} xs direction={"row"} spacing={1}>
+                        <Grid>
                             <Link variant={"subtitle2"} color={"#000000"} href={"#/profile/" + this.record.creator.username}>
                                 {this.record.creator.username}
                             </Link>
                         </Grid>
-                        <Grid item>
+                        <Grid className={classes.ggrid}>
                             <Typography variant={"subtitle1"}>
                                 {new Date(this.record.creationTime).toLocaleDateString()}
                             </Typography>
-
                         </Grid>
-                        <Grid item>
+                        <Grid className={classes.ggrid}>
                             <Typography variant={"subtitle1"}>
                                 {this.creationTime}
                             </Typography>
                         </Grid>
                     </Grid>
-                    <Grid item container spacing={2} direction={"column"}>
-                        <Grid item>
-                            <Typography variant="h6" >{/*gutterBottom*/}
-                                {this.record.title}
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Typography variant="body1" className={classes.content}>{/*gutterBottom*/}
-                                {this.getContent(this.record.content)}
-                            </Typography>
-                        </Grid>
+                    <Grid className={classes.grid}>
+                        <Typography variant="h6" >{/*gutterBottom*/}
+                            {this.record.title}
+                        </Typography>
                     </Grid>
-                    <Grid item container direction={"row"} spacing={1}>
+                    <Grid className={classes.gridContent}>
+                        <Typography variant="body1" className={classes.content}>{/*gutterBottom*/}
+                            {this.getContent(this.record.content)}
+                        </Typography>
+                    </Grid>
+                    <Grid className={classes.grid} container direction={"row"} spacing={1}>
                         {this.record.topics && this.record.topics.map(el => (
                             <Grid item color={"#616161"}>
                                 <Typography className={classes.tagsColor}>
@@ -163,12 +169,12 @@ class RecordCardNew extends Component {
 
                     {!this.isPreview && this.record.attachments.map(el => (
                         // <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image} />
-                        <div key={el.id} className="row color-light-blue top-buffer-10">
+                        <div key={el.id} className="row top-buffer-10">
                             {/*<div className="col-sm-5">{el.initialName}</div>*/}
                             <div>
                                 <button
                                     style={{marginLeft: "30px", borderStyle: "none"}}
-                                    className="btn-sm btn-primary color-light-blue"
+                                    className="btn-sm btn-primary color-white"
                                     onClick={() => this.download(el.id, el.initialName)}>
                                     <i className="fa fa-download"> Скачать {el.initialName}</i>
                                 </button>

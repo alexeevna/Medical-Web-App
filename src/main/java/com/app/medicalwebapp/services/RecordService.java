@@ -33,8 +33,8 @@ public class RecordService {
         Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
 
         Page<Record> recordsPage = partOfTitle != null
-                ? recordRepository.findByParentAndTitleContainingIgnoreCase(-1L, partOfTitle, pageable)
-                : recordRepository.findByParent(-1L, pageable);
+                ? recordRepository.findByParentAndTitleContainingIgnoreCaseOrderByCreationTimeDesc(-1L, partOfTitle, pageable)
+                : recordRepository.findByParentOrderByCreationTimeDesc(-1L, pageable);
 
         return getRecordsResponse(recordsPage, pageNumber);
     }
@@ -55,8 +55,8 @@ public class RecordService {
         topic.setId(topicId);
 
         Page<Record> recordsPage = partOfTitle != null
-                ? recordRepository.findByParentAndTopicsAndTitleContainingIgnoreCase(-1L, topic, partOfTitle, pageable)
-                : recordRepository.findByParentAndTopics(-1L, topic, pageable);
+                ? recordRepository.findByParentAndTopicsAndTitleContainingIgnoreCaseOrderByCreationTimeDesc(-1L, topic, partOfTitle, pageable)
+                : recordRepository.findByParentAndTopicsOrderByCreationTimeDesc(-1L, topic, pageable);
 
         return getRecordsResponse(recordsPage, pageNumber);
     }
@@ -66,7 +66,7 @@ public class RecordService {
     }
 
     public List<Record> getRecordsAnswers(Long parentId) {
-        return recordRepository.findByParent(parentId);
+        return recordRepository.findByParentOrderByCreationTimeDesc(parentId);
     }
 
     public void saveRecord(RecordCreationRequest request, Long creatorId, Long parentId) throws Exception {

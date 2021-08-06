@@ -19,6 +19,7 @@ const useStyles = theme => ({
     },
     gridContent: {
         margin: theme.spacing(2),
+        // whiteSpace: 'pre-wrap',
     },
     avatar: {
         width: 30,
