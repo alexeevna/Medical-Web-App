@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
 import RecordCardNew from "./record-card-new.component";
-import ReplyRecordForm from "./reply-record.form";
+import ReplyRecordForm from "./reply-record.component";
 
 export default class RecordThreadComponent extends Component {
     constructor(props) {
@@ -19,6 +19,7 @@ export default class RecordThreadComponent extends Component {
     }
 
     componentDidMount() {
+        console.log("componentDidMount-thread");
         RecordService.getRecord(this.state.recordId)
             .then(response => {
                     this.setState({record: response.data});
@@ -32,8 +33,10 @@ export default class RecordThreadComponent extends Component {
     }
 
     refreshAnswers() {
+        console.log("refreshAnswers");
         RecordService.getAnswers(this.state.recordId)
             .then(response => {
+                console.log(response.data);
                     this.setState({answers: response.data});
                 }
             )
@@ -56,11 +59,9 @@ export default class RecordThreadComponent extends Component {
                         {answers !== undefined && this.state.answers !== null &&
                         this.state.answers.map((record, index) => (
                             <li
-                                style={{listStyleType: "none", width: "90%", marginLeft: "auto"}}
+                                style={{listStyleType: "none", width: "90%", marginLeft: "auto", marginTop: "1"}}
                                 key={index}
-
-                                // onClick={() => this.displayRecordThread(record, index)}
-                            >
+                                >
                                 <RecordCardNew record={record} isPreview={false} isReply={true}/>
                             </li>
 

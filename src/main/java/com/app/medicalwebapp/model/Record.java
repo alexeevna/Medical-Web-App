@@ -39,7 +39,7 @@ public class Record {
     @Column(name="title", length = 100)
     private String title;
 
-    @Column(name="content", length = 1500)
+    @Column(name="content")
     private String content;
 
     @ManyToOne

@@ -21,13 +21,10 @@ public class ReviewService {
     @Autowired
     UserRepository userRepository;
 
-    public ReviewResponse getReviewsByTarget(long parent, long targetId) {
+    public List<Review> getReviewsByTarget(long parent, long targetId) {
         User target = new User();
         target.setId(targetId);
-        List<Review> reviews = reviewRepository.findByParentAndTargetOrderByCreationTimeDesc(parent, target);
-        return ReviewResponse.builder()
-                .reviews(reviews)
-                .build();
+        return reviewRepository.findByParentAndTargetOrderByCreationTimeDesc(parent, target);
     }
 
     public void saveReview(ReviewRequest request, long creatorId) throws Exception  {

@@ -83,6 +83,7 @@ public class AuthController {
         user.setInitials(signUpRequest.getInitials());
         user.setFirstname(signUpRequest.getFirstname());
         user.setLastname(signUpRequest.getLastname());
+        user.setPatronymic(signUpRequest.getPatronymic());
         user.setRole(signUpRequest.getChosenRole());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
 //        user.setRealName(signUpRequest.getRealName());

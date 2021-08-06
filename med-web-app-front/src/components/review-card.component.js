@@ -19,6 +19,7 @@ const useStyles = theme => ({
     },
     gridContent: {
         margin: theme.spacing(2),
+        // whiteSpace: 'pre-wrap',
     },
     avatar: {
         width: 30,
@@ -86,7 +87,7 @@ class ReviewCard extends Component {
     render() {
         const {classes} = this.props;
         return(
-            <Grid spacing={1}>
+            <Grid>
                 <Card className={classes.paper}>
                     <Grid className={classes.mainGrid}>
                         <Grid>

@@ -17,6 +17,8 @@ public class SignUpRequest {
 
     private String lastname;
 
+    private String patronymic;
+
     private String initials;
 
     @NotBlank

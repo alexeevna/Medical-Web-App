@@ -77,6 +77,11 @@ const useStyles = theme => ({
         width: '100%',
     },
     appBar: {
+        top: 0,
+        left: 0,
+        minWidth: 600,
+        minHeigft: 64,
+        maxHeight: 64,
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -229,7 +234,7 @@ class App extends Component {
             <div className={classes.root}>
                 <CssBaseline/>
 
-                <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
+                <AppBar position="fixed" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
                     <Toolbar className={classes.toolbar}>
                         <IconButton
                             edge="start"
@@ -259,7 +264,7 @@ class App extends Component {
                                         button
                                         component={Link} to={this.getPathForProfile()}>
                                         <AccountCircleRoundedIcon/>
-                                        <ListItemText primary={"Мой профиль"}/>
+                                        <ListItemText primary={currentUser.username}/>
                                     </ListItem>
                                 </Grid>
 
@@ -371,35 +376,8 @@ class App extends Component {
                     </Grid>
                 </Grid>
             </div>
-        )
-            ;
+        );
     }
-  render() {
-    return (
-        <div className="main-background-color" >
-          <NavigationBar />
-          <div className="container mt-3">
-            <Switch>
-              <Route exact path={["/", "/home"]} component={Home} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/search" component={Search} />
-              <Route exact path="/profile/:username" component={Profile} />
-              <Route exact path="/pipelines/create" component={PipelinesComponent}/>
-              <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
-              <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
-              <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
-              <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
-              <Route exact path="/records/view" component={ViewRecordsComponent}/>
-              <Route exact path="/records/create" component={CreateRecordComponent}/>
-              <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
-              <Route exact path="/topics/create" component={TopicComponent} />
-              <Route component={NotExist} />
-            </Switch>
-          </div>
-        </div>
-    );
-  }
 }
 
 export default withStyles(useStyles)(App)
