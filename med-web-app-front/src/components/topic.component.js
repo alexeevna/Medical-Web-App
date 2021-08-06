@@ -1,11 +1,46 @@
 import React, {Component} from "react";
 import TopicService from "../services/topic.service";
-import Form from "react-validation/build/form";
-import CheckButton from "react-validation/build/button";
 import TopicCard from "./topic-card.component";
+import {Card, Grid, withStyles} from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
+import Button from "@material-ui/core/Button";
 
+const useStyles = theme => ({
+    root: {
+        width: 635,
+        marginRight: theme.spacing(1),
+        "& .MuiFormLabel-root": {
+            margin: 0,
+            color: "black"
+        },
+    },
+    submit: {
+        width: 50,
+        height: 73,
+        backgroundColor: '#f50057',
+    },
+    /*form: {
+        width: '100%',
+        marginTop: theme.spacing(1),
+    },*/
+    mainGrid: {
+        minWidth: 668,
+    },
+    grid: {
+        margin: theme.spacing(1),
+        display: 'flex',
+    },
+    paper: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+        padding: theme.spacing(1),
+        color: "black",
+        // display: 'flex',
+    },
+})
 
-export default class TopicComponent extends Component {
+class TopicComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -25,31 +60,25 @@ export default class TopicComponent extends Component {
 
     handleSubmitTopic(e) {
         e.preventDefault();
-        if (this.checkBtn.context._errors.length === 0) {
-            TopicService.saveTopic(this.state.name).then(
-                () => {
-                    this.setState({
-                        submittedSuccessfully: true,
-                        message: "Успешно опубликовано",
-                        name: "",
-                    });
-                    this.getTopics();
-                },
-                error => {
-                    const resMessage =
-                        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        TopicService.saveTopic(this.state.name).then(
+            () => {
+                this.setState({
+                    submittedSuccessfully: true,
+                    message: "Успешно опубликовано",
+                    name: "",
+                });
+                this.getTopics();
+            },
+            error => {
+                const resMessage =
+                    (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
 
-                    this.setState({
-                        submittedSuccessfully: false,
-                        message: resMessage
-                    });
-                }
-            )
-        } else {
-            this.setState({
-                loading: false
-            });
-        }
+                this.setState({
+                    submittedSuccessfully: false,
+                    message: resMessage
+                });
+            }
+        )
     }
 
     onChangeName(e) {
@@ -81,10 +110,9 @@ export default class TopicComponent extends Component {
     }
 
     render() {
+        const {classes} = this.props;
         return (
-            <div>
-
-                <div className="row align-left color-light-blue">
+            /*<div className="row align-left color-light-blue">
                     <Form
                         onSubmit={this.handleSubmitTopic}
                         ref={c => {
@@ -151,9 +179,74 @@ export default class TopicComponent extends Component {
                     ))}
                 </ul>
 
-            </div>
+            </div>*/
+            <Grid xs={8}>
+                <Grid classes={classes.mainGrid}>
+                    <Card className={classes.paper}>
+                        <div>
+                            <form className={classes.form}
+                                  onSubmit={this.handleSubmitTopic}
+                            >
+                                <Grid className={classes.grid}>
+                                    <TextField
+                                        className={classes.root}
+                                        multiline
+                                        minRows={2}
+                                        maxRows={10}
+                                        variant="outlined"
+                                        fullWidth
+                                        id="name"
+                                        label="Создать тэг"
+                                        name="name"
+                                        autoComplete="off"
+                                        value={this.state.name}
+                                        onChange={this.onChangeName}
+                                    />
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary"
+                                        // onClick={this.handleRegister}
+                                        className={classes.submit}
+                                        disabled={!this.state.name}
+                                    >
+                                        <DoneOutlineIcon/>
+                                    </Button>
+                                </Grid>
+
+                                {this.state.message && (
+                                    <div className="form-group">
+                                        <div
+                                            className={
+                                                this.state.submittedSuccessfully
+                                                    ? "alert alert-success"
+                                                    : "alert alert-danger"
+                                            }
+                                            role="alert"
+                                        >
+                                            {this.state.message}
+                                        </div>
+                                    </div>
+                                )}
+                            </form>
+                        </div>
+                        <Grid>
+                            {this.state.topics &&
+                            this.state.topics.map((topic, index) => (
+                                <Grid
+                                    style={{listStyleType: "none"}}
+                                    key={index}
+                                >
+                                    <TopicCard topic={topic}/>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Card>
+                </Grid>
+            </Grid>
         )
     }
-
-
 }
+
+export default withStyles(useStyles)(TopicComponent)
