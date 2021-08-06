@@ -374,32 +374,6 @@ class App extends Component {
         )
             ;
     }
-  render() {
-    return (
-        <div className="main-background-color" >
-          <NavigationBar />
-          <div className="container mt-3">
-            <Switch>
-              <Route exact path={["/", "/home"]} component={Home} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/search" component={Search} />
-              <Route exact path="/profile/:username" component={Profile} />
-              <Route exact path="/pipelines/create" component={PipelinesComponent}/>
-              <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
-              <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
-              <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
-              <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
-              <Route exact path="/records/view" component={ViewRecordsComponent}/>
-              <Route exact path="/records/create" component={CreateRecordComponent}/>
-              <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
-              <Route exact path="/topics/create" component={TopicComponent} />
-              <Route component={NotExist} />
-            </Switch>
-          </div>
-        </div>
-    );
-  }
 }
 
 export default withStyles(useStyles)(App)

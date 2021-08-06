@@ -86,7 +86,7 @@ class ReviewCard extends Component {
     render() {
         const {classes} = this.props;
         return(
-            <Grid spacing={1}>
+            <Grid>
                 <Card className={classes.paper}>
                     <Grid className={classes.mainGrid}>
                         <Grid>
