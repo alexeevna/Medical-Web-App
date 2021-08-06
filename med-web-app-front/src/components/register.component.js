@@ -73,14 +73,16 @@ class Register extends Component {
         this.onChangeLastname = this.onChangeLastname.bind(this);
         // this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
+        this.onChangePatronymic = this.onChangePatronymic.bind(this);
         this.onChangeRole = this.onChangeRole.bind(this);
         this.vusername = this.vusername.bind(this)
         this.vpassword = this.vpassword.bind(this)
 
         this.state = {
             username: "",
-            firstname: null,
-            lastname: null,
+            firstname: "",
+            lastname: "",
+            patronymic: "",
             // email: "",
             password: "",
             chosenRole: "Пользователь",
@@ -148,6 +150,11 @@ class Register extends Component {
             lastname: e.target.value
         });
     }
+    onChangePatronymic(e) {
+        this.setState({
+            patronymic: e.target.value
+        });
+    }
 
     onChangeRole(e) {
         this.setState({
@@ -164,13 +171,18 @@ class Register extends Component {
         });
 
         let initials
-        initials = this.state.lastname + " " + this.state.firstname
+        if (this.state.patronymic !== ""){
+            initials = this.state.lastname + " " + this.state.firstname + " " + this.state.patronymic
+        }else{
+            initials = this.state.lastname + " " + this.state.firstname
+        }
         if (!this.state.usernameError && !this.state.passwordError) {
             AuthService.register(
                 this.state.username,
                 initials,
                 this.state.firstname,
                 this.state.lastname,
+                this.state.patronymic,
                 // this.state.email,
                 this.state.password,
                 this.state.chosenRole,
@@ -178,7 +190,14 @@ class Register extends Component {
                 response => {
                     this.setState({
                         message: response.data.message,
-                        successful: true
+                        successful: true,
+                        username: "",
+                        firstname: "",
+                        lastname: "",
+                        patronymic: "",
+                        // email: "",
+                        password: "",
+                        chosenRole: "Пользователь",
                     });
                 },
                 error => {
@@ -235,6 +254,19 @@ class Register extends Component {
                                         autoComplete="lname"
                                         value={this.state.lastname}
                                         onChange={this.onChangeLastname}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        className={classes.root}
+                                        variant="outlined"
+                                        fullWidth
+                                        id="patronymic"
+                                        label="Отчество"
+                                        name="patronymic"
+                                        autoComplete="patronymic"
+                                        value={this.state.patronymic}
+                                        onChange={this.onChangePatronymic}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>

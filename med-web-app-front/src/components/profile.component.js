@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
     txtField: {
-        width: 320,
+        width: 350,
         margin: theme.spacing(1),
         "& .MuiInputBase-input": {
             textAlign: 'center'
