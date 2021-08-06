@@ -53,6 +53,8 @@ class reviewComponent extends Component {
             targetId: this.props.targetId,
             reviews: [],
             content: "",
+            contentPresence: false,
+            contentCorrect: "",
             submittedSuccessfully: false,
             message: null,
         };
@@ -60,12 +62,14 @@ class reviewComponent extends Component {
 
     handleSubmitReview(e) {
         e.preventDefault();
-        ReviewService.saveReview(this.state.content, this.state.targetId).then(
+        ReviewService.saveReview(this.state.contentCorrect, this.state.targetId).then(
             () => {
                 this.setState({
                     submittedSuccessfully: true,
                     message: "Успешно опубликовано",
                     content: "",
+                    contentCorrect: "",
+                    contentPresence: false,
                 });
                 this.getReviews();
             },
@@ -75,17 +79,31 @@ class reviewComponent extends Component {
 
                 this.setState({
                     submittedSuccessfully: false,
-                    message: resMessage
+                    message: resMessage,
+                    content: "",
+                    contentCorrect: "",
                 });
             }
         )
-
     }
 
     onChangeContent(e) {
-        this.setState({
-            content: e.target.value
-        });
+        let str = e.target.value
+        str = str.replace(/ {2,}/g, ' ').trim();
+        str = str.replace(/[\n\r]{3,}/g, '\n\r\n\r');
+        if (str.charCodeAt(0) > 32) {
+            this.setState({
+                content: e.target.value,
+                contentCorrect: str,
+                contentPresence: true
+            });
+        } else {
+            this.setState({
+                content: e.target.value,
+                contentCorrect: str,
+                contentPresence: false
+            });
+        }
     }
 
     componentDidMount() {
@@ -95,10 +113,9 @@ class reviewComponent extends Component {
     getReviews() {
         ReviewService.getAllReviews(this.state.targetId)
             .then(response => {
-                const {reviews} = response.data;
-                this.refreshList();
+                this.refreshList()
+                this.setState({reviews: response.data})
 
-                this.setState({reviews: reviews})
             })
             .catch((e) => {
                 console.log(e);
@@ -112,18 +129,16 @@ class reviewComponent extends Component {
     }
 
     render() {
+        console.log(this.state.reviews)
         const {classes} = this.props;
         return (
-            <Grid xs={8} >
+            <Grid xs={8} item>
                 <Grid className={classes.mainGrid}>
-                {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
+                    {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
 
-                <Card className={classes.paper}>
-                    {this.state.targetId !== AuthService.getCurrentUser().id &&
-                    <div>
-                        <form className={classes.form}
-                              onSubmit={this.handleSubmitReview}
-                        >
+                    <Card className={classes.paper}>
+                        {this.state.targetId !== AuthService.getCurrentUser().id &&
+                        <div>
                             <Grid className={classes.grid}>
                                 <TextField
                                     className={classes.root}
@@ -140,13 +155,12 @@ class reviewComponent extends Component {
                                     onChange={this.onChangeContent}
                                 />
                                 <Button
-                                    type="submit"
                                     fullWidth
                                     variant="contained"
                                     color="primary"
-                                    // onClick={this.handleRegister}
+                                    onClick={this.handleSubmitReview}
                                     className={classes.submit}
-                                    disabled={!this.state.content}
+                                    disabled={!this.state.contentPresence}
                                 >
                                     <DoneOutlineIcon/>
                                 </Button>
@@ -166,23 +180,22 @@ class reviewComponent extends Component {
                                     </div>
                                 </Grid>
                             )}
-                        </form>
-                    </div>}
-                    <Grid>
-                        {this.state.reviews &&
-                        this.state.reviews.map((review, index) => (
-                            <Grid
-                                style={{listStyleType: "none"}}
-                                key={index}
-                            >
-                                <ReviewCard review={review} isPreview={true} isReply={false}/>
-                            </Grid>
+                        </div>}
+                        <Grid>
+                            {this.state.reviews &&
+                            this.state.reviews.map((review, index) => (
+                                <Grid
+                                    style={{listStyleType: "none"}}
+                                    key={index}
+                                >
+                                    <ReviewCard review={review} isPreview={true} isReply={false}/>
+                                </Grid>
 
-                        ))}
-                    </Grid>
+                            ))}
+                        </Grid>
 
-                </Card>
-                }
+                    </Card>
+                    }
                 </Grid>
             </Grid>
         )

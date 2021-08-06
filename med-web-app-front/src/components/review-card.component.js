@@ -31,6 +31,7 @@ const useStyles = theme => ({
         backgroundColor: "#eeeeee"
     },
     content: {
+        whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
     },
 });
@@ -85,7 +86,7 @@ class ReviewCard extends Component {
     render() {
         const {classes} = this.props;
         return(
-            <Grid spacing={1}>
+            <Grid>
                 <Card className={classes.paper}>
                     <Grid className={classes.mainGrid}>
                         <Grid>
