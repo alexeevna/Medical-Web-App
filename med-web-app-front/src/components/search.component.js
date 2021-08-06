@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import {Link} from "react-router-dom";
+import SearchIcon from '@material-ui/icons/Search';
 
 
 const StyledTableRow = withStyles((theme) => ({
@@ -33,7 +34,7 @@ const useStyles = theme => ({
         }
     },
     header: {
-        backgroundColor: '#1B435D',
+        backgroundColor: '#3f51b5',
         color: 'white',
         fontSize: 17
     },
@@ -163,7 +164,8 @@ class Search extends Component {
                                 type="button"
                                 onClick={this.getUsers}
                         >
-                            <i className="fa fa-search" aria-hidden="true"/>
+                            {/*<i className="fa fa-search" aria-hidden="true"/>*/}
+                            <SearchIcon style={{ color: "white" }} />
                         </button>
                     </form>
                 </div>

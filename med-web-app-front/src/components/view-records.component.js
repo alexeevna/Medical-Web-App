@@ -220,9 +220,6 @@ export default class ViewRecordsList extends Component {
                         Страница тэгов
                     </Link>
 
-                    {showTopics && (
-                        <Route component={Topic}/>
-                    )}
                     {/*<Link to={"/profile"} className="nav-link card-link-custom color-orange">*/}
                     {/*    Мои посты*/}
                     {/*</Link>*/}
