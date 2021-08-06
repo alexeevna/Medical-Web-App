@@ -52,7 +52,7 @@ const useStyles = theme => ({
     },
     submit: {
         margin: theme.spacing(1, 0, 1),
-        backgroundColor: '#1B435D',
+        backgroundColor: '#3f51b5',
     },
     formControlLab: {
         marginBottom: theme.spacing(1),

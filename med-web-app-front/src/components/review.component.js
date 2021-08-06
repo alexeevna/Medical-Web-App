@@ -36,7 +36,7 @@ const useStyles = theme => ({
     submit: {
         width: 50,
         height: 73,
-        backgroundColor: '#1B435D',
+        backgroundColor: '#f50057',
     },
 });
 
@@ -90,13 +90,13 @@ class reviewComponent extends Component {
         let str = e.target.value
         str = str.replace(/ +/g, ' ').trim();
         str = str.replace(/[\n\r]+/g, '\n\r\n\r');
-        if (str.charCodeAt(0)>32){
+        if (str.charCodeAt(0) > 32) {
             this.setState({
                 content: e.target.value,
                 contentCorrect: str,
                 contentPresence: true
             });
-        }else {
+        } else {
             this.setState({
                 content: e.target.value,
                 contentCorrect: str,
@@ -131,75 +131,75 @@ class reviewComponent extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Grid xs={8} >
+            <Grid xs={8}>
                 <Grid className={classes.mainGrid}>
-                {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
+                    {(this.state.targetId !== AuthService.getCurrentUser().id || this.state.reviews.length !== 0) &&
 
-                <Card className={classes.paper}>
-                    {this.state.targetId !== AuthService.getCurrentUser().id &&
-                    <div>
-                        <form className={classes.form}
-                              onSubmit={this.handleSubmitReview}
-                        >
-                            <Grid className={classes.grid}>
-                                <TextField
-                                    className={classes.root}
-                                    multiline
-                                    minRows={2}
-                                    maxRows={10}
-                                    variant="outlined"
-                                    fullWidth
-                                    id="content"
-                                    label="Оставьте отзыв..."
-                                    name="content"
-                                    autoComplete="off"
-                                    value={this.state.content}
-                                    onChange={this.onChangeContent}
-                                />
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    // onClick={this.handleRegister}
-                                    className={classes.submit}
-                                    disabled={!this.state.contentPresence}
-                                >
-                                    <DoneOutlineIcon/>
-                                </Button>
-                            </Grid>
-
-                            {this.state.message && (
-                                <Grid className={classes.gridMessage}>
-                                    <div
-                                        className={
-                                            this.state.submittedSuccessfully
-                                                ? "alert alert-success"
-                                                : "alert alert-danger"
-                                        }
-                                        role="alert"
-                                    >
-                                        {this.state.message}
-                                    </div>
-                                </Grid>
-                            )}
-                        </form>
-                    </div>}
-                    <Grid>
-                        {this.state.reviews &&
-                        this.state.reviews.map((review, index) => (
-                            <Grid
-                                style={{listStyleType: "none"}}
-                                key={index}
+                    <Card className={classes.paper}>
+                        {this.state.targetId !== AuthService.getCurrentUser().id &&
+                        <div>
+                            <form className={classes.form}
+                                  onSubmit={this.handleSubmitReview}
                             >
-                                <ReviewCard review={review} isPreview={true} isReply={false}/>
-                            </Grid>
+                                <Grid className={classes.grid}>
+                                    <TextField
+                                        className={classes.root}
+                                        multiline
+                                        minRows={2}
+                                        maxRows={10}
+                                        variant="outlined"
+                                        fullWidth
+                                        id="content"
+                                        label="Оставьте отзыв..."
+                                        name="content"
+                                        autoComplete="off"
+                                        value={this.state.content}
+                                        onChange={this.onChangeContent}
+                                    />
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary"
+                                        // onClick={this.handleRegister}
+                                        className={classes.submit}
+                                        disabled={!this.state.contentPresence}
+                                    >
+                                        <DoneOutlineIcon/>
+                                    </Button>
+                                </Grid>
 
-                        ))}
-                    </Grid>
+                                {this.state.message && (
+                                    <Grid className={classes.gridMessage}>
+                                        <div
+                                            className={
+                                                this.state.submittedSuccessfully
+                                                    ? "alert alert-success"
+                                                    : "alert alert-danger"
+                                            }
+                                            role="alert"
+                                        >
+                                            {this.state.message}
+                                        </div>
+                                    </Grid>
+                                )}
+                            </form>
+                        </div>}
+                        <Grid>
+                            {this.state.reviews &&
+                            this.state.reviews.map((review, index) => (
+                                <Grid
+                                    style={{listStyleType: "none"}}
+                                    key={index}
+                                >
+                                    <ReviewCard review={review} isPreview={true} isReply={false}/>
+                                </Grid>
 
-                </Card>
-                }
+                            ))}
+                        </Grid>
+
+                    </Card>
+                    }
                 </Grid>
             </Grid>
         )
