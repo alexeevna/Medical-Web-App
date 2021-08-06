@@ -231,6 +231,20 @@ class Register extends Component {
                                     <TextField
                                         required
                                         className={classes.root}
+                                        variant="outlined"
+                                        fullWidth
+                                        id="lastName"
+                                        label="Фамилия"
+                                        name="lastName"
+                                        autoComplete="lname"
+                                        value={this.state.lastname}
+                                        onChange={this.onChangeLastname}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        className={classes.root}
                                         autoComplete="fname"
                                         name="firstName"
                                         variant="outlined"
@@ -240,20 +254,6 @@ class Register extends Component {
                                         autoFocus
                                         value={this.state.firstname}
                                         onChange={this.onChangeFirstname}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        className={classes.root}
-                                        variant="outlined"
-                                        fullWidth
-                                        id="lastName"
-                                        label="Фамилия"
-                                        name="lastName"
-                                        autoComplete="lname"
-                                        value={this.state.lastname}
-                                        onChange={this.onChangeLastname}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
