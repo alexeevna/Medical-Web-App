@@ -3,8 +3,19 @@ import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import {Link} from "react-router-dom";
 import DicomAnonymizerService from "../services/dicom-anonymizer.service"
+import Button from "@material-ui/core/Button";
+import {withStyles} from "@material-ui/core";
 
-export default class UploadAttachmentsComponent extends Component {
+const useStyles = theme => ({
+    button: {
+        width: 200,
+        margin: theme.spacing(1),
+        backgroundColor: '#f50057',
+        color: 'white',
+    },
+})
+
+class UploadAttachmentsComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -109,7 +120,7 @@ export default class UploadAttachmentsComponent extends Component {
 
     render() {
         const { selectedFiles, progressInfos, message } = this.state;
-
+        const {classes} = this.props;
         return (
 
             <div className="row">
@@ -167,8 +178,14 @@ export default class UploadAttachmentsComponent extends Component {
                 </div>
 
                 <div className="col-sm-2 align-center">
-                    <Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">Профиль</Link>
-                    <Link to={"/files/view"} className="nav-link card-link-custom color-orange">Мои файлы</Link>
+                    <Button variant="contained" href={"#/profile/" + AuthService.getCurrentUser().username} className={classes.button}>
+                        Профиль
+                    </Button>
+                    <Button variant="contained" href="#/files/view" className={classes.button}>
+                        Мои файлы
+                    </Button>
+                    {/*<Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">Профиль</Link>*/}
+                    {/*<Link to={"/files/view"} className="nav-link card-link-custom color-orange">Мои файлы</Link>*/}
                 </div>
 
                 <div className="col-sm-1"></div>
@@ -176,3 +193,5 @@ export default class UploadAttachmentsComponent extends Component {
         );
     }
 }
+
+export default withStyles(useStyles)(UploadAttachmentsComponent)

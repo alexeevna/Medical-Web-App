@@ -236,6 +236,7 @@ class Register extends Component {
                                         id="lastName"
                                         label="Фамилия"
                                         name="lastName"
+                                        autoFocus
                                         autoComplete="lname"
                                         value={this.state.lastname}
                                         onChange={this.onChangeLastname}
@@ -251,7 +252,6 @@ class Register extends Component {
                                         fullWidth
                                         id="firstName"
                                         label="Имя"
-                                        autoFocus
                                         value={this.state.firstname}
                                         onChange={this.onChangeFirstname}
                                     />
