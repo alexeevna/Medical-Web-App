@@ -31,6 +31,7 @@ const useStyles = theme => ({
         backgroundColor: "#eeeeee"
     },
     content: {
+        whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
     },
 });
