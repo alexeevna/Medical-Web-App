@@ -69,6 +69,12 @@ const useStyles = theme => ({
             width: theme.spacing(9),
         },
     },
+    leftIndent: {
+        width: 60,
+    },
+    leftIndentOpen: {
+        width: 240,
+    },
     active: {
         background: '#f4f4f4'
     },
@@ -118,10 +124,10 @@ const useStyles = theme => ({
     },
     content: {
         width: `calc(100% - ${drawerWidth}px)`,
-        //marginLeft: drawerWidth,
+        // marginLeft: drawerWidth,
     },
     contentClose: {
-        width: '100%',
+        // width: '100%',
         //marginLeft: '100px'
     },
 })
@@ -302,7 +308,7 @@ class App extends Component {
                 </AppBar>
 
                 <Grid container>
-                    <Grid item xs={this.state.open ? 2 : 1}>
+                    <Grid item className={clsx(classes.leftIndent, this.state.open && classes.leftIndentOpen)}>
                         <Drawer
                             height="100%"
                             variant="permanent"

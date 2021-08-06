@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import RecordService from "../services/record.service";
 import AttachmentService from "../services/attachment.service";
 import AuthService from "../services/auth.service";
-import {withStyles} from "@material-ui/core";
+import {Card, Grid, withStyles} from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
@@ -14,6 +14,7 @@ import Container from '@material-ui/core/Container';
 import Chip from '@material-ui/core/Chip';
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from '@material-ui/core/InputLabel';
+import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 
 
 const useStyles = theme => ({
@@ -26,6 +27,14 @@ const useStyles = theme => ({
             marginBottom: theme.spacing(6),
             padding: theme.spacing(3),
         },
+    },
+    filesWidth: {
+        width: 600,
+        margin: theme.spacing(1,1,1,1)
+    },
+    grid: {
+        margin: theme.spacing(1),
+        display: 'flex',
     },
     layout: {
         width: 'auto',
@@ -41,6 +50,11 @@ const useStyles = theme => ({
         display: 'flex',
         justifyContent: 'flex-end',
     },
+    submit: {
+        width: 50,
+        height: 73,
+        backgroundColor: '#1B435D',
+    },
     button: {
         marginTop: theme.spacing(3),
         marginLeft: 0,
@@ -51,6 +65,14 @@ const useStyles = theme => ({
             margin: 0
         }
     },
+    typography: {
+        width: 635,
+        marginRight: theme.spacing(1),
+        "& .MuiFormLabel-root": {
+            margin: 0,
+            color: "black"
+        }
+    },
     form: {
         width: '100%',
         marginTop: theme.spacing(1),
@@ -59,7 +81,8 @@ const useStyles = theme => ({
         "& .MuiFormLabel-root": {
             margin: 0
         },
-        width: '100%',
+        margin: theme.spacing(0,1,0,1),
+        width: '97%',
     },
     chips: {
         display: 'flex',
@@ -90,6 +113,8 @@ class ReplyRecordForm extends Component {
 
         this.state = {
             content: "",
+            contentPresence: false,
+            contentCorrect: "",
             availableFiles: [],
             selectedFilesId: null,
             selectedFilesValue: [],
@@ -99,9 +124,22 @@ class ReplyRecordForm extends Component {
     }
 
     onChangeContent(e) {
-        this.setState({
-            content: e.target.value
-        });
+        let str = e.target.value
+        str = str.replace(/ {2,}/g, ' ').trim();
+        str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r');
+        if (str.charCodeAt(0) > 32) {
+            this.setState({
+                content: e.target.value,
+                contentCorrect: str,
+                contentPresence: true
+            });
+        } else {
+            this.setState({
+                content: e.target.value,
+                contentCorrect: str,
+                contentPresence: false
+            });
+        }
     }
 
     handleFiles(e) {
@@ -120,12 +158,14 @@ class ReplyRecordForm extends Component {
     handleSubmitReply(e) {
         e.preventDefault();
 
-        RecordService.saveRecord(null, this.state.content, null, this.state.selectedFilesId, this.props.parentId).then(
+        RecordService.saveRecord(null, this.state.contentCorrect, null, this.state.selectedFilesId, this.props.parentId).then(
             () => {
                 this.setState({
                     submittedSuccessfully: true,
                     message: "Успешно опубликовано",
                     content: "",
+                    contentCorrect: "",
+                    contentPresence: true,
                     selectedFilesId: [],
                     selectedFilesValue: [],
                 });
@@ -137,7 +177,9 @@ class ReplyRecordForm extends Component {
 
                 this.setState({
                     submittedSuccessfully: false,
-                    message: resMessage
+                    message: resMessage,
+                    contentCorrect: "",
+                    contentPresence: false,
                 });
             }
         );
@@ -164,87 +206,74 @@ class ReplyRecordForm extends Component {
         const {classes} = this.props;
 
         return (
-            <Container component="main">
-                <main className={classes.layout}>
-                    <Paper className={classes.paper}>
-                        <Typography variant="h6" gutterBottom>
-                            Комментарий
-                        </Typography>
-
-                        <form className={classes.form}
-                              onSubmit={this.handleSubmitReply}
+            <div>
+                <Grid className={classes.grid}>
+                    <TextField
+                        className={classes.typography}
+                        multiline
+                        minRows={2}
+                        maxRows={10}
+                        variant="outlined"
+                        fullWidth
+                        id="content"
+                        label="Оставьте комментарий"
+                        name="content"
+                        autoComplete="off"
+                        value={this.state.content}
+                        onChange={this.onChangeContent}
+                    />
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={this.handleSubmitReply}
+                        className={classes.submit}
+                        disabled={!this.state.contentPresence}
+                    >
+                        <DoneOutlineIcon/>
+                    </Button>
+                </Grid>
+                {this.state.message && (
+                    <Grid className={classes.gridMessage}>
+                        <div
+                            className={
+                                this.state.submittedSuccessfully
+                                    ? "alert alert-success"
+                                    : "alert alert-danger"
+                            }
+                            role="alert"
                         >
+                            {this.state.message}
+                        </div>
+                    </Grid>
+                )}
+                {/*<FormControl className={classes.formControl}>*/}
+                {/*    <InputLabel id="selected-files" className={classes.filesWidth}>Прикрепить:</InputLabel>*/}
+                {/*    <Select*/}
+                {/*        className={classes.root}*/}
+                {/*        multiple*/}
+                {/*        labelId="selected-files"*/}
+                {/*        value={this.state.selectedFilesValue}*/}
+                {/*        onChange={this.handleFiles}*/}
+                {/*        input={<Input id="select-multiple-chip-for-files"/>}*/}
+                {/*        renderValue={(selected) => (*/}
+                {/*            <div className={classes.chips}>*/}
+                {/*                {selected.map((value) => (*/}
+                {/*                    <Chip key={value} label={value} className={classes.chip}/>*/}
+                {/*                ))}*/}
+                {/*            </div>*/}
+                {/*        )}*/}
+                {/*        MenuProps={MenuProps}*/}
+                {/*    >*/}
 
-                            <TextField
-                                className={classes.root}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="content"
-                                label="Содержание"
-                                multiline
-                                name="content"
-                                autoComplete="off"
-                                rows={4}
-                                value={this.state.content}
-                                onChange={this.onChangeContent}
-                            />
-
-                            <FormControl className={classes.formControl}>
-                                <InputLabel id="selected-files">Прикрепить:</InputLabel>
-                                <Select
-                                    className={classes.root}
-                                    multiple
-                                    labelId="selected-files"
-                                    value={this.state.selectedFilesValue}
-                                    onChange={this.handleFiles}
-                                    input={<Input id="select-multiple-chip-for-files"/>}
-                                    renderValue={(selected) => (
-                                        <div className={classes.chips}>
-                                            {selected.map((value) => (
-                                                <Chip key={value} label={value} className={classes.chip}/>
-                                            ))}
-                                        </div>
-                                    )}
-                                    MenuProps={MenuProps}
-                                >
-
-                                    {this.state.availableFiles.map(x => (
-                                        <MenuItem key={x.value} value={x.label} id={x.value}>
-                                            {x.label}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                className={classes.button}
-                            >
-                                Опубликовать комментарий
-                            </Button>
-                            {this.state.message && (
-                                <div className="form-group">
-                                    <div
-                                        className={
-                                            this.state.submittedSuccessfully
-                                                ? "alert alert-success"
-                                                : "alert alert-danger"
-                                        }
-                                        role="alert"
-                                    >
-                                        {this.state.message}
-                                    </div>
-                                </div>
-                            )}
-                        </form>
-                    </Paper>
-                </main>
-            </Container>
+                {/*        {this.state.availableFiles.map(x => (*/}
+                {/*            <MenuItem key={x.value} value={x.label} id={x.value}>*/}
+                {/*                {x.label}*/}
+                {/*            </MenuItem>*/}
+                {/*        ))}*/}
+                {/*    </Select>*/}
+                {/*</FormControl>*/}
+            </div>
         )
     }
 }

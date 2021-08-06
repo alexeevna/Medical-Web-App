@@ -173,7 +173,8 @@ class ViewRecordsList extends Component {
                                 Найти
                             </button>
                         </div>
-                        <label htmlFor="selectedTopics" className="col-sm-2">Тэги:</label>
+
+                        <label htmlFor="selectedTopics" className="col-sm-2"></label>
                         <Select className="col-sm-10"
                                 onChange={this.onTopicsDropdownSelected}
                                 options={this.state.availableTopics}

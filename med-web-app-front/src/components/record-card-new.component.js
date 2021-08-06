@@ -45,6 +45,7 @@ const useStyles = theme => ({
         color: "#6d6d6d",
     },
     content: {
+        whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
     },
     titleStyle: {
@@ -184,7 +185,7 @@ class RecordCardNew extends Component {
 
 
                     {this.isPreview &&
-                    <div className="col-sm-1 fa fa-comments"
+                    <div className="col-sm-2 fa fa-comments"
                          style={{"float": "right"}}> {this.record.numberOfReplies}</div>
                     }
 
