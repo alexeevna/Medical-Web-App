@@ -7,9 +7,19 @@ import Select from 'react-select';
 import RecordCardNew from "./record-card-new.component";
 import Topic from "./topic.component"
 import TopicService from "../services/topic.service";
-import {Grid} from "@material-ui/core";
+import {Grid, withStyles} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 
-export default class ViewRecordsList extends Component {
+const useStyles = theme => ({
+    button: {
+        width: 200,
+        margin: theme.spacing(1),
+        backgroundColor: '#f50057',
+        color: 'white',
+    },
+})
+
+class ViewRecordsList extends Component {
     constructor(props) {
         super(props);
         this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
@@ -142,7 +152,7 @@ export default class ViewRecordsList extends Component {
         } = this.state;
 
         const {showTopics} = this.state;
-
+        const {classes} = this.props;
         return (
             <div className="list row">
                 <div className="col-sm-9">
@@ -213,16 +223,19 @@ export default class ViewRecordsList extends Component {
                 </div>
 
                 <div className="col-sm-2">
-                    <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
+                    <Button variant="contained" href="#/records/create" className={classes.button}>
                         Создать пост
-                    </Link>
-                    <Link to={"/topics/create"} className="nav-link card-link-custom color-orange">
+                    </Button>
+                    <Button variant="contained" href="#/topics/create" className={classes.button}>
                         Страница тэгов
-                    </Link>
+                    </Button>
+                    {/*<Link to={"/records/create"} className="nav-link card-link-custom color-orange">*/}
+                    {/*    Создать пост*/}
+                    {/*</Link>*/}
+                    {/*<Link to={"/topics/create"} className="nav-link card-link-custom color-orange">*/}
+                    {/*    Страница тэгов*/}
+                    {/*</Link>*/}
 
-                    {showTopics && (
-                        <Route component={Topic}/>
-                    )}
                     {/*<Link to={"/profile"} className="nav-link card-link-custom color-orange">*/}
                     {/*    Мои посты*/}
                     {/*</Link>*/}
@@ -261,3 +274,5 @@ const stylesForSmallSelectBox = {
         height: '30px',
     }),
 };
+
+export default withStyles(useStyles)(ViewRecordsList)

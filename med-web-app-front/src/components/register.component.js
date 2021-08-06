@@ -52,7 +52,7 @@ const useStyles = theme => ({
     },
     submit: {
         margin: theme.spacing(1, 0, 1),
-        backgroundColor: '#1B435D',
+        backgroundColor: '#3f51b5',
     },
     formControlLab: {
         marginBottom: theme.spacing(1),
@@ -236,6 +236,7 @@ class Register extends Component {
                                         id="lastName"
                                         label="Фамилия"
                                         name="lastName"
+                                        autoFocus
                                         autoComplete="lname"
                                         value={this.state.lastname}
                                         onChange={this.onChangeLastname}
@@ -251,7 +252,6 @@ class Register extends Component {
                                         fullWidth
                                         id="firstName"
                                         label="Имя"
-                                        autoFocus
                                         value={this.state.firstname}
                                         onChange={this.onChangeFirstname}
                                     />

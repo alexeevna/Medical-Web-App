@@ -30,7 +30,7 @@ const useStyles = theme => ({
     },
     submit: {
         margin: theme.spacing(2, 0, 2),
-        backgroundColor: '#1B435D',
+        backgroundColor: '#3f51b5',
     },
 });
 

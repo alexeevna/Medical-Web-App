@@ -1,12 +1,68 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import Select from 'react-select';
 import AuthService from "../services/auth.service";
 import PipelineService from "../services/pipeline.service"
 import PipelineJobService from "../services/pipelinejob.service"
 import AttachmentService from "../services/attachment.service"
-import {Link} from "react-router-dom";
+import {Button, Divider, FormControl, Grid, Paper, Typography, withStyles} from "@material-ui/core";
 
-export default class PipelinesComponent extends Component {
+const useStyles = theme => ({
+    paper: {
+        marginTop: theme.spacing(3),
+        padding: theme.spacing(1),
+        // display: 'flex',
+    },
+    paper2: {
+        margin: theme.spacing(3),
+        padding: theme.spacing(3),
+    },
+    mainGrid: {
+        display: 'flex',
+        minWidth: 1000,
+    },
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: 0,
+        backgroundColor: '#3f51b5',
+    },
+    buttons: {
+        backgroundColor: '#f50057',
+        color: 'white',
+        width: 200,
+        margin: theme.spacing(1),
+    },
+    root: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        }
+    },
+    form: {
+        width: '100%',
+        marginTop: theme.spacing(1),
+    },
+    formControl: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        },
+        width: '100%',
+    },
+    grid: {
+        margin: theme.spacing(1),
+        alignItems: 'center',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    title: {
+        padding: theme.spacing(3),
+    },
+    content: {
+        //margin: theme.spacing(1),
+        padding: theme.spacing(1),
+        marginLeft: 7,
+    },
+})
+
+class PipelinesComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -47,7 +103,7 @@ export default class PipelinesComponent extends Component {
 
         AttachmentService.getAttachmentsForUser(AuthService.getCurrentUser().username).then(
             response => {
-                let filteredDicoms = response.data.filter( function (file) {
+                let filteredDicoms = response.data.filter(function (file) {
                     return file.initialName.includes(".dcm");
                 });
 
@@ -55,7 +111,7 @@ export default class PipelinesComponent extends Component {
                     return {value: el.id, label: el.initialName};
                 })
                 this.setState({
-                    files : filteredDicomsForSelect
+                    files: filteredDicomsForSelect
                 });
             },
             error => {
@@ -89,86 +145,99 @@ export default class PipelinesComponent extends Component {
     submitPipeline() {
         PipelineJobService.sendRequestForPipelineJob(this.state.currentUser.username,
             this.state.selectedPipeline, this.state.selectedFile).then(
-                response => {
-                },
-                error => {
-                    this.setState({
-                        content: (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
-                    });
-                }
+            response => {
+            },
+            error => {
+                this.setState({
+                    content: (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+                });
+            }
         )
         this.setState({submitted: true});
         //this.props.history.push("/pipelines/results");
     }
 
     render() {
-        const { pipelines, files, selectedFile, selectedPipeline, submitted } = this.state;
+        const {pipelines, files, selectedFile, selectedPipeline, submitted} = this.state;
+        const {classes} = this.props;
 
         return (
+            <Grid className={classes.mainGrid}>
+                <Grid container spacing={3}>
+                    <Grid item xs />
+                    <Grid item xs={6}>
+                        <Paper className={classes.paper}>
+                            <Typography component="h1" className={classes.title} variant="h4">
+                                Запустить конвейер
+                            </Typography>
+                            <Divider/>
 
-            <div className="row">
-                <div className=" col-sm-9 align-content-center top-buffer-10">
+                            <form className={classes.form}
+                                  onSubmit={this.submitPipeline}
+                            >
+                                <FormControl className={classes.formControl}>
+                                    <Typography variant="h6" className={classes.content} color="inherit" noWrap>
+                                        Тип конвейера
+                                    </Typography>
+                                    <Select className="col-9 col-offset-4"
+                                            onChange={this.onPipelineDropdownSelected}
+                                            options={pipelines}
+                                            autoFocus={true}
+                                    />
+                                </FormControl>
+                                <FormControl className={classes.formControl}>
+                                    <Typography variant="h6" className={classes.content} color="inherit" noWrap>
+                                        Изображение
+                                    </Typography>
+                                    <Select className="col-9 col-offset-4"
+                                            onChange={this.onFileDropdownSelected}
+                                            options={files}
+                                    />
+                                </FormControl>
+                            </form>
 
-                    <header className="jumbotron align-text-center color-light-blue">
-                        <h3><strong>Запустить конвейер:</strong></h3>
-                    </header>
-
-                    <div className="view-card color-light-blue">
-                        <form onSubmit={this.handleSubmit}>
-                            <div className="row top-buffer-10">
-                                <div className="col-3">Тип конвейера:</div>
-                                <Select className="col-9 col-offset-4"
-                                        onChange={this.onPipelineDropdownSelected}
-                                        options={pipelines}
-                                        autoFocus={true}
-                                />
-                            </div>
-                            <div className="row top-buffer-10">
-                                <div className="col-3">Изображение:</div>
-                                <Select className="col-9 col-offset-4"
-                                        onChange={this.onFileDropdownSelected}
-                                        options={files}
-                                        autoFocus={true}
-                                />
-                            </div>
-                        </form>
-
-
-                        <div className="col-3 center-horizontal top-buffer-30">
-                            <button
-                                className="btn btn-primary color-middle-blue"
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
                                 disabled={selectedFile == null || selectedPipeline == null || submitted}
-                                onClick={this.submitPipeline}
-                            >Запустить</button>
-                        </div>
+                                className={classes.button}
+                            >
+                                Запустить
+                            </Button>
 
-                        {this.state.submitted && (
-                            <div className="form-group">
-                                <div
-                                    className="alert alert-success top-buffer-10"
-                                    role="alert">
-                                    Отправлено исполняться <br/> Результаты можно посмотреть на вкладке "Запущенные конвейеры"
+                            {this.state.submitted && (
+                                <div className="form-group">
+                                    <div
+                                        className="alert alert-success top-buffer-10"
+                                        role="alert">
+                                        Отправлено исполняться <br/> Результаты можно посмотреть на вкладке
+                                        "Запущенные
+                                        конвейеры"
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </Paper>
+                    </Grid>
 
-                </div>
-
-
-                <div className="col-sm-2 align-center">
-                    <Link to={"/pipelines/results"} className="nav-link card-link-custom color-orange">Запущенные конвейеры</Link>
-                    <Link to={"/files/upload"} className="nav-link card-link-custom color-orange">Загрузить файлы для конвейеров</Link>
-                    {this.state.currentUser !== null && this.state.currentUser.username === "alexandra" &&
-                        (<Link to={"/pipelines/save"} className="nav-link card-link-custom color-orange">
-                            Сохранить конфигурацию
-                        </Link>)
-                    }
-                </div>
-
-
-                <div className="col-sm-1"></div>
-            </div>
-        );
+                    <Grid item xs={4}>
+                        <Paper className={classes.paper2}>
+                            <Grid className={classes.grid}>
+                                <Button variant="contained" href="#/pipelines/results"
+                                        className={classes.buttons}>
+                                    Мои файлы
+                                </Button>
+                                <Button variant="contained" href="#/files/upload" className={classes.buttons}>
+                                    Загрузить файл
+                                </Button>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Grid>
+        )
     }
 }
+
+export default withStyles(useStyles)(PipelinesComponent)
