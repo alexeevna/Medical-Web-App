@@ -45,7 +45,7 @@ const useStyles = theme => ({
     button: {
         marginTop: theme.spacing(3),
         marginLeft: 0,
-        backgroundColor: '#01579b',
+        backgroundColor: '#3f51b5',
     },
     root: {
         "& .MuiFormLabel-root": {

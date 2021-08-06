@@ -56,7 +56,8 @@ const useStyles = theme => ({
     button: {
         width: 200,
         margin: theme.spacing(1),
-        backgroundColor: 'orange'
+        backgroundColor: '#f50057',
+        color: 'white',
     },
     grid: {
         margin: theme.spacing(1),
