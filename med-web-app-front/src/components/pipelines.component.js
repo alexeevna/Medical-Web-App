@@ -26,10 +26,14 @@ const useStyles = theme => ({
         backgroundColor: '#3f51b5',
     },
     buttons: {
-        backgroundColor: '#f50057',
-        color: 'white',
         width: 200,
         margin: theme.spacing(1),
+        backgroundColor: '#f50057',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
     },
     root: {
         "& .MuiFormLabel-root": {
@@ -224,13 +228,21 @@ class PipelinesComponent extends Component {
                     <Grid item xs={4}>
                         <Paper className={classes.paper2}>
                             <Grid className={classes.grid}>
-                                <Button variant="contained" href="#/pipelines/results"
+                                <Button variant="contained" href="#/files/view"
                                         className={classes.buttons}>
                                     Мои файлы
                                 </Button>
                                 <Button variant="contained" href="#/files/upload" className={classes.buttons}>
                                     Загрузить файл
                                 </Button>
+                                <Button variant="contained" href="#/pipelines/results" className={classes.buttons}>
+                                    Запущенные конвейеры
+                                </Button>
+                                {this.state.currentUser !== null && this.state.currentUser.username === "alexandra" &&
+                                (<Button href={"#/pipelines/save"} className={classes.buttons}>
+                                    Сохранить конфигурацию
+                                </Button>)
+                                }
                             </Grid>
                         </Paper>
                     </Grid>
