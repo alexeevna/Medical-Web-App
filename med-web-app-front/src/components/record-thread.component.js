@@ -5,12 +5,24 @@ import RecordCardNew from "./record-card-new.component";
 import ReplyRecordForm from "./reply-record.component";
 import {Card, Grid, withStyles} from "@material-ui/core";
 import ReviewCard from "./review-card.component";
+import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
     mainGrid: {
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(3),
         minWidth: 712,
         maxWidth: 712,
+    },
+    paper2: {
+        margin: theme.spacing(3),
+        padding: theme.spacing(3),
+        color: "black",
+    },
+    grid: {
+        margin: theme.spacing(1),
+        alignItems: 'center',
+        flexDirection: 'column',
+        display: 'flex',
     },
     paper: {
         marginTop: theme.spacing(3),
@@ -23,7 +35,17 @@ const useStyles = theme => ({
     Grid: {
         minWidth: 1100,
         display: "flex",
-    }
+    },
+    button: {
+        width: 200,
+        margin: theme.spacing(1),
+        backgroundColor: '#f50057',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
+    },
 });
 
 class RecordThreadComponent extends Component {
@@ -99,14 +121,16 @@ class RecordThreadComponent extends Component {
                     </Grid>
                 </Grid>
                 <Grid xs={4} item>
-                    <div className="col-md-3">
-                        <Link to={"/records/create"} className="nav-link card-link-custom color-orange">
-                            Создать пост
-                        </Link>
-                        <Link to={"/records/view"} className="nav-link card-link-custom color-orange">
-                            Обратно к постам
-                        </Link>
-                    </div>
+                    <Card className={classes.paper2}>
+                        <Grid className={classes.grid}>
+                            <Button variant="contained" href="#/records/create" className={classes.button}>
+                                Создать пост
+                            </Button>
+                            <Button variant="contained" href="#/records/view" className={classes.button}>
+                                Обратно к постам
+                            </Button>
+                        </Grid>
+                    </Card>
                 </Grid>
 
 

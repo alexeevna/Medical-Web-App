@@ -1,17 +1,89 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import {Link} from "react-router-dom";
 import DicomAnonymizerService from "../services/dicom-anonymizer.service"
 import Button from "@material-ui/core/Button";
-import {withStyles} from "@material-ui/core";
+import {Card, withStyles} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = theme => ({
+    paper: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+        padding: theme.spacing(1),
+        color: "black",
+        // display: 'flex',
+    },
+    paper2: {
+        margin: theme.spacing(3),
+        padding: theme.spacing(3),
+        color: "black",
+    },
+    mainGrid: {
+        display: 'flex',
+        minWidth: 1000,
+    },
+    avatar: {
+        width: 130,
+        height: 130,
+        marginBottom: theme.spacing(3),
+        marginRight: theme.spacing(4),
+        marginLeft: theme.spacing(4),
+    },
     button: {
         width: 200,
         margin: theme.spacing(1),
         backgroundColor: '#f50057',
-        color: 'white',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
+    },
+    buttonUpload: {
+        width: 100,
+        backgroundColor: '#f50057',
+        marginLeft: theme.spacing(3),
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        },
+        '&:disabled': {
+            backgroundColor: '#819ca9',
+        },
+    },
+    grid: {
+        margin: theme.spacing(1),
+        alignItems: 'center',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    gridData: {
+        marginLeft: theme.spacing(8),
+        alignItems: 'center',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    gridInPaper: {
+        marginTop: theme.spacing(1),
+        marginLeft: theme.spacing(1),
+        padding: theme.spacing(1),
+        color: "black",
+        display: 'flex',
+    },
+    paperGrey: {
+        margin: theme.spacing(3, 5, 3, 5),
+        borderRadius: 20,
+        backgroundColor: "#eeeeee"
+    },
+    gridContent: {
+        margin: theme.spacing(2),
+        display: 'flex'
+    },
+    gridInput: {
+        marginRight: theme.spacing(25),
     },
 })
 
@@ -48,7 +120,7 @@ class UploadAttachmentsComponent extends Component {
         let _progressInfos = [];
 
         for (let i = 0; i < selectedFiles.length; i++) {
-            _progressInfos.push({ percentage: 0, fileName: selectedFiles[i].name });
+            _progressInfos.push({percentage: 0, fileName: selectedFiles[i].name});
         }
 
         this.setState(
@@ -93,8 +165,8 @@ class UploadAttachmentsComponent extends Component {
                 _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
                 this.setState({
                     _progressInfos,
-            });
-        })
+                });
+            })
             .then((response) => {
                 this.setState((prev) => {
                     let nextMessage = [...prev.message, "Успешно загружен файл: " + file.name];
@@ -119,76 +191,88 @@ class UploadAttachmentsComponent extends Component {
     }
 
     render() {
-        const { selectedFiles, progressInfos, message } = this.state;
+        const {selectedFiles, progressInfos, message} = this.state;
+        console.log(selectedFiles)
+        console.log(progressInfos)
         const {classes} = this.props;
         return (
 
-            <div className="row">
-                <div className=" col-sm-9 align-content-center top-buffer-10">
+            <div>
+                <Grid>
+                    <Grid xs={12} item className={classes.mainGrid}>
+                        <Grid xs={8} item>
+                            <Card className={classes.paper}>
+                                <Grid className={classes.grid}>
+                                    <h3><strong>Загрузка файлов</strong></h3>
+                                </Grid>
+                                {progressInfos &&
+                                progressInfos.map((progressInfo, index) => (
+                                    <div className="mb-2 center-horizontal width-600" key={index}>
+                                        <span>{progressInfo.fileName}</span>
+                                        <div className="progress">
+                                            <div
+                                                className="progress-bar progress-bar-info color-orange"
+                                                role="progressbar"
+                                                aria-valuenow={progressInfo.percentage}
+                                                aria-valuemin="0"
+                                                aria-valuemax="100"
+                                                style={{width: progressInfo.percentage + "%"}}
+                                            >
+                                                {progressInfo.percentage}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                <Card className={classes.paperGrey}>
+                                    <Grid className={classes.gridContent}>
+                                        <Grid className={classes.gridInput}>
+                                            <label>
+                                                <input type="file" multiple onChange={this.selectFiles}/>
+                                            </label>
+                                        </Grid>
 
-                    <header className="jumbotron align-text-center color-light-blue">
-                        <h3><strong>Загрузка файлов</strong></h3>
-                    </header>
-
-                    {progressInfos &&
-                    progressInfos.map((progressInfo, index) => (
-                        <div className="mb-2 center-horizontal width-600" key={index}>
-                            <span>{progressInfo.fileName}</span>
-                            <div className="progress">
-                                <div
-                                    className="progress-bar progress-bar-info color-orange"
-                                    role="progressbar"
-                                    aria-valuenow={progressInfo.percentage}
-                                    aria-valuemin="0"
-                                    aria-valuemax="100"
-                                    style={{ width: progressInfo.percentage + "%" }}
-                                >
-                                    {progressInfo.percentage}%
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                                        <Grid>
+                                            <Button
+                                                className={classes.buttonUpload}
+                                                variant="contained"
+                                                disabled={!selectedFiles}
+                                                onClick={this.uploadFiles}
+                                            >
+                                                Загрузить
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
 
 
-                    <div className="align-center view-card color-light-blue">
-                        <div className="row top-buffer-10">
-                            <div className="col-9">
-                                <label className="btn color-light-blue">
-                                    <input type="file" multiple onChange={this.selectFiles} />
-                                </label>
-                            </div>
-
-                            <div className="col-3">
-                                <button
-                                    className="btn btn-primary btn-block color-middle-blue"
-                                    disabled={!selectedFiles}
-                                    onClick={this.uploadFiles}
-                                >Загрузить</button>
-                            </div>
-                        </div>
-
-                        {message.length > 0 && (
-                            <div className="alert color-light-blue" role="alert">
-                                <ul>
-                                    {message.map((item, i) => {return <li key={i}>{item}</li>;})}
-                                </ul>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="col-sm-2 align-center">
-                    <Button variant="contained" href={"#/profile/" + AuthService.getCurrentUser().username} className={classes.button}>
-                        Профиль
-                    </Button>
-                    <Button variant="contained" href="#/files/view" className={classes.button}>
-                        Мои файлы
-                    </Button>
-                    {/*<Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">Профиль</Link>*/}
-                    {/*<Link to={"/files/view"} className="nav-link card-link-custom color-orange">Мои файлы</Link>*/}
-                </div>
-
-                <div className="col-sm-1"></div>
+                                </Card>
+                                {message.length > 0 && (
+                                    <div className="alert color-light-blue" role="alert">
+                                        <ul>
+                                            {message.map((item, i) => {
+                                                return <li key={i}>{item}</li>;
+                                            })}
+                                        </ul>
+                                    </div>
+                                )}
+                            </Card>
+                        </Grid>
+                        <Grid xs={4} item>
+                            <Card className={classes.paper2}>
+                                <Grid className={classes.grid}>
+                                    <Button
+                                        variant="contained"
+                                        href={"#/profile/" + AuthService.getCurrentUser().username}
+                                        className={classes.button}>
+                                        Профиль
+                                    </Button>
+                                    <Button variant="contained" href="#/files/view" className={classes.button} >
+                                        Мои файлы
+                                    </Button>
+                                </Grid>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
         );
     }
