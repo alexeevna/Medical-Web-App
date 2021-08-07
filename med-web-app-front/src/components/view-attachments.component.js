@@ -10,7 +10,11 @@ const useStyles = theme => ({
         width: 200,
         margin: theme.spacing(1),
         backgroundColor: '#f50057',
-        color: 'white',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
     },
 })
 

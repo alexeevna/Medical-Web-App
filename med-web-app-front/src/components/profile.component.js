@@ -57,7 +57,11 @@ const useStyles = theme => ({
         width: 200,
         margin: theme.spacing(1),
         backgroundColor: '#f50057',
-        color: 'white',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
     },
     grid: {
         margin: theme.spacing(1),
@@ -134,6 +138,7 @@ class Profile extends Component {
             this.setNewUsername();
             this.getUser(this.props.match.params.username);
         }
+        console.log(this.props.match.params.username)
         const {user} = this.state;
         const {showReviews} = this.state;
         const {classes} = this.props;
