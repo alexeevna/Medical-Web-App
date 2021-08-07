@@ -3,18 +3,50 @@ import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
 import RecordCardNew from "./record-card-new.component";
 import ReplyRecordForm from "./reply-record.component";
+import {Card, Grid, withStyles} from "@material-ui/core";
+import ReviewCard from "./review-card.component";
 import Button from "@material-ui/core/Button";
-import AuthService from "../services/auth.service";
-import {withStyles} from "@material-ui/core";
 
 const useStyles = theme => ({
+    mainGrid: {
+        marginTop: theme.spacing(3),
+        minWidth: 712,
+        maxWidth: 712,
+    },
+    paper2: {
+        margin: theme.spacing(3),
+        padding: theme.spacing(3),
+        color: "black",
+    },
+    grid: {
+        margin: theme.spacing(1),
+        alignItems: 'center',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    paper: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        padding: theme.spacing(1),
+        color: "black",
+        // display: 'flex',
+    },
+    Grid: {
+        minWidth: 1100,
+        display: "flex",
+    },
     button: {
         width: 200,
         margin: theme.spacing(1),
         backgroundColor: '#f50057',
-        color: 'white',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
     },
-})
+});
 
 class RecordThreadComponent extends Component {
     constructor(props) {
@@ -49,58 +81,60 @@ class RecordThreadComponent extends Component {
         RecordService.getAnswers(this.state.recordId)
             .then(response => {
                 console.log(response.data);
-                    this.setState({answers: response.data});
-                }
-            )
+                this.setState({answers: []});
+                this.setState({answers: response.data});
+            })
             .catch(error => {
                 console.log(error);
             });
     }
 
     render() {
-        const {classes} = this.props;
+        const { classes } = this.props;
         const { answers } = this.state;
         return (
-            <div className="list row">
-                <div className="col-md-9">
-
-                    {this.state.record &&
+            <Grid xs={12} item className={classes.Grid}>
+                <Grid xs={8} item>
+                    <Grid className={classes.mainGrid}>
+                        {this.state.record &&
                         (<RecordCardNew record={this.state.record} isPreview={false} isReply={false}/>)
-                    }
+                        }
+                        <Card className={classes.paper}>
 
-                    <ul className="list-group">
-                        {answers !== undefined && this.state.answers !== null &&
-                        this.state.answers.map((record, index) => (
-                            <li
-                                style={{listStyleType: "none", width: "90%", marginLeft: "auto", marginTop: "1"}}
-                                key={index}
-                                >
-                                <RecordCardNew record={record} isPreview={false} isReply={true}/>
-                            </li>
+                            <ReplyRecordForm
+                                refreshRecords = {this.refreshAnswers}
+                                parentId = {this.state.recordId}/>
 
-                        ))}
-                    </ul>
+                            <ul className="list-group">
+                                {answers !== undefined && this.state.answers !== null &&
+                                this.state.answers.map((record, index) => (
+                                    <li
+                                        style={{listStyleType: "none", width: "100%", marginLeft: "auto", marginTop: "1"}}
+                                        key={index}
+                                        >
+                                        <ReviewCard review={record} isPreview={false} isReply={true}/>
+                                    </li>
 
-                    <ReplyRecordForm
-                        refreshRecords = {this.refreshAnswers}
-                        parentId = {this.state.recordId}/>
-                </div>
+                                ))}
+                            </ul>
+                        </Card>
+                    </Grid>
+                </Grid>
+                <Grid xs={4} item>
+                    <Card className={classes.paper2}>
+                        <Grid className={classes.grid}>
+                            <Button variant="contained" href="#/records/create" className={classes.button}>
+                                Создать пост
+                            </Button>
+                            <Button variant="contained" href="#/records/view" className={classes.button}>
+                                Обратно к постам
+                            </Button>
+                        </Grid>
+                    </Card>
+                </Grid>
 
-                <div className="col-md-3">
-                    <Button variant="contained" href={"#/records/create"} className={classes.button}>
-                        Создать пост
-                    </Button>
-                    <Button variant="contained" href="#/records/view" className={classes.button}>
-                        Обратно к постам
-                    </Button>
-                    {/*<Link to={"/records/create"} className="nav-link card-link-custom color-orange">*/}
-                    {/*    Создать пост*/}
-                    {/*</Link>*/}
-                    {/*<Link to={"/records/view"} className="nav-link card-link-custom color-orange">*/}
-                    {/*    Обратно к постам*/}
-                    {/*</Link>*/}
-                </div>
-            </div>
+
+            </Grid>
         );
     }
 }

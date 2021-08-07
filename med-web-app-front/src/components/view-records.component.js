@@ -15,7 +15,11 @@ const useStyles = theme => ({
         width: 200,
         margin: theme.spacing(1),
         backgroundColor: '#f50057',
-        color: 'white',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
     },
 })
 
@@ -173,7 +177,8 @@ class ViewRecordsList extends Component {
                                 Найти
                             </button>
                         </div>
-                        <label htmlFor="selectedTopics" className="col-sm-2">Тэги:</label>
+
+                        <label htmlFor="selectedTopics" className="col-sm-2"></label>
                         <Select className="col-sm-10"
                                 onChange={this.onTopicsDropdownSelected}
                                 options={this.state.availableTopics}
@@ -229,16 +234,6 @@ class ViewRecordsList extends Component {
                     <Button variant="contained" href="#/topics/create" className={classes.button}>
                         Страница тэгов
                     </Button>
-                    {/*<Link to={"/records/create"} className="nav-link card-link-custom color-orange">*/}
-                    {/*    Создать пост*/}
-                    {/*</Link>*/}
-                    {/*<Link to={"/topics/create"} className="nav-link card-link-custom color-orange">*/}
-                    {/*    Страница тэгов*/}
-                    {/*</Link>*/}
-
-                    {/*<Link to={"/profile"} className="nav-link card-link-custom color-orange">*/}
-                    {/*    Мои посты*/}
-                    {/*</Link>*/}
                 </div>
 
             </div>
