@@ -46,6 +46,7 @@ const useStyles = theme => ({
         "& .MuiFormLabel-root": {
             margin: 0
         },
+        width: 800,
     },
 })
 
@@ -87,7 +88,7 @@ class ViewRecordsList extends Component {
             availableTopics: [],
             selectedTopic: null,
             selectedTopicValue: null,
-            selectedTopicsID: null,
+            selectedTopicID: null,
         };
 
         this.pageSizes = [{value: 2, label: '2'}, {value: 4, label: '4'}, {value: 10, label: '10'}];
@@ -128,15 +129,15 @@ class ViewRecordsList extends Component {
 
 
     handleTopics(e) {
-        let topicIds = [];
+        let topicId;
         this.state.availableTopics.map(topic => {
             if (e.target.value.indexOf(topic.label) !== -1) {
-                topicIds.push(topic.value)
+                topicId = topic.value;
             }
         });
 
         this.setState({
-            selectedTopicsId: topicIds,
+            selectedTopicId: topicId,
             selectedTopicValue: e.target.value
         })
 
@@ -148,7 +149,7 @@ class ViewRecordsList extends Component {
         RecordService.getAll(page, pageSize, searchTitle, selectedTopic)
             .then((response) => {
                 const { records, totalPages } = response.data;
-                this.refreshList();
+                // this.refreshList();
 
                 this.setState({
                     records: records,
@@ -215,7 +216,7 @@ class ViewRecordsList extends Component {
             <div className="list row">
                 <div className="col-sm-9">
                     <div className="input-group mb-3">
-                        <input
+                        {/*<input
                             type="text"
                             className="form-control"
                             placeholder="Введите часть заголовка"
@@ -230,7 +231,7 @@ class ViewRecordsList extends Component {
                             >
                                 Найти
                             </button>
-                        </div>
+                        </div>*/}
                         <Paper component="form" className={classes.paper} >
                             <InputBase
                                 value={searchTitle}
@@ -239,15 +240,16 @@ class ViewRecordsList extends Component {
                                 placeholder="Поиск"
                                 // inputProps={{ 'aria-label': 'search google maps' }}
                             />
-                            <IconButton type="submit" onClick={this.getRecords} className={classes.iconButton} aria-label="search">
+                            <IconButton type="button" onClick={this.getRecords} className={classes.iconButton} aria-label="search">
                                 <SearchIcon />
                             </IconButton>
                         </Paper>
 
 
 
-                        <FormControl className={classes.selectForm}>
+                        <FormControl className={classes.selectForm} fullWidth>
                             <Select
+
                                 className={classes.root}
                                 labelId="selected-topics"
                                 // variant="outlined"
@@ -324,10 +326,10 @@ class ViewRecordsList extends Component {
                 </div>
 
                 <div className="col-sm-2">
-                    <Button variant="contained" href="#/records/create" className={classes.button}>
+                    <Button variant="contained" href="/records/create" className={classes.button}>
                         Создать пост
                     </Button>
-                    <Button variant="contained" href="#/topics/create" className={classes.button}>
+                    <Button variant="contained" href="/topics/create" className={classes.button}>
                         Страница тэгов
                     </Button>
                 </div>

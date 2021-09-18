@@ -4,13 +4,16 @@ import './index.css';
 import '../node_modules/font-awesome/css/font-awesome.min.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { HashRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
+import {createBrowserHistory} from 'history'
+
+const history = createBrowserHistory()
 
 ReactDOM.render(
   // <React.StrictMode>
-      <HashRouter>
+      <Router history={history}>
           <App />
-      </HashRouter>
+      </Router>
   // </React.StrictMode>
 ,
   document.getElementById('root')

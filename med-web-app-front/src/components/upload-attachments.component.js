@@ -261,11 +261,11 @@ class UploadAttachmentsComponent extends Component {
                                 <Grid className={classes.grid}>
                                     <Button
                                         variant="contained"
-                                        href={"#/profile/" + AuthService.getCurrentUser().username}
+                                        href={"/profile/" + AuthService.getCurrentUser().username}
                                         className={classes.button}>
                                         Профиль
                                     </Button>
-                                    <Button variant="contained" href="#/files/view" className={classes.button} >
+                                    <Button variant="contained" href="/files/view" className={classes.button} >
                                         Мои файлы
                                     </Button>
                                 </Grid>

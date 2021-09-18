@@ -228,18 +228,18 @@ class PipelinesComponent extends Component {
                     <Grid item xs={4}>
                         <Paper className={classes.paper2}>
                             <Grid className={classes.grid}>
-                                <Button variant="contained" href="#/files/view"
+                                <Button variant="contained" href="/files/view"
                                         className={classes.buttons}>
                                     Мои файлы
                                 </Button>
-                                <Button variant="contained" href="#/files/upload" className={classes.buttons}>
+                                <Button variant="contained" href="/files/upload" className={classes.buttons}>
                                     Загрузить файл
                                 </Button>
-                                <Button variant="contained" href="#/pipelines/results" className={classes.buttons}>
+                                <Button variant="contained" href="/pipelines/results" className={classes.buttons}>
                                     Запущенные конвейеры
                                 </Button>
                                 {this.state.currentUser !== null && this.state.currentUser.username === "alexandra" &&
-                                (<Button href={"#/pipelines/save"} className={classes.buttons}>
+                                (<Button href={"/pipelines/save"} className={classes.buttons}>
                                     Сохранить конфигурацию
                                 </Button>)
                                 }

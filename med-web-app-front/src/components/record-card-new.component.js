@@ -127,7 +127,7 @@ class RecordCardNew extends Component {
                 <Grid xs={12} sm direction={"column"} className={classes.mainGrid}>
                     <Grid className={classes.ggrid} xs direction={"row"} spacing={1}>
                         <Grid>
-                            <Link variant={"subtitle2"} href={"#/profile/" + this.record.creator.username}>
+                            <Link variant={"subtitle2"} href={"/profile/" + this.record.creator.username}>
                                 {this.record.creator.username}
                             </Link>
                         </Grid>

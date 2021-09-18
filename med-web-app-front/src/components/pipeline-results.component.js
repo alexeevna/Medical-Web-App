@@ -155,7 +155,7 @@ class PipelineResultsComponent extends Component {
                     <Grid xs={4} item>
                         <Card className={classes.paper2}>
                             <Grid className={classes.grid}>
-                                <Button href={"#/pipelines/create"} className={classes.button}>
+                                <Button href={"/pipelines/create"} className={classes.button}>
                                     Запустить конвейеры
                                 </Button>
                             </Grid>
