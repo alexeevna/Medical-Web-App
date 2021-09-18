@@ -7,7 +7,7 @@ import SelectReact from 'react-select';
 import RecordCardNew from "./record-card-new.component";
 import Topic from "./topic.component"
 import TopicService from "../services/topic.service";
-import {Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
+import {ButtonBase, Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 import TextField from "@material-ui/core/TextField";
@@ -16,6 +16,7 @@ import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = theme => ({
     button: {
@@ -47,6 +48,20 @@ const useStyles = theme => ({
             margin: 0
         },
         width: 800,
+    },
+    topicPaper: {
+        width: 200,
+        margin: theme.spacing(1),
+        padding: theme.spacing(3),
+    },
+    topicTitle: {
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+    },
+    reset: {
+        fontSize: 15,
+        textAlign: "right",
+        color: '#f50057',
     },
 })
 
@@ -140,7 +155,6 @@ class ViewRecordsList extends Component {
             selectedTopicId: topicId,
             selectedTopicValue: e.target.value
         })
-
     }
 
     getRecords() {
@@ -149,7 +163,7 @@ class ViewRecordsList extends Component {
         RecordService.getAll(page, pageSize, searchTitle, selectedTopic)
             .then((response) => {
                 const { records, totalPages } = response.data;
-                // this.refreshList();
+                this.refreshList();
 
                 this.setState({
                     records: records,
@@ -169,10 +183,6 @@ class ViewRecordsList extends Component {
     }
 
     displayRecordThread(record) {
-        // this.setState({
-        //     currentRecord: record,
-        //     currentIndex: index,
-        // });
         this.props.history.push({
             pathname: '/records/thread/' + record.id,
             state: { recordId: record.id }
@@ -247,7 +257,6 @@ class ViewRecordsList extends Component {
 
                         <FormControl className={classes.selectForm} fullWidth>
                             <Select
-
                                 className={classes.root}
                                 labelId="selected-topics"
                                 // variant="outlined"
@@ -321,6 +330,51 @@ class ViewRecordsList extends Component {
                     <Button variant="contained" href="/topics/create" className={classes.button}>
                         Страница тэгов
                     </Button>
+
+                    <Paper className={classes.topicPaper}>
+                        <Grid container spacing={1} direction={"column"}>
+                            <Grid item
+                                  onClick={() => (
+                                      this.setState({
+                                              selectedTopic: null,
+                                          },
+                                          this.getRecords
+                                      ))}>
+                                <Typography variant="body1" className={classes.topicTitle}>
+                                    Список тэгов:
+                                </Typography>
+                            </Grid>
+                            {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (
+                                <Grid item
+                                      style={{listStyleType: "none"}}
+                                      key={index}
+                                      onClick={() => (
+                                          this.setState({
+                                                  selectedTopic: topic.value,
+                                              },
+                                              this.getRecords
+                                          ))}
+                                >
+                                    <ButtonBase>
+                                        {topic.label}
+                                    </ButtonBase>
+                                </Grid>
+                            ))}
+                            <Grid item
+                                  onClick={() => (
+                                      this.setState({
+                                              selectedTopic: null,
+                                          },
+                                          this.getRecords
+                                      ))}>
+                                <Typography className={classes.reset}>
+                                    <ButtonBase>
+                                        сбросить
+                                    </ButtonBase>
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
                 </div>
 
             </div>

@@ -36,7 +36,7 @@ const useStyles = theme => ({
     submit: {
         width: 50,
         height: 73,
-        backgroundColor: '#1B435D',
+        backgroundColor: '#f50057',
     },
 });
 
