@@ -3,12 +3,20 @@ import { Route } from "react-router-dom";
 import RecordService from "../services/record.service";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import Select from 'react-select';
+import SelectReact from 'react-select';
 import RecordCardNew from "./record-card-new.component";
 import Topic from "./topic.component"
 import TopicService from "../services/topic.service";
-import {Grid, withStyles} from "@material-ui/core";
+import {ButtonBase, Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import SearchIcon from "@material-ui/icons/Search";
+import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
+import Chip from "@material-ui/core/Chip";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = theme => ({
     button: {
@@ -21,7 +29,52 @@ const useStyles = theme => ({
             color: '#fff',
         }
     },
+    paper: {
+        height: 42,
+        padding: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        width: 800,
+    },
+    input: {
+        marginLeft: theme.spacing(1),
+        flex: 1,
+    },
+    iconButton: {
+        padding: 10,
+    },
+    selectForm: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        },
+        width: 800,
+    },
+    topicPaper: {
+        width: 200,
+        margin: theme.spacing(1),
+        padding: theme.spacing(3),
+    },
+    topicTitle: {
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+    },
+    reset: {
+        fontSize: 15,
+        textAlign: "right",
+        color: '#f50057',
+    },
 })
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 
 class ViewRecordsList extends Component {
     constructor(props) {
@@ -33,6 +86,7 @@ class ViewRecordsList extends Component {
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
         this.onTopicsDropdownSelected = this.onTopicsDropdownSelected.bind(this);
+        this.handleTopics = this.handleTopics.bind(this);
 
 
         this.state = {
@@ -49,6 +103,7 @@ class ViewRecordsList extends Component {
             availableTopics: [],
             selectedTopic: null,
             selectedTopicValue: null,
+            selectedTopicID: null,
         };
 
         this.pageSizes = [{value: 2, label: '2'}, {value: 4, label: '4'}, {value: 10, label: '10'}];
@@ -88,6 +143,20 @@ class ViewRecordsList extends Component {
     }
 
 
+    handleTopics(e) {
+        let topicId;
+        this.state.availableTopics.map(topic => {
+            if (e.target.value.indexOf(topic.label) !== -1) {
+                topicId = topic.value;
+            }
+        });
+
+        this.setState({
+            selectedTopicId: topicId,
+            selectedTopicValue: e.target.value
+        })
+    }
+
     getRecords() {
         const { searchTitle, page, pageSize, selectedTopic } = this.state;
 
@@ -114,10 +183,6 @@ class ViewRecordsList extends Component {
     }
 
     displayRecordThread(record) {
-        // this.setState({
-        //     currentRecord: record,
-        //     currentIndex: index,
-        // });
         this.props.history.push({
             pathname: '/records/thread/' + record.id,
             state: { recordId: record.id }
@@ -161,7 +226,7 @@ class ViewRecordsList extends Component {
             <div className="list row">
                 <div className="col-sm-9">
                     <div className="input-group mb-3">
-                        <input
+                        {/*<input
                             type="text"
                             className="form-control"
                             placeholder="Введите часть заголовка"
@@ -176,22 +241,53 @@ class ViewRecordsList extends Component {
                             >
                                 Найти
                             </button>
-                        </div>
+                        </div>*/}
+                        <Paper component="form" className={classes.paper} >
+                            <InputBase
+                                value={searchTitle}
+                                onChange={this.onChangeSearchTitle}
+                                className={classes.input}
+                                placeholder="Поиск"
+                                // inputProps={{ 'aria-label': 'search google maps' }}
+                            />
+                            <IconButton type="button" onClick={this.getRecords} className={classes.iconButton} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                        </Paper>
 
-                        <label htmlFor="selectedTopics" className="col-sm-2"></label>
-                        <Select className="col-sm-10"
-                                onChange={this.onTopicsDropdownSelected}
-                                options={this.state.availableTopics}
+                        <FormControl className={classes.selectForm} fullWidth>
+                            <Select
+                                className={classes.root}
+                                labelId="selected-topics"
+                                // variant="outlined"
                                 value={this.state.selectedTopicValue}
-                                autoFocus={true}
-                                isMulti={false}
-                        />
+                                onChange={this.handleTopics}
+                                input={<Input id="select-multiple-chip-for-topics"/>}
+                                renderValue={(selected) => (
+                                    <div className={classes.chips}>
+                                        {
+                                            <Chip key={selected} label={selected} className={classes.chip}/>
+                                        }
+                                    </div>
+                                )}
+                                MenuProps={MenuProps}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {this.state.availableTopics.map(x => (
+                                    <MenuItem key={x.value} value={x.label} id={x.value}>
+                                        {x.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </div>
 
                     <div className="mt-3">
                         <div className="row">
-                            <div style={{marginLeft: "17px"}}>{"Количество постов на странице: "}</div>
-                            <Select className="col-2"
+                            <div style={{marginLeft: "17px", marginTop: "5px"}}>{"Количество постов на странице: "}</div>
+                            <SelectReact className="col-2"
                                     onChange={this.handlePageSizeChange}
                                     options={this.pageSizes}
                                     autoFocus={true}
@@ -228,12 +324,57 @@ class ViewRecordsList extends Component {
                 </div>
 
                 <div className="col-sm-2">
-                    <Button variant="contained" href="#/records/create" className={classes.button}>
+                    <Button variant="contained" href="/records/create" className={classes.button}>
                         Создать пост
                     </Button>
-                    <Button variant="contained" href="#/topics/create" className={classes.button}>
+                    <Button variant="contained" href="/topics/create" className={classes.button}>
                         Страница тэгов
                     </Button>
+
+                    <Paper className={classes.topicPaper}>
+                        <Grid container spacing={1} direction={"column"}>
+                            <Grid item
+                                  onClick={() => (
+                                      this.setState({
+                                              selectedTopic: null,
+                                          },
+                                          this.getRecords
+                                      ))}>
+                                <Typography variant="body1" className={classes.topicTitle}>
+                                    Список тэгов:
+                                </Typography>
+                            </Grid>
+                            {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (
+                                <Grid item
+                                      style={{listStyleType: "none"}}
+                                      key={index}
+                                      onClick={() => (
+                                          this.setState({
+                                                  selectedTopic: topic.value,
+                                              },
+                                              this.getRecords
+                                          ))}
+                                >
+                                    <ButtonBase>
+                                        {topic.label}
+                                    </ButtonBase>
+                                </Grid>
+                            ))}
+                            <Grid item
+                                  onClick={() => (
+                                      this.setState({
+                                              selectedTopic: null,
+                                          },
+                                          this.getRecords
+                                      ))}>
+                                <Typography className={classes.reset}>
+                                    <ButtonBase>
+                                        сбросить
+                                    </ButtonBase>
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
                 </div>
 
             </div>

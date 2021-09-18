@@ -123,10 +123,10 @@ class RecordThreadComponent extends Component {
                 <Grid xs={4} item>
                     <Card className={classes.paper2}>
                         <Grid className={classes.grid}>
-                            <Button variant="contained" href="#/records/create" className={classes.button}>
+                            <Button variant="contained" href="/records/create" className={classes.button}>
                                 Создать пост
                             </Button>
-                            <Button variant="contained" href="#/records/view" className={classes.button}>
+                            <Button variant="contained" href="/records/view" className={classes.button}>
                                 Обратно к постам
                             </Button>
                         </Grid>

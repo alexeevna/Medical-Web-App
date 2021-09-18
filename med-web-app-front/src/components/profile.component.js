@@ -197,10 +197,10 @@ class Profile extends Component {
                             <Grid xs={4} item>
                                 <Card className={classes.paper2}>
                                     <Grid className={classes.grid}>
-                                        <Button variant="contained" href="#/files/view" className={classes.button}>
+                                        <Button variant="contained" href="/files/view" className={classes.button}>
                                             Мои файлы
                                         </Button>
-                                        <Button variant="contained" href="#/files/upload" className={classes.button}>
+                                        <Button variant="contained" href="/files/upload" className={classes.button}>
                                             Загрузить файл
                                         </Button>
                                     </Grid>

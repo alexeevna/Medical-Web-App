@@ -47,6 +47,8 @@
     ]
   },
   "devDependencies": {
-    "@material-ui/icons": "^4.11.2"
+    "@material-ui/icons": "^4.11.2",
+    "@stomp/stompjs": "^6.1.0",
+    "history": "^4.10.1"
   }
 }

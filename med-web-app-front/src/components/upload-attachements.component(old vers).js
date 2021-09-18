@@ -221,10 +221,10 @@ class UploadAttachmentsComponent extends Component {
                 </div>
 
                 <div className="col-sm-2 align-center">
-                    <Button variant="contained" href={"#/profile/" + AuthService.getCurrentUser().username} className={classes.button}>
+                    <Button variant="contained" href={"/profile/" + AuthService.getCurrentUser().username} className={classes.button}>
                         Профиль
                     </Button>
-                    <Button variant="contained" href="#/files/view" className={classes.button}>
+                    <Button variant="contained" href="/files/view" className={classes.button}>
                         Мои файлы
                     </Button>
                     {/*<Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">Профиль</Link>*/}
