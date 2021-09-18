@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
-import {Link} from "react-router-dom";
 import DicomAnonymizerService from "../services/dicom-anonymizer.service"
 import Button from "@material-ui/core/Button";
 import {Card, withStyles} from "@material-ui/core";
@@ -192,8 +191,6 @@ class UploadAttachmentsComponent extends Component {
 
     render() {
         const {selectedFiles, progressInfos, message} = this.state;
-        console.log(selectedFiles)
-        console.log(progressInfos)
         const {classes} = this.props;
         return (
 
@@ -205,6 +202,7 @@ class UploadAttachmentsComponent extends Component {
                                 <Grid className={classes.grid}>
                                     <h3><strong>Загрузка файлов</strong></h3>
                                 </Grid>
+
                                 {progressInfos &&
                                 progressInfos.map((progressInfo, index) => (
                                     <div className="mb-2 center-horizontal width-600" key={index}>
@@ -246,7 +244,7 @@ class UploadAttachmentsComponent extends Component {
 
                                 </Card>
                                 {message.length > 0 && (
-                                    <div className="alert color-light-blue" role="alert">
+                                    <div className="alert alert-success" role="alert">
                                         <ul>
                                             {message.map((item, i) => {
                                                 return <li key={i}>{item}</li>;
