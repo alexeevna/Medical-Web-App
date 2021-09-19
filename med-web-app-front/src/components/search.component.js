@@ -172,6 +172,7 @@ class Search extends Component {
                     <FormLabel className={classes.label}>Параметры поиска:</FormLabel>
                     <FormControl>
                         <RadioGroup value={this.state.searchParamsType} onChange={this.onChangeParamsTypeSearch}>
+
                             <FormControlLabel className={classes.formControlLab}
                                               control={<Radio color="primary"/>}
                                               value="login"
