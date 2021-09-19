@@ -138,7 +138,6 @@ class Profile extends Component {
             this.setNewUsername();
             this.getUser(this.props.match.params.username);
         }
-        console.log(this.props.match.params.username)
         const {user} = this.state;
         const {showReviews} = this.state;
         const {classes} = this.props;

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import RecordService from "../services/record.service";
-import RecordCardNew from "./record-card-new.component";
+import RecordCard from "./record-card.component";
 import ReplyRecordForm from "./reply-record.component";
 import {Card, Grid, withStyles} from "@material-ui/core";
 import ReviewCard from "./review-card.component";
@@ -62,7 +62,6 @@ class RecordThreadComponent extends Component {
     }
 
     componentDidMount() {
-        console.log("componentDidMount-thread");
         RecordService.getRecord(this.state.recordId)
             .then(response => {
                     this.setState({record: response.data});
@@ -76,10 +75,8 @@ class RecordThreadComponent extends Component {
     }
 
     refreshAnswers() {
-        console.log("refreshAnswers");
         RecordService.getAnswers(this.state.recordId)
             .then(response => {
-                console.log(response.data);
                 this.setState({answers: []});
                 this.setState({answers: response.data});
             })
@@ -96,7 +93,7 @@ class RecordThreadComponent extends Component {
                 <Grid xs={8} item>
                     <Grid className={classes.mainGrid}>
                         {this.state.record &&
-                        (<RecordCardNew record={this.state.record} isPreview={false} isReply={false}/>)
+                        (<RecordCard record={this.state.record} isPreview={false} isReply={false}/>)
                         }
                         <Card className={classes.paper}>
 

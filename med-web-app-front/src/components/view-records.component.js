@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import RecordService from "../services/record.service";
 import Pagination from "@material-ui/lab/Pagination";
 import SelectReact from 'react-select';
-import RecordCardNew from "./record-card-new.component";
+import RecordCard from "./record-card.component";
+// import Topic from "./topic.component"
 import TopicService from "../services/topic.service";
 import {Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -305,9 +306,9 @@ class ViewRecordsList extends Component {
                             <Grid item
                                 style={{listStyleType: "none"}}
                                 key={index}
-                                onClick={() => this.displayRecordThread(record)}
+                                // onClick={() => this.displayRecordThread(record)}
                             >
-                                <RecordCardNew record={record} isPreview={true} isReply={false} />
+                                <RecordCard record={record} isPreview={true} isReply={false} />
                             </Grid>
                         ))}
                     </Grid>

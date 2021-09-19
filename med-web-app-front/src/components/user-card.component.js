@@ -1,14 +1,10 @@
 import React, {Component} from "react";
 import '../styles/Search.css'
-import {TableCell, withStyles} from "@material-ui/core";
-import {Link} from '@material-ui/core';
+import {Link, TableCell, withStyles} from "@material-ui/core";
 
 const useStyles = theme => ({
-    root: {
-        "& .MuiTypography-root": {
-            color: "black",
-            fontSize: 17
-        },
+    cells: {
+        fontSize: 17
     },
 });
 
@@ -23,7 +19,7 @@ class UserCard extends Component {
         return (
             <React.Fragment>
                 {this.user.initials !== null &&
-                <TableCell className={classes.root}>
+                <TableCell className={classes.cells}>
                     <Link href={"profile/" + this.user.username}>
                         {this.user.initials + " "}
                     </Link>
