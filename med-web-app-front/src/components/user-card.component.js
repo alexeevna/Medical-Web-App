@@ -4,7 +4,6 @@ import {Link, TableCell, withStyles} from "@material-ui/core";
 
 const useStyles = theme => ({
     cells: {
-
         fontSize: 17
     },
 });
@@ -22,13 +21,15 @@ class UserCard extends Component {
                 {this.user.initials !== null &&
                 <TableCell className={classes.cells}>
                     <Link href={"profile/" + this.user.username}>
-
-                    </Link>
                         {this.user.initials + " "}
+                    </Link>
+
                 </TableCell>}
                 {this.user.initials !== null &&
-                <TableCell className={classes.cells} align="right">
-                    {this.user.username}
+                <TableCell className={classes.root} align="right">
+                    <Link href={"profile/" + this.user.username}>
+                        {this.user.username}
+                    </Link>
                 </TableCell>
                 }
 
