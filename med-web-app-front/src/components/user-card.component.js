@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 import '../styles/Search.css'
-import {TableCell, withStyles} from "@material-ui/core";
+import {Link, TableCell, withStyles} from "@material-ui/core";
 
 const useStyles = theme => ({
     cells: {
+
         fontSize: 17
     },
 });
@@ -20,6 +21,9 @@ class UserCard extends Component {
             <React.Fragment>
                 {this.user.initials !== null &&
                 <TableCell className={classes.cells}>
+                    <Link href={"profile/" + this.user.username}>
+
+                    </Link>
                         {this.user.initials + " "}
                 </TableCell>}
                 {this.user.initials !== null &&

@@ -229,8 +229,6 @@ class Search extends Component {
                                 {this.state.users &&
                                 this.state.users.map((user, index) => (
                                     <StyledTableRow
-                                        component={Link}
-                                        to={"profile/" + user.username}
                                         key={index}
                                     >
                                         <UserCard user={user}/>

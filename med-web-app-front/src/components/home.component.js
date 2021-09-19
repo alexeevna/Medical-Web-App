@@ -56,7 +56,7 @@ class Home extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Container>
+            <Grid>
                 <div className={classes.div}>
                     <Paper className={classes.paper}>
                         <Typography variant="h3" className={classes.typography}>
@@ -78,7 +78,7 @@ class Home extends Component {
                             className={classes.button}
                             href="home/patient"
                         >
-                            <Typography variant="h7">
+                            <Typography variant="h6">
                                 Я пациент
                             </Typography>
                         </Button>
@@ -93,11 +93,11 @@ class Home extends Component {
                                     Я врач
                                 </Typography>
                             </Button>
-                        </Container>
+                        </Grid>
                     </Paper>
                 {/*</div>*/}
 
-            </Container>
+            </Grid>
         )
     }
 }

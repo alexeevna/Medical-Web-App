@@ -143,8 +143,8 @@ class RecordCardNew extends Component {
         const {classes} = this.props;
         return (
             <Paper className={classes.paper} variant="outlined" >
-                <Grid xs={12} sm direction={"column"} className={classes.mainGrid}>
-                    <Grid className={classes.ggrid} xs direction={"row"} spacing={1}>
+                <Grid container item xs={12} sm direction={"column"} className={classes.mainGrid}>
+                    <Grid container item className={classes.ggrid} xs direction={"row"} spacing={1}>
                         <Grid className={classes.gridCreatorName}>
                             <Link variant={"subtitle2"} href={"/profile/" + this.record.creator.username}>
                                 {this.record.creator.username}
@@ -181,7 +181,7 @@ class RecordCardNew extends Component {
                     </Grid>
                     <Grid className={classes.grid} container direction={"row"} spacing={1}>
                         {this.record.topics && this.record.topics.map(el => (
-                            <Grid item color={"#616161"}>
+                            <Grid item key={el.id} color={"#616161"}>
                                 <Typography className={classes.tagsColor}>
                                     {el.name}
                                 </Typography>
