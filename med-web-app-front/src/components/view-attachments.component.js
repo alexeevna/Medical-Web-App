@@ -1,9 +1,8 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
-import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import {withStyles} from "@material-ui/core";
+import {Divider, Grid, Paper, Typography, withStyles} from "@material-ui/core";
 
 const useStyles = theme => ({
     button: {
@@ -16,6 +15,37 @@ const useStyles = theme => ({
             color: '#fff',
         }
     },
+    paper: {
+        marginTop: theme.spacing(3),
+        padding: theme.spacing(1),
+        // display: 'flex',
+    },
+    paper2: {
+        margin: theme.spacing(3),
+        padding: theme.spacing(3),
+    },
+    mainGrid: {
+        display: 'flex',
+        minWidth: 1000,
+    },
+    grid: {
+        margin: theme.spacing(1),
+        alignItems: 'center',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    grid2: {
+        margin: theme.spacing(1),
+        alignItems: 'center',
+        flexDirection: 'row',
+        display: 'flex',
+    },
+    title: {
+        padding: theme.spacing(3),
+    },
+    download: {
+        backgroundColor: '#f50057',
+    },
 })
 
 class ViewAttachmentsComponent extends Component {
@@ -23,6 +53,7 @@ class ViewAttachmentsComponent extends Component {
         super(props);
 
         this.download = this.download.bind(this);
+        this.getName = this.getName.bind(this);
 
         const user = AuthService.getCurrentUser();
 
@@ -32,7 +63,7 @@ class ViewAttachmentsComponent extends Component {
         };
     }
 
-    async componentDidMount(){
+    async componentDidMount() {
         const response = await AttachmentService.getAttachmentsForUser(this.state.currentUser.username);
         const userFilesInfo = response.data;
         this.setState({userFilesInfo: userFilesInfo});
@@ -42,53 +73,66 @@ class ViewAttachmentsComponent extends Component {
         AttachmentService.downloadAttachment(fileId, initialFileName);
     }
 
+    getName(name) {
+        if (name.length > 20) {
+            return name.substring(0, 20) + '...';
+        }
+        return name;
+    }
 
     render() {
         // const { currentState } = this.state;
         const {classes} = this.props;
         return (
-            <div className="container">
+            <Grid className={classes.mainGrid}>
+                <Grid container spacing={3}>
+                    <Grid item xs/>
+                    <Grid item xs={6}>
+                        <Paper className={classes.paper}>
+                            <Typography component="h1" className={classes.title} variant="h4">
+                                Загруженные файлы
+                            </Typography>
+                            <Divider/>
 
-                <div className="row">
-                    <div className="col-sm-9">
-                        <header className="jumbotron align-center color-light-blue">
-                            <h3><strong>Загруженные файлы</strong></h3>
-                        </header>
-
-                        <div className="view-card color-light-blue">
                             {this.state.userFilesInfo.map(el => (
-                                <div key={el.id} className="row color-light-blue top-buffer-10">
-                                    <div className="col-sm-5 line-break">{el.initialName}</div>
-                                    <div className="col-sm-4">{new Date(el.creationTime).toLocaleDateString()}</div>
-                                    <div className="col-sm-3">
-                                        <button
-                                            className="btn btn-primary btn-block color-dark-blue"
-                                            onClick={() => this.download(el.id, el.initialName)}>Скачать</button>
-                                    </div>
-                                </div>
+                                <Grid key={el.id} className={classes.grid2}>
+                                    <Grid xs={5}>
+                                        <Typography variant={"subtitle1"}>
+                                            {this.getName(el.initialName)}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid xs={4}>
+                                        <Typography variant={"subtitle1"}>
+                                            {new Date(el.creationTime).toLocaleDateString()}
+                                        </Typography>
+                                    </Grid>
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => this.download(el.id, el.initialName)}
+                                        color="primary"
+                                        className={classes.download}
+                                    >
+                                        Скачать
+                                    </Button>
+                                </Grid>
                             ))}
-                        </div>
-                    </div>
+                        </Paper>
+                    </Grid>
 
-                    <div className="col-sm-2 align-center">
-                        <Button variant="contained" href={"/profile/" + AuthService.getCurrentUser().username} className={classes.button}>
-                            Профиль
-                        </Button>
-                        <Button variant="contained" href="/files/upload" className={classes.button}>
-                            Загрузить файл
-                        </Button>
-                        {/*<Link to={"/profile/" + AuthService.getCurrentUser().username} className="nav-link card-link-custom color-orange">*/}
-                        {/*    Профиль*/}
-                        {/*</Link>*/}
-                        {/*<Link to={"/files/upload"} className="nav-link card-link-custom color-orange">*/}
-                        {/*    Загрузить файл*/}
-                        {/*</Link>*/}
-                    </div>
-
-                    <div className="col-sm-1"></div>
-                </div>
-
-            </div>
+                    <Grid item xs={4}>
+                        <Paper className={classes.paper2}>
+                            <Grid className={classes.grid}>
+                                <Button variant="contained" href={"/profile/" + AuthService.getCurrentUser().username} className={classes.button}>
+                                    Профиль
+                                </Button>
+                                <Button variant="contained" href="/files/upload" className={classes.button}>
+                                    Загрузить файл
+                                </Button>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Grid>
         );
     }
 }

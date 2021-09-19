@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 
 import TestService from "../services/test.service";
-import {Paper, Typography, withStyles} from "@material-ui/core";
+import {Grid, Paper, Typography, withStyles} from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 
@@ -22,8 +22,7 @@ const useStyles = theme => ({
         margin: theme.spacing(3, 0, 1, 0),
     },
     button: {
-        size: "large",
-        margin: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
 })
 
@@ -66,34 +65,36 @@ class Home extends Component {
                     </Paper>
                 </div>
 
-{/*
+                {/*
                 <div className={classes.div}>
 */}
-                    <Paper className={classes.paper}>
-                        <Container component="section">
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                className={classes.button}
-                                href="home/patient"
-                            >
-                                <Typography variant="h7">
-                                    Я пациент
-                                </Typography>
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                className={classes.button}
-                                href="home/doctor"
+                <Paper className={classes.paper}>
+                    <Grid
+                        container
+                        justifyContent="center">
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            href="home/patient"
+                        >
+                            <Typography variant="h7">
+                                Я пациент
+                            </Typography>
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            href="home/doctor"
 
-                            >
-                                <Typography variant="h7">
-                                    Я врач
-                                </Typography>
-                            </Button>
-                        </Container>
-                    </Paper>
+                        >
+                            <Typography variant="h7">
+                                Я врач
+                            </Typography>
+                        </Button>
+                    </Grid>
+                </Paper>
                 {/*</div>*/}
 
             </Container>
