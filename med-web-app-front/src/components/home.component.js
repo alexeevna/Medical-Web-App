@@ -77,7 +77,7 @@ class Home extends Component {
                                 className={classes.button}
                                 href="home/patient"
                             >
-                                <Typography variant="h7">
+                                <Typography variant="h6">
                                     Я пациент
                                 </Typography>
                             </Button>
@@ -88,7 +88,7 @@ class Home extends Component {
                                 href="home/doctor"
 
                             >
-                                <Typography variant="h7">
+                                <Typography variant="h6">
                                     Я врач
                                 </Typography>
                             </Button>

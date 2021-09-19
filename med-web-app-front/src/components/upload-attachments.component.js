@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
-import {Link} from "react-router-dom";
 import DicomAnonymizerService from "../services/dicom-anonymizer.service"
 import Button from "@material-ui/core/Button";
 import {Card, withStyles} from "@material-ui/core";

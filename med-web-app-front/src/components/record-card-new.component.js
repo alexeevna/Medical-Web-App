@@ -124,8 +124,8 @@ class RecordCardNew extends Component {
         const {classes} = this.props;
         return (
             <Paper className={classes.paper} variant="outlined" >
-                <Grid xs={12} sm direction={"column"} className={classes.mainGrid}>
-                    <Grid className={classes.ggrid} xs direction={"row"} spacing={1}>
+                <Grid container xs={12} sm direction={"column"} className={classes.mainGrid} item>
+                    <Grid container className={classes.ggrid} xs direction={"row"} spacing={1} item>
                         <Grid>
                             <Link variant={"subtitle2"} href={"/profile/" + this.record.creator.username}>
                                 {this.record.creator.username}
@@ -154,7 +154,7 @@ class RecordCardNew extends Component {
                     </Grid>
                     <Grid className={classes.grid} container direction={"row"} spacing={1}>
                         {this.record.topics && this.record.topics.map(el => (
-                            <Grid item color={"#616161"}>
+                            <Grid key={el.id} item color={"#616161"}>
                                 <Typography className={classes.tagsColor}>
                                     {el.name}
                                 </Typography>
@@ -172,7 +172,7 @@ class RecordCardNew extends Component {
                         // <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image} />
                         <div key={el.id} className="row top-buffer-10">
                             {/*<div className="col-sm-5">{el.initialName}</div>*/}
-                            <div>
+                            <div >
                                 <button
                                     style={{marginLeft: "30px", borderStyle: "none"}}
                                     className="btn-sm btn-primary color-white"

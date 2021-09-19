@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import RecordService from "../services/record.service";
-import { Link } from "react-router-dom";
 import RecordCardNew from "./record-card-new.component";
 import ReplyRecordForm from "./reply-record.component";
 import {Card, Grid, withStyles} from "@material-ui/core";
