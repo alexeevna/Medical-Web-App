@@ -1,32 +1,27 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
 import RecordService from "../services/record.service";
-import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import SelectReact from 'react-select';
 import RecordCard from "./record-card.component";
-import Topic from "./topic.component"
+// import Topic from "./topic.component"
 import TopicService from "../services/topic.service";
-import {ButtonBase, Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
+import {Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
-import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import Typography from "@material-ui/core/Typography";
 
 const useStyles = theme => ({
     button: {
         width: 200,
         margin: theme.spacing(1),
         backgroundColor: '#f50057',
-        color: '#fff',
+        color: '#ffffff',
         '&:hover': {
             backgroundColor: '#ff5983',
-            color: '#fff',
+            color: '#ffffff',
         }
     },
     paper: {
@@ -85,7 +80,7 @@ class ViewRecordsList extends Component {
         this.displayRecordThread = this.displayRecordThread.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
-        this.onTopicsDropdownSelected = this.onTopicsDropdownSelected.bind(this);
+        // this.onTopicsDropdownSelected = this.onTopicsDropdownSelected.bind(this);
         this.handleTopics = this.handleTopics.bind(this);
 
 
@@ -102,7 +97,7 @@ class ViewRecordsList extends Component {
             showTopics: true,
             availableTopics: [],
             selectedTopic: null,
-            selectedTopicValue: null,
+            selectedTopicValue: "",
             selectedTopicID: null,
         };
 
@@ -135,12 +130,12 @@ class ViewRecordsList extends Component {
         });
     }
 
-    onTopicsDropdownSelected(selectedTopic) {
-        this.setState({
-            selectedTopic: selectedTopic.value,
-            selectedTopicValue: selectedTopic
-        });
-    }
+    // onTopicsDropdownSelected(selectedTopic) {
+    //     this.setState({
+    //         selectedTopic: selectedTopic.value,
+    //         selectedTopicValue: selectedTopic
+    //     });
+    // }
 
 
     handleTopics(e) {
@@ -150,7 +145,6 @@ class ViewRecordsList extends Component {
                 topicId = topic.value;
             }
         });
-
         this.setState({
             selectedTopicId: topicId,
             selectedTopicValue: e.target.value
@@ -158,9 +152,8 @@ class ViewRecordsList extends Component {
     }
 
     getRecords() {
-        const { searchTitle, page, pageSize, selectedTopic } = this.state;
-
-        RecordService.getAll(page, pageSize, searchTitle, selectedTopic)
+        const { searchTitle, page, pageSize, selectedTopicValue } = this.state;
+        RecordService.getAll(page, pageSize, searchTitle, selectedTopicValue)
             .then((response) => {
                 const { records, totalPages } = response.data;
                 this.refreshList();
@@ -219,8 +212,6 @@ class ViewRecordsList extends Component {
             page,
             count,
         } = this.state;
-
-        const {showTopics} = this.state;
         const {classes} = this.props;
         return (
             <div className="list row">
@@ -331,50 +322,50 @@ class ViewRecordsList extends Component {
                         Страница тэгов
                     </Button>
 
-                    <Paper className={classes.topicPaper}>
-                        <Grid container spacing={1} direction={"column"}>
-                            <Grid item
-                                  onClick={() => (
-                                      this.setState({
-                                              selectedTopic: null,
-                                          },
-                                          this.getRecords
-                                      ))}>
-                                <Typography variant="body1" className={classes.topicTitle}>
-                                    Список тэгов:
-                                </Typography>
-                            </Grid>
-                            {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (
-                                <Grid item
-                                      style={{listStyleType: "none"}}
-                                      key={index}
-                                      onClick={() => (
-                                          this.setState({
-                                                  selectedTopic: topic.value,
-                                              },
-                                              this.getRecords
-                                          ))}
-                                >
-                                    <ButtonBase>
-                                        {topic.label}
-                                    </ButtonBase>
-                                </Grid>
-                            ))}
-                            <Grid item
-                                  onClick={() => (
-                                      this.setState({
-                                              selectedTopic: null,
-                                          },
-                                          this.getRecords
-                                      ))}>
-                                <Typography className={classes.reset}>
-                                    <ButtonBase>
-                                        сбросить
-                                    </ButtonBase>
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                    {/*<Paper className={classes.topicPaper}>*/}
+                    {/*    <Grid container spacing={1} direction={"column"}>*/}
+                    {/*        <Grid item*/}
+                    {/*              onClick={() => (*/}
+                    {/*                  this.setState({*/}
+                    {/*                          selectedTopic: null,*/}
+                    {/*                      },*/}
+                    {/*                      this.getRecords*/}
+                    {/*                  ))}>*/}
+                    {/*            <Typography variant="body1" className={classes.topicTitle}>*/}
+                    {/*                Список тэгов:*/}
+                    {/*            </Typography>*/}
+                    {/*        </Grid>*/}
+                    {/*        {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (*/}
+                    {/*            <Grid item*/}
+                    {/*                  style={{listStyleType: "none"}}*/}
+                    {/*                  key={index}*/}
+                    {/*                  onClick={() => (*/}
+                    {/*                      this.setState({*/}
+                    {/*                              selectedTopic: topic.value,*/}
+                    {/*                          },*/}
+                    {/*                          this.getRecords*/}
+                    {/*                      ))}*/}
+                    {/*            >*/}
+                    {/*                <ButtonBase>*/}
+                    {/*                    {topic.label}*/}
+                    {/*                </ButtonBase>*/}
+                    {/*            </Grid>*/}
+                    {/*        ))}*/}
+                    {/*        <Grid item*/}
+                    {/*              onClick={() => (*/}
+                    {/*                  this.setState({*/}
+                    {/*                          selectedTopic: null,*/}
+                    {/*                      },*/}
+                    {/*                      this.getRecords*/}
+                    {/*                  ))}>*/}
+                    {/*            <Typography className={classes.reset}>*/}
+                    {/*                <ButtonBase>*/}
+                    {/*                    сбросить*/}
+                    {/*                </ButtonBase>*/}
+                    {/*            </Typography>*/}
+                    {/*        </Grid>*/}
+                    {/*    </Grid>*/}
+                    {/*</Paper>*/}
                 </div>
 
             </div>

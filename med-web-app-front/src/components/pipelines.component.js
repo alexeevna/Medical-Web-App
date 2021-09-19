@@ -158,7 +158,6 @@ class PipelinesComponent extends Component {
             }
         )
         this.setState({submitted: true});
-        //this.props.history.push("/pipelines/results");
     }
 
     render() {

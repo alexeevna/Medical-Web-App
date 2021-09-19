@@ -2,18 +2,9 @@ import React, {Component} from 'react';
 import RecordService from "../services/record.service";
 import AttachmentService from "../services/attachment.service";
 import AuthService from "../services/auth.service";
-import {Card, Grid, withStyles} from "@material-ui/core";
-import Typography from '@material-ui/core/Typography';
+import {Grid, withStyles} from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Input from '@material-ui/core/Input';
-import Container from '@material-ui/core/Container';
-import Chip from '@material-ui/core/Chip';
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from '@material-ui/core/InputLabel';
 import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 
 
