@@ -29,8 +29,8 @@ public class RecordController {
     public ResponseEntity<?> getAllRootRecords(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) String searchTitle,
-            @RequestParam(required = false) String selectedTopicValue
+            @RequestParam(name = "searchTitle", required = false) String searchTitle,
+            @RequestParam(name = "selectedTopicValue", required = false, defaultValue = "") String selectedTopicValue
     ) {
         try {
             RecordsPageResponse responseBody;
@@ -79,7 +79,6 @@ public class RecordController {
         }
         return ResponseEntity.ok().build();
     }
-
 
 
     private Long getAuthenticatedUserId() {

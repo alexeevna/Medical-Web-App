@@ -55,7 +55,6 @@ public class RecordService {
         Topic topic = new Topic();
         topic = topicRepository.findByName(selectedTopicValue);
 //        topic.setId(topicId);
-        System.out.println(topic);
         Page<Record> recordsPage = partOfTitle != null
                 ? recordRepository.findByParentAndTopicsAndTitleContainingIgnoreCaseOrderByCreationTimeDesc(-1L, topic, partOfTitle, pageable)
                 : recordRepository.findByParentAndTopicsOrderByCreationTimeDesc(-1L, topic, pageable);
