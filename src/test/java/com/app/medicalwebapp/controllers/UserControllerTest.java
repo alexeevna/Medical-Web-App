@@ -1,0 +1,98 @@
+package com.app.medicalwebapp.controllers;
+
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@WithUserDetails(value = "daniel")
+class UserControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void getAllByUsernameWithoutUsername() throws Exception {
+        this.mockMvc.perform(get("/api/search/allByUsername"))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getOneByUsernameWithUsername() throws Exception {
+        this.mockMvc.perform(get("/api/search/allByUsername").param("username", "daniel"))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getAllByUsernameAndRoleWithoutUsername() throws Exception {
+        this.mockMvc.perform(get("/api/search/byUsername").param("role", "Врач"))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getOneByUsernameAndRoleWithUsername() throws Exception {
+        this.mockMvc.perform(get("/api/search/byUsername").param("username", "daniel")
+                        .param("role", "Пользователь"))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getAllByInitials() throws Exception {
+        this.mockMvc.perform(get("/api/search/allByInitials").param("initials", "Шехаде Даниэль"))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getAllByInitialsAndRole() throws Exception {
+        this.mockMvc.perform(get("/api/search/byInitials").param("initials", "Шехаде Даниэль")
+                        .param("role", "Пользователь"))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+}
