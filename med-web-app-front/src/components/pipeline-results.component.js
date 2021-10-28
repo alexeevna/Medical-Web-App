@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import PipelineJobService from "../services/pipelinejob.service"
 import AttachmentService from "../services/attachment.service"
-import {Link} from "react-router-dom";
 import {Card, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -155,7 +154,7 @@ class PipelineResultsComponent extends Component {
                     <Grid xs={4} item>
                         <Card className={classes.paper2}>
                             <Grid className={classes.grid}>
-                                <Button href={"#/pipelines/create"} className={classes.button}>
+                                <Button href={"/pipelines/create"} className={classes.button}>
                                     Запустить конвейеры
                                 </Button>
                             </Grid>

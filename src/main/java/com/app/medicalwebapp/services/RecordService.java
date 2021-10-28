@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,12 +49,12 @@ public class RecordService {
         return getRecordsResponse(recordsPage, pageNumber);
     }*/
 
-    public RecordsPageResponse getRecordsPageByTopicAndTitle(Integer pageNumber, Integer sizeOfPage, String partOfTitle, Long topicId) {
+    public RecordsPageResponse getRecordsPageByTopicAndTitle(Integer pageNumber, Integer sizeOfPage, String partOfTitle, String selectedTopicValue) {
         Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
 
         Topic topic = new Topic();
-        topic.setId(topicId);
-
+        topic = topicRepository.findByName(selectedTopicValue);
+//        topic.setId(topicId);
         Page<Record> recordsPage = partOfTitle != null
                 ? recordRepository.findByParentAndTopicsAndTitleContainingIgnoreCaseOrderByCreationTimeDesc(-1L, topic, partOfTitle, pageable)
                 : recordRepository.findByParentAndTopicsOrderByCreationTimeDesc(-1L, topic, pageable);
