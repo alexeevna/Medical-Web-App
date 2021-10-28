@@ -137,6 +137,18 @@ services:
     networks:
       - app_net
 
+  testcontainerpostgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=secretpassword
+      - POSTGRES_DB=medwebappdb
+      - POSTGRES_PORT=1111
+      - PGPORT=1111
+    ports:
+      - "1111:1111"
+    networks:
+      - app_net
+
   sftp:
     image: atmoz/sftp
 #    volumes:
