@@ -237,6 +237,12 @@ class PipelinesComponent extends Component {
                                 <Button variant="contained" href="/pipelines/results" className={classes.buttons}>
                                     Запущенные конвейеры
                                 </Button>
+                                <Button variant="contained" href="http://localhost:3000/local" className={classes.buttons}>
+                                    Посмотреть файл в OHIF
+                                </Button>
+                                <Button variant="contained" href="http://localhost:3000" className={classes.buttons}>
+                                    Открыть OHIF
+                                </Button>
                                 {this.state.currentUser !== null && this.state.currentUser.username === "alexandra" &&
                                 (<Button href={"/pipelines/save"} className={classes.buttons}>
                                     Сохранить конфигурацию
