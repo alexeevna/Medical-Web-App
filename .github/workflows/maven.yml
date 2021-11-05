@@ -23,18 +23,25 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: a1
-        run: cd src/main/docker/postgres
-      - name: a2
-        run: docker build -t medwebpostgres .
-      - name: a3
-        run: cd ../../../../med-web-app-front
-      - name: a4
-        run: npm run build
-      - name: a5
-        run: cd ..
-      - name: a6
-        run: mvn compile jib:dockerBuild
-      - name: a7
-        run: docker-compose up
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run:  cd src/main/docker/postgres
+              docker build -t medwebpostgres .
+              cd ../../../../med-web-app-front
+              npm run build
+              cd ..
+              mvn compile jib:dockerBuild
+              docker-compose up
+              mvn -B package --file pom.xml
+#      - name: a2
+#        run: docker build -t medwebpostgres .
+#      - name: a3
+#        run: cd ../../../../med-web-app-front
+#      - name: a4
+#        run: npm run build
+#      - name: a5
+#        run: cd ..
+#      - name: a6
+#        run: mvn compile jib:dockerBuild
+#      - name: a7
+#        run: docker-compose up
+#      - name: Build with Maven
+#        run: mvn -B package --file pom.xml
