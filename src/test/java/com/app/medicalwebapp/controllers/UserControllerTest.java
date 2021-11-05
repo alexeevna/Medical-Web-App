@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {"postgres.port=1111"})
 @AutoConfigureMockMvc
-@WithUserDetails(value = "daniel")
+@WithUserDetails(value = "userTest")
 class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
