@@ -26,9 +26,7 @@ jobs:
         run: |
           cd src/main/docker/postgres
           docker build -t medwebpostgres .
-          cd ../../../../med-web-app-front
-          npm run build
-          cd ..
+          cd ../../../../
           mvn compile jib:dockerBuild
           docker-compose up
           mvn -B package --file pom.xml
