@@ -23,7 +23,7 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: a1
-        run: cd /src/main/docker/postgres
+        run: cd src/main/docker/postgres
       - name: a2
         run: docker build -t medwebpostgres .
       - name: a3
