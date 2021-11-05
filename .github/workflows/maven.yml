@@ -22,16 +22,16 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: maven
-      - name: a1
+      - name: Create containers
         run: |
-        cd src/main/docker/postgres
-        docker build -t medwebpostgres .
-        cd ../../../../med-web-app-front
-        npm run build
-        cd ..
-        mvn compile jib:dockerBuild
-        docker-compose up
-        mvn -B package --file pom.xml
+          cd src/main/docker/postgres
+          docker build -t medwebpostgres .
+          cd ../../../../med-web-app-front
+          npm run build
+          cd ..
+          mvn compile jib:dockerBuild
+          docker-compose up
+          mvn -B package --file pom.xml
 #      - name: a2
 #        run: docker build -t medwebpostgres .
 #      - name: a3
