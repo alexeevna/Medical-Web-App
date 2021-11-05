@@ -22,10 +22,8 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
       - name: a1
-        run: cd src/main/docker/postgres
+        run: cd ../../src/main/docker/postgres
       - name: a2
         run: docker build -t medwebpostgres .
       - name: a3
@@ -38,3 +36,5 @@ jobs:
         run: mvn compile jib:dockerBuild
       - name: a7
         run: docker-compose up
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
