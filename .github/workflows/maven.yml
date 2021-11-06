@@ -29,7 +29,6 @@ jobs:
           cd ../../../../
           mvn compile jib:dockerBuild
           docker-compose up
-          mvn test
       - name: Run test
         run: |
           mvn test
