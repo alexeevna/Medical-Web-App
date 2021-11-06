@@ -29,7 +29,7 @@ jobs:
           cd ../../../../
           mvn compile jib:dockerBuild
           docker-compose up
-          mvn -B package --file pom.xml
+          mvn test
 #      - name: a2
 #        run: docker build -t medwebpostgres .
 #      - name: a3
