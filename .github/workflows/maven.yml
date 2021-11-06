@@ -24,6 +24,7 @@ jobs:
           cache: maven
       - name: Create containers
         run: |
+          mvn test
           cd src/main/docker/postgres
           docker build -t medwebpostgres .
           cd ../../../../
