@@ -24,12 +24,11 @@ jobs:
           cache: maven
       - name: Create containers
         run: |
-          mvn test
           cd src/main/docker/postgres
           docker build -t medwebpostgres .
           cd ../../../../
           mvn compile jib:dockerBuild
-          docker-compose up
+          docker-compose up -d
       - name: Run test
         run: |
           mvn test
