@@ -24,10 +24,6 @@ jobs:
           cache: maven
       - name: Create containers
         run: |
-          cd src/main/docker/postgres
-          docker build -t medwebpostgres .
-          cd ../../../../
-          mvn compile jib:dockerBuild
           docker-compose up -d
       - name: Filling testing database
         run: |
