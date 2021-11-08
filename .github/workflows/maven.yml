@@ -29,6 +29,9 @@ jobs:
           cd ../../../../
           mvn compile jib:dockerBuild
           docker-compose up -d
+      - name: Filling testing database
+        run: |
+          mvn -Dtest=FillingTestingDataBaseTest test
       - name: Run test
         run: |
           mvn test

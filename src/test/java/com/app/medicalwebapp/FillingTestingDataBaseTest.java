@@ -2,17 +2,14 @@ package com.app.medicalwebapp;
 
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.repositories.UserRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDateTime;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(properties = {"postgres.port=1111"})
-public class FillingTestingDataBase {
+public class FillingTestingDataBaseTest {
     @Autowired
     UserRepository userRepository;
 
