@@ -35,6 +35,9 @@ jobs:
       - name: Run test
         run: |
           mvn test
+      - name: Stop containers
+        run: |
+          docker-compose stop
 #      - name: a2
 #        run: docker build -t medwebpostgres .
 #      - name: a3
