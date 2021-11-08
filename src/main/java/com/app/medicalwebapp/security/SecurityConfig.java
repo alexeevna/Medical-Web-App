@@ -58,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        createModer();
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -70,20 +69,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
-
-    public void createModer() {
-        com.app.medicalwebapp.model.User user = new com.app.medicalwebapp.model.User();
-
-        if (!userRepository.existsByUsername("moderator")) {
-            user.setUsername("moderator");
-            user.setRole("Модератор");
-            user.setPassword(encoder.encode("moderator"));
-            user.setStatus(0);
-            user.setRate(0);
-            user.setRegisteredDate(LocalDateTime.now());
-
-            userRepository.save(user);
-        }
     }
 }

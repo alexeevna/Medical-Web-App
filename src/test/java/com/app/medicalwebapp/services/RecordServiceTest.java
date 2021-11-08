@@ -1,4 +1,4 @@
-package com.app.medicalwebapp;
+package com.app.medicalwebapp.services;
 
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
