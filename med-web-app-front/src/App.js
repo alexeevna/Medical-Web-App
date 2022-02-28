@@ -43,6 +43,7 @@ import BallotIcon from '@material-ui/icons/Ballot';
 import ForumIcon from '@material-ui/icons/Forum';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
+import Chat from "./components/chat.component";
 
 const drawerWidth = 240;
 
@@ -236,6 +237,11 @@ class App extends Component {
                 icon: <SearchIcon color="secondary"/>,
                 path: '/search'
             },
+            {
+                text: 'Сообщния',
+                icon: <SearchIcon color="secondary"/>,
+                path: '/msg'
+            },
         ];
 
         return (
@@ -368,6 +374,7 @@ class App extends Component {
                                 <Route exact path="/home/patient" component={HomePatient}/>
                                 <Route exact path="/home/doctor" component={HomeDoctor}/>                             }
                                 <Route exact path="/login" component={Login}/>
+                                <Route exact path="/msg" component={Chat}/>
                                 <Route exact path="/register" component={Register}/>
                                 <Route exact path="/search" component={Search}/>
                                 <Route exact path="/profile/:username" component={Profile}/>

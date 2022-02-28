@@ -32,8 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+//    @Autowired
+//    PasswordEncoder encoder;
 
     @Bean
     public OncePerRequestFilterImpl authenticationJwtTokenFilter() {
@@ -65,6 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/mirf/**").permitAll()
                 .antMatchers("/api/test/all").permitAll()
+                .antMatchers("/api/ws/**").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .anyRequest().permitAll();
 
