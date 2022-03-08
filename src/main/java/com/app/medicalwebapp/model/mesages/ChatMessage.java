@@ -6,13 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "chatmessage")
+@Table(name = "chatmessages")
 @Data
 public class ChatMessage {
     @Id
@@ -21,7 +23,7 @@ public class ChatMessage {
     private Long id;
 
     @Column(name = "chatId")
-    private String chatId;
+    private Long chatId;
 
     @Column(name = "senderId")
     private Long senderId;
@@ -36,8 +38,9 @@ public class ChatMessage {
     private String recipientName;
 
     @Column(name = "content")
+    @Size(max = 3000)
     private String content;
 
-    @Column(name= "sendDate")
+    @Column(name = "sendDate")
     private LocalDateTime sendDate;
 }
