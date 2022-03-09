@@ -42,6 +42,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import BallotIcon from '@material-ui/icons/Ballot';
 import ForumIcon from '@material-ui/icons/Forum';
 import SearchIcon from '@material-ui/icons/Search';
+import MessageIcon from '@material-ui/icons/Message';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import Chat from "./components/chat.component";
 
@@ -238,8 +239,8 @@ class App extends Component {
                 path: '/search'
             },
             {
-                text: 'Сообщния',
-                icon: <SearchIcon color="secondary"/>,
+                text: 'Сообщения',
+                icon: <MessageIcon color="secondary"/>,
                 path: '/msg'
             },
         ];
@@ -372,7 +373,7 @@ class App extends Component {
                             <Switch>
                                 <Route exact path={["/", "/home"]} component={Home}/>
                                 <Route exact path="/home/patient" component={HomePatient}/>
-                                <Route exact path="/home/doctor" component={HomeDoctor}/>                             }
+                                <Route exact path="/home/doctor" component={HomeDoctor}/>
                                 <Route exact path="/login" component={Login}/>
                                 <Route exact path="/msg" component={Chat}/>
                                 <Route exact path="/register" component={Register}/>

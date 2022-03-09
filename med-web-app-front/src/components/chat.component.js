@@ -7,14 +7,16 @@ import Button from "@material-ui/core/Button";
 import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 
 import {over} from 'stompjs';
+// import { Stomp } from '@stomp/stompjs'
 import SockJS from 'sockjs-client';
 import UserCardMessage from "./user-card-msg.component";
 import ChatService from "../services/chat.service";
+import authHeader from "../services/auth-header";
 
 const useStyles = theme => ({
     root: {
         // width: 635,
-        // marginRight: theme.spacing(1),
+        marginBottom: theme.spacing(1.5),
         "& .MuiFormLabel-root": {
             margin: 0,
             color: "black"
@@ -35,10 +37,12 @@ const useStyles = theme => ({
         padding: theme.spacing(3),
         color: "black",
         minHeight: 600,
+        width: 700
     },
     mainGrid: {
         display: 'flex',
         minWidth: 1000,
+        marginTop: theme.spacing(-2)
     },
     button: {
         width: 220,
@@ -48,11 +52,11 @@ const useStyles = theme => ({
         }
     },
     messageGrid: {
-        width: 700,
+        width: 650,
         height: 440,
         overflowY: "auto",
-        overflowX: "visible"
-
+        overflowX: "visible",
+        marginBottom: theme.spacing(1.5),
     },
     msgMy: {
         width: "fit-content",
@@ -85,37 +89,19 @@ const useStyles = theme => ({
 var stompClient = null;
 const API_URL = process.env.REACT_APP_API_URL;
 
-// const msgs = new Map();
-const Chat = (props) => {
+function Chat(props) {
 
     const [allMessages, setAllMessages] = useState(new Map());
-    const [historyMessages, setHistoryMessages] = useState(new Map());
     const [content, setContent] = useState("");
     const [contentPresence, setContentPresence] = useState(false);
     const [contentCorrect, setContentCorrect] = useState("");
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
     const [connected, setConnected] = useState(false);
-    const [refresh, setRefresh] = useState(false);
-    const [refresh2, setRefresh2] = useState({});
-    // const [state, setState] = useState({});
-    //
-    // useEffect(() => {
-    //     // myFunction();
-    //     return () => {
-    //         setAllMessages(new Map()); // This worked for me
-    //     };
-    // }, []);
-    //
-    // const myFunction = () => {
-    //     setState({
-    //         name: 'Jhon',
-    //         surname: 'Doe',
-    //     })
-    // }
+    const [refresh, setRefresh] = useState({});
+
 
     useEffect(() => {
-        // console.log(connected);
         console.log(selectedUser);
         if (!connected) {
             console.log("HELLO")
@@ -124,9 +110,6 @@ const Chat = (props) => {
             connectToChat();
         }
         console.log(allMessages);
-        // setAllMessages(allMessages);
-        // console.log(msgs);
-        setRefresh2({});
     }, []);
 
 
@@ -148,31 +131,10 @@ const Chat = (props) => {
             });
     }
 
-    const addMsg = (data) => {
-        // console.log(msgs.get(data.senderName));
-        // if (msgs.get(data.senderName)) {
-        //     var need = {
-        //         content: data.content,
-        //         recipientId: data.recipientId,
-        //         recipientName: data.recipientName,
-        //         senderId: data.senderId,
-        //         senderName: data.senderName,
-        //     }
-        //     console.log("я тут1");
-        //     msgs.get(data.senderName).push(need);
-        // } else {
-        //     console.log("я тут2");
-        //     let msg = [];
-        //     msg.push(data);
-        //     msgs.set(data.senderName, msg);
-        // }
-        // console.log(msgs);
-
+    const onMessageReceived = (response) => {
+        console.log(allMessages);
+        var data = JSON.parse(response.body);
         if (allMessages.get(data.senderName)) {
-            // let newAllMessages = allMessages.get(data.senderName);
-            // newAllMessages.push(data);
-            // allMessages.set(data.senderName, newAllMessages);
-            // setAllMessages(new Map(allMessages));
             console.log("я тут")
             var need = {
                 content: data.content,
@@ -181,42 +143,20 @@ const Chat = (props) => {
                 senderId: data.senderId,
                 senderName: data.senderName,
             }
-            // allMessages.get(data.senderName).push(need);
             let list = allMessages.get(data.senderName);
             list.push(data);
             setAllMessages(prev => (prev.set(data.senderName, list)));
             console.log(allMessages);
-            // allMessages.get(data.senderName).push(data);
-            // setAllMessages(new Map(allMessages));
-            // refreshList();
-            // console.log(allMessages);
         } else {
             let list = [];
             list.push(data);
-            // allMessages.set(data.senderName, list);
             setAllMessages(prev => (prev.set(data.senderName, list)));
-            // refreshList();
             console.log(allMessages);
         }
-        setRefresh2({});
-        // refreshList();
-    }
-
-    const onMessageReceived = (response) => {
-        // refreshList();
-        console.log(allMessages);
-        // console.log(allMessages);
-        var data = JSON.parse(response.body);
-        // console.log(data);
-        // console.log(allMessages.get(data.senderName));
-        // console.log(selectedUser);
-        addMsg(data);
-        setRefresh2({});
-        // refreshList();
+        setRefresh({});
     }
 
     const onConnected = () => {
-        // refreshList();
         stompClient.subscribe('/topic/' + AuthService.getCurrentUser().username + '/private', onMessageReceived);
     }
 
@@ -224,23 +164,10 @@ const Chat = (props) => {
         console.log(err);
     };
 
-
-    const refreshList = () => {
-        if (refresh) {
-            console.log("false");
-            setRefresh(false)
-        } else if (!refresh) {
-            console.log("true");
-            setRefresh(true)
-        }
-    }
-
-
     const onChangeMessageContent = (e) => {
         let str = e.target.value
         console.log(str);
         str = str.replace(/ {2,}/g, ' ').trim();
-        // str = str.replace(/( )                  +/g, "$1").trim();
         str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r');
         if (str.charCodeAt(0) > 32) {
             setContent(e.target.value)
@@ -254,7 +181,6 @@ const Chat = (props) => {
     }
 
     const sendMessage = () => {
-        // refreshList();
         if (stompClient) {
             var message = {
                 content: contentCorrect,
@@ -263,18 +189,9 @@ const Chat = (props) => {
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
             };
-            // let newAllMessages = allMessages.get(selectedUser.username);
-            // newAllMessages.push(message);
-            // allMessages.set(selectedUser.username, newAllMessages);
-            // setAllMessages(new Map(allMessages));
-            // console.log(message);
-            // console.log(selectedUser.username);
-            // console.log(allMessages.get(selectedUser.username));
-
             console.log(allMessages.get(selectedUser.username));
             if (allMessages.get(selectedUser.username)) {
                 console.log("я тут1");
-                // allMessages.get(selectedUser.username).push(message);
                 let msg = allMessages.get(selectedUser.username);
                 msg.push(message);
                 setAllMessages(prev => (prev.set(selectedUser.username, msg)));
@@ -283,43 +200,22 @@ const Chat = (props) => {
                 console.log("я тут2");
                 let msg = [];
                 msg.push(message);
-                // allMessages.set(selectedUser.username, msg);
                 setAllMessages(prev => (prev.set(selectedUser.username, msg)));
             }
-
-
-            // console.log(selectedUser.username);
-            // console.log(msgs);
-            // if (msgs.get(selectedUser.username)) {
-            //     console.log("я тут1");
-            //     msgs.get(selectedUser.username).push(message);
-            // } else {
-            //     console.log("я тут2");
-            //     let msg = [];
-            //     msg.push(message);
-            //     msgs.set(selectedUser.username, msg);
-            // }
-
-            // allMessages.set(selectedUser.username, )
-            // console.log(allMessages);
             stompClient.send("/app/send/" + selectedUser.username, {}, JSON.stringify(message));
             setContent("");
             setContentCorrect("");
+            setContentPresence(false);
             console.log(allMessages);
-            // refreshList();
         }
     }
 
     const selectUser = (user) => {
         setSelectedUser(user);
-        // refreshList();
-        // console.log(user);
         ChatService.getMessages(AuthService.getCurrentUser().id, user.id)
             .then((response) => {
                 let messages = [];
-                // messages.push(response.data);
                 console.log(response.data);
-                // let need = {};
                 (response.data).map((data, index) => (
                     messages.push({
                         content: data.content,
@@ -328,22 +224,10 @@ const Chat = (props) => {
                         senderId: data.senderId,
                         senderName: data.senderName,
                     })
-                    // messages.push(need);
                 ))
                 console.log(messages)
-                // var need = {
-                //     content: response.data.content,
-                //     recipientId: response.data.recipientId,
-                //     recipientName: response.data.recipientName,
-                //     senderId: response.data.senderId,
-                //     senderName: response.data.senderName,
-                // }
-                // console.log(need)
-                // allMessages.set(user.username, messages);
                 setAllMessages(prev => (prev.set(user.username, messages)));
-                setRefresh2({});
-                // historyMessages.set(user.username, messages);
-                // setHistoryMessages(new Map(historyMessages));
+                setRefresh({});
             })
             .catch((e) => {
                 console.log(e);
@@ -351,12 +235,7 @@ const Chat = (props) => {
         console.log(allMessages);
     }
 
-    const register = () => {
-        getUsers();
-        connectToChat();
-    }
     const {classes} = props;
-    // try {
     return (
         <Grid>
             <Grid xs={12} item className={classes.mainGrid}>
@@ -423,14 +302,6 @@ const Chat = (props) => {
                             >
                                 <DoneOutlineIcon/>
                             </Button>
-                            {/*<Button*/}
-                            {/*    fullWidth*/}
-                            {/*    variant="contained"*/}
-                            {/*    color="primary"*/}
-                            {/*    onClick={register}*/}
-                            {/*>*/}
-                            {/*    НАЖМИ НА МЕНЯ*/}
-                            {/*</Button>*/}
                         </Grid>
                     </Card>
                 </Grid>
@@ -438,13 +309,6 @@ const Chat = (props) => {
             </Grid>
         </Grid>
     );
-    // } catch (e) {
-    //     return (
-    //         <Grid>
-    //             <div>ЧТО-ТО ПОШЛО НЕ ТАК</div>
-    //         </Grid>
-    //     );
-    // }
 }
 
 export default withStyles(useStyles)(Chat)
