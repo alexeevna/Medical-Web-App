@@ -16,6 +16,8 @@ class UserCardMessage extends Component {
     constructor(props) {
         super(props);
         this.user = this.props.user;
+        this.unRead = this.props.unRead;
+        console.log(this.unRead);
     }
 
     render() {
@@ -34,6 +36,10 @@ class UserCardMessage extends Component {
                 <TableCell className={classes.cells} colSpan={2} align="right">
                     {this.user.username}
                 </TableCell>
+                }
+
+                {
+                    this.unRead > 0 && this.unRead
                 }
 
             </React.Fragment>

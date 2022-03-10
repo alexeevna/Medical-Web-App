@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, useEffect, useState} from "react";
 import {Switch, Route, Link} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -29,7 +29,7 @@ import {
     IconButton,
     List,
     ListItem,
-    ListItemIcon, ListItemText,
+    ListItemIcon, ListItemText, Paper,
     Toolbar, withStyles
 } from "@material-ui/core";
 import clsx from "clsx";
@@ -43,9 +43,17 @@ import BallotIcon from '@material-ui/icons/Ballot';
 import ForumIcon from '@material-ui/icons/Forum';
 import SearchIcon from '@material-ui/icons/Search';
 import MessageIcon from '@material-ui/icons/Message';
+import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import Chat from "./components/chat.component";
+import SockJS from "sockjs-client";
+import {over} from "stompjs";
+import UserService from "./services/user.service";
 
+export const statusMsg = {
+    READ: 1,
+    UNREAD: 2
+}
 const drawerWidth = 240;
 
 const useStyles = theme => ({
@@ -134,55 +142,172 @@ const useStyles = theme => ({
         // width: '100%',
         //marginLeft: '100px'
     },
+    msgs: {
+        backgroundColor: '#FF0040',
+        textAlign: 'center',
+        color: 'white'
+        // width: '100%',
+        //marginLeft: '100px'
+    },
 })
+var stompClient = null;
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.logOut = this.logOut.bind(this);
-        //this.displayPageContent = this.displayPageContent.bind(this);
+function App(props) {
+    const {classes} = props;
+    const [numberOfUnRead, setNumberOfUnRead] = useState(0);
+    const [showModeratorBoard, setShowModeratorBoard] = useState(false);
+    const [showAdminBoard, setShowAdminBoard] = useState(false);
+    const [currentUser, setCurrentUser] = useState(undefined);
+    const [open, setOpen] = useState(false);
+    const [refresh, setRefresh] = useState({});
+    const [allMessages, setAllMessages] = useState(new Map());
+    const [users, setUsers] = useState([]);
+    // constructor(props) {
+    //     super(props);
+    //     this.logOut = this.logOut.bind(this);
+    //     //this.displayPageContent = this.displayPageContent.bind(this);
+    //
+    //     this.state = {
+    //         showModeratorBoard: false,
+    //         showAdminBoard: false,
+    //         currentUser: undefined,
+    //         open: true,
+    //
+    //     };
+    // }
 
-        this.state = {
-            showModeratorBoard: false,
-            showAdminBoard: false,
-            currentUser: undefined,
-            open: true,
-
-        };
-    }
-
-    handleDrawerOpen = () => {
-        this.setState({
-            open: true
-        })
-    };
-
-    handleDrawerClose = () => {
-        this.setState({
-            open: false
-        })
-    };
-
-    componentDidMount() {
+    useEffect(() => {
         const user = AuthService.getCurrentUser();
 
         if (user) {
             AuthService.checkTokenIsExpired(user.token)
                 .then(response => {
-                    this.setState({
-                        currentUser: user
-                    });
+                    setCurrentUser(user);
+                    // this.setState({
+                    //     currentUser: user
+                    // });
                 })
                 .catch(error => {
-                        this.logOut();
+                        logOut();
                     }
                 )
         }
+        connectToChat();
+    }, []);
+
+    function getUnRead(unRead) {
+        if (unRead) {
+            return unRead + 1;
+        } else {
+            return 1;
+        }
     }
 
-    logOut() {
-        AuthService.logout();
-        this.setState({currentUser: null});
+    function onMessageReceived(response) {
+        console.log(allMessages);
+        const data = JSON.parse(response.body);
+        if (allMessages.get(data.senderName)) {
+            console.log("я тут")
+            const need = {...data, status: statusMsg.UNREAD};
+            console.log(need);
+            let list = allMessages.get(data.senderName).messages;
+            const unRead = allMessages.get(data.senderName).unRead;
+            list.push(need);
+            const valueMap = {unRead: unRead + 1, messages: list}
+            setAllMessages(prev => (prev.set(need.senderName, valueMap)));
+            setNumberOfUnRead(prev => (prev + 1));
+            // setRefresh({});
+            console.log(allMessages);
+        } else {
+            let list = [];
+            const need = {...data, status: statusMsg.UNREAD};
+            list.push(need);
+            const valueMap = {unRead: 1, messages: list}
+            setAllMessages(prev => (prev.set(need.senderName, valueMap)));
+            setNumberOfUnRead(prev => (prev + 1));
+            // setRefresh({});
+            console.log(allMessages);
+        }
+        const searchString = ""
+        UserService.getAllByUsername(searchString)
+            .then((response) => {
+                const users = response.data;
+                console.log(users);
+
+                setUsers(users);
+                setUsers([]);
+                // setRefresh({});
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+        // setRefresh({});
+        // return <Chat stompClient={stompClient} messages={allMessages}/>
+    }
+
+    function getUsers() {
+        const {searchString} = ""
+        UserService.getAllByUsername(searchString)
+            .then((response) => {
+                const users = response.data;
+                console.log(users);
+                setUsers(users);
+                // setRefresh({});
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+
+    function connectToChat() {
+        let Sock = new SockJS('http://localhost:7999/api/ws');
+        stompClient = over(Sock);
+        stompClient.connect({}, onConnected, onError);
+    }
+
+    function onConnected() {
+        stompClient.subscribe('/topic/' + AuthService.getCurrentUser().username + '/private', onMessageReceived);
+    }
+
+    function onError(err) {
+        console.log(err);
+    }
+
+    function handleDrawerOpen() {
+        setOpen(true);
+        // this.setState({
+        //     open: true
+        // })
+    }
+
+    function handleDrawerClose() {
+        setOpen(false);
+        // this.setState({
+        //     open: false
+        // })
+    }
+
+    // componentDidMount() {
+    //     const user = AuthService.getCurrentUser();
+    //
+    //     if (user) {
+    //         AuthService.checkTokenIsExpired(user.token)
+    //             .then(response => {
+    //                 this.setState({
+    //                     currentUser: user
+    //                 });
+    //             })
+    //             .catch(error => {
+    //                     this.logOut();
+    //                 }
+    //             )
+    //     }
+    // }
+
+    function logOut() {
+        AuthService.logout(AuthService.getCurrentUser().username);
+        setCurrentUser(null);
+        // this.setState({currentUser: null});
     }
 
     /*displayPageContent(path) {
@@ -193,7 +318,7 @@ class App extends Component {
         window.location.reload();
     }*/
 
-    getPathForProfile() {
+    function getPathForProfile() {
         const currentUser = AuthService.getCurrentUser();
         if (currentUser)
             return "/profile/" + currentUser.username
@@ -201,201 +326,212 @@ class App extends Component {
             return null;
     }
 
-    render() {
-        const {classes} = this.props;
-        const {currentUser} = this.state;
-
-        const menuItemsForUnregisteredUsers = [
-            {
-                text: 'Главная',
-                icon: <HomeIcon color="secondary"/>,
-                path: '/home'
-            },
-            {
-                text: 'Посты',
-                icon: <ForumIcon color="secondary"/>,
-                path: '/records/view'
-            },
-        ];
-        const menuItemsForRegisteredUsers = [
-            {
-                text: 'Главная',
-                icon: <HomeIcon color="secondary"/>,
-                path: '/home'
-            },
-            {
-                text: 'Анализ ИИ',
-                icon: <BallotIcon color="secondary"/>,
-                path: '/pipelines/create'
-            },
-            {
-                text: 'Посты',
-                icon: <ForumIcon color="secondary"/>,
-                path: '/records/view'
-            },
-            {
-                text: 'Поиск',
-                icon: <SearchIcon color="secondary"/>,
-                path: '/search'
-            },
-            {
-                text: 'Сообщения',
-                icon: <MessageIcon color="secondary"/>,
-                path: '/msg'
-            },
-        ];
-
-        return (
-            <div className={classes.root}>
-                <CssBaseline/>
-
-                <AppBar position="fixed" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
-                    <Toolbar className={classes.toolbar}>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={this.handleDrawerOpen}
-                            className={clsx(classes.menuButton, this.state.open && classes.menuButtonHidden)}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Medical web app
-                        </Typography>
-
-                        {currentUser && (
-                            <Grid container>
-                                <Grid item xs/>
-                                <Grid item width={'50px'}>
-                                    <IconButton color="inherit">
-                                        <Badge badgeContent={4} color="secondary">
-                                            <NotificationsIcon/>
-                                        </Badge>
-                                    </IconButton>
-                                </Grid>
-                                <Grid item width={'130px'}>
-                                    <ListItem
-                                        button
-                                        component={Link} to={this.getPathForProfile()}>
-                                        <AccountCircleRoundedIcon/>
-                                        <ListItemText primary={currentUser.username}/>
-                                    </ListItem>
-                                </Grid>
-
-                                <Grid item width={'90px'}>
-                                    <ListItem
-                                        button
-                                        component={Link} to={"/login"}
-                                        onClick={this.logOut}>
-                                        <ListItemText primary={"Выйти"}/>
-                                    </ListItem>
-                                </Grid>
-                            </Grid>
-                        )}
-                        {!currentUser && (
-                            <Grid container>
-                                <Grid item xs/>
-                                <Grid item>
-                                    <ListItem
-                                        button
-                                        component={Link} to={"/login"}>
-                                        <ListItemText primary={"Войти"}/>
-                                    </ListItem>
-                                </Grid>
-                                <Grid item>
-                                    <ListItem
-                                        button
-                                        component={Link} to={"/register"}>
-                                        <ListItemText primary={"Зарегистрироваться"}/>
-                                    </ListItem>
-                                </Grid>
-                            </Grid>
-
-                        )}
-                    </Toolbar>
-                </AppBar>
-
-                <Grid container>
-                    <Grid item className={clsx(classes.leftIndent, this.state.open && classes.leftIndentOpen)}>
-                        <Drawer
-                            height="100%"
-                            variant="permanent"
-                            classes={{
-                                paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-                            }}
-                            open={this.state.open}
-                        >
-                            {this.state.open && (<div className={classes.toolbarIcon}>
-                                <IconButton onClick={this.handleDrawerClose}>
-                                    <ChevronLeftIcon/>
-                                </IconButton>
-                            </div>)}
-                            {!this.state.open && (<div className={classes.toolbarIcon}>
-                                <IconButton onClick={this.handleDrawerOpen}>
-                                    <ChevronRightRoundedIcon/>
-                                </IconButton>
-                            </div>)}
-                            <Divider/>
-                            <List>
-                                {currentUser && (
-                                    menuItemsForRegisteredUsers.map((item) => (
-                                        <ListItem
-                                            button
-                                            key={item.text}
-                                            component={Link} to={item.path}
-                                        >
-                                            <ListItemIcon>{item.icon}</ListItemIcon>
-                                            <ListItemText primary={item.text}/>
-                                        </ListItem>
-                                    )))
-                                }
-                                {!currentUser && (
-                                    menuItemsForUnregisteredUsers.map((item) => (
-                                        <ListItem
-                                            button
-                                            key={item.text}
-                                            //onClick={() => this.displayPageContent(item.path)}
-                                            component={Link} to={item.path}
-                                        >
-                                            <ListItemIcon>{item.icon}</ListItemIcon>
-                                            <ListItemText primary={item.text}/>
-                                        </ListItem>
-                                    )))
-                                }
-                            </List>
-                        </Drawer>
-                    </Grid>
-                    <Grid item xs className={clsx(classes.content, !this.state.open && classes.contentClose)}>
-                        <div className={classes.appBarSpacer}/>
-                        <div className={classes.appBarSpacer2}/>
-                        <div className="container mt-3">
-                            <Switch>
-                                <Route exact path={["/", "/home"]} component={Home}/>
-                                <Route exact path="/home/patient" component={HomePatient}/>
-                                <Route exact path="/home/doctor" component={HomeDoctor}/>
-                                <Route exact path="/login" component={Login}/>
-                                <Route exact path="/msg" component={Chat}/>
-                                <Route exact path="/register" component={Register}/>
-                                <Route exact path="/search" component={Search}/>
-                                <Route exact path="/profile/:username" component={Profile}/>
-                                <Route exact path="/pipelines/create" component={PipelinesComponent}/>
-                                <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
-                                <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
-                                <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
-                                <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
-                                <Route exact path="/records/view" component={ViewRecordsComponent}/>
-                                <Route exact path="/records/create" component={CreateRecordComponent}/>
-                                <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
-                                <Route exact path="/topics/create" component={TopicComponent}/>
-                                <Route component={NotExist}/>
-                            </Switch>
-                        </div>
-                    </Grid>
-                </Grid>
-            </div>
-        );
+    function minusUnRead(num) {
+        setNumberOfUnRead(prev => (prev - num));
     }
+
+
+    const menuItemsForUnregisteredUsers = [
+        {
+            text: 'Главная',
+            icon: <HomeIcon color="secondary"/>,
+            path: '/home'
+        },
+        {
+            text: 'Посты',
+            icon: <ForumIcon color="secondary"/>,
+            path: '/records/view'
+        },
+    ];
+    const menuItemsForRegisteredUsers = [
+        {
+            text: 'Главная',
+            icon: <HomeIcon color="secondary"/>,
+            path: '/home'
+        },
+        {
+            text: 'Анализ ИИ',
+            icon: <BallotIcon color="secondary"/>,
+            path: '/pipelines/create'
+        },
+        {
+            text: 'Посты',
+            icon: <ForumIcon color="secondary"/>,
+            path: '/records/view'
+        },
+        {
+            text: 'Поиск',
+            icon: <SearchIcon color="secondary"/>,
+            path: '/search'
+        },
+        {
+            text: 'Сообщения',
+            icon: <MessageIcon color="secondary"/>,
+            path: '/msg',
+            numberOfUnRead: numberOfUnRead,
+            numberMsg: <Paper
+                className={classes.msgs}>{
+                (numberOfUnRead !== 0 && numberOfUnRead < 999 && numberOfUnRead)
+                ||
+                (numberOfUnRead !== 0 && numberOfUnRead >= 999 && "999+")}
+            </Paper>,
+        },
+    ];
+
+    return (
+        <div className={classes.root}>
+            <CssBaseline/>
+
+            <AppBar position="fixed" className={clsx(classes.appBar, open && classes.appBarShift)}>
+                <Toolbar className={classes.toolbar}>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                    >
+                        <MenuIcon/>
+                    </IconButton>
+                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                        Medical web app
+                    </Typography>
+
+                    {currentUser && (
+                        <Grid container>
+                            <Grid item xs/>
+                            <Grid item width={'50px'}>
+                                <IconButton color="inherit">
+                                    <Badge badgeContent={4} color="secondary">
+                                        <NotificationsIcon/>
+                                    </Badge>
+                                </IconButton>
+                            </Grid>
+                            <Grid item width={'130px'}>
+                                <ListItem
+                                    button
+                                    component={Link} to={getPathForProfile()}>
+                                    <AccountCircleRoundedIcon/>
+                                    <ListItemText primary={currentUser.username}/>
+                                </ListItem>
+                            </Grid>
+
+                            <Grid item width={'90px'}>
+                                <ListItem
+                                    button
+                                    component={Link} to={"/login"}
+                                    onClick={logOut}>
+                                    <ListItemText primary={"Выйти"}/>
+                                </ListItem>
+                            </Grid>
+                        </Grid>
+                    )}
+                    {!currentUser && (
+                        <Grid container>
+                            <Grid item xs/>
+                            <Grid item>
+                                <ListItem
+                                    button
+                                    component={Link} to={"/login"}>
+                                    <ListItemText primary={"Войти"}/>
+                                </ListItem>
+                            </Grid>
+                            <Grid item>
+                                <ListItem
+                                    button
+                                    component={Link} to={"/register"}>
+                                    <ListItemText primary={"Зарегистрироваться"}/>
+                                </ListItem>
+                            </Grid>
+                        </Grid>
+                    )}
+                </Toolbar>
+            </AppBar>
+
+            <Grid container>
+                <Grid item className={clsx(classes.leftIndent, open && classes.leftIndentOpen)}>
+                    <Drawer
+                        height="100%"
+                        variant="permanent"
+                        classes={{
+                            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                        }}
+                        open={open}
+                    >
+                        {open && (<div className={classes.toolbarIcon}>
+                            <IconButton onClick={handleDrawerClose}>
+                                <ChevronLeftIcon/>
+                            </IconButton>
+                        </div>)}
+                        {!open && (<div className={classes.toolbarIcon}>
+                            <IconButton onClick={handleDrawerOpen}>
+                                <ChevronRightRoundedIcon/>
+                            </IconButton>
+                        </div>)}
+                        <Divider/>
+                        <List>
+                            {currentUser && (
+                                menuItemsForRegisteredUsers.map((item) => (
+                                    <ListItem
+                                        button
+                                        key={item.text}
+                                        component={Link} to={item.path}
+                                    >
+                                        <ListItemIcon>{item.icon}</ListItemIcon>
+                                        <ListItemText primary={item.text}/>
+                                        <ListItemText primary={item.numberMsg}/>
+                                    </ListItem>
+                                )))
+                            }
+                            {!currentUser && (
+                                menuItemsForUnregisteredUsers.map((item) => (
+                                    <ListItem
+                                        button
+                                        key={item.text}
+                                        //onClick={() => this.displayPageContent(item.path)}
+                                        component={Link} to={item.path}
+                                    >
+                                        <ListItemIcon>{item.icon}</ListItemIcon>
+                                        <ListItemText primary={item.text}/>
+                                    </ListItem>
+                                )))
+                            }
+                        </List>
+                    </Drawer>
+                </Grid>
+                <Grid item xs className={clsx(classes.content, !open && classes.contentClose)}>
+                    <div className={classes.appBarSpacer}/>
+                    <div className={classes.appBarSpacer2}/>
+                    <div className="container mt-3">
+                        <Switch>
+                            <Route exact path={["/", "/home"]} component={Home}/>
+                            <Route exact path="/home/patient" component={HomePatient}/>
+                            <Route exact path="/home/doctor" component={HomeDoctor}/>
+                            <Route exact path="/login" component={Login}/>
+                            <Route exact path="/msg">
+                                <Chat stompClient={stompClient} newUsers={users} messages={allMessages}
+                                      number={numberOfUnRead} minusUnRead={minusUnRead}
+                                />
+                            </Route>
+                            <Route exact path="/register" component={Register}/>
+                            <Route exact path="/search" component={Search}/>
+                            <Route exact path="/profile/:username" component={Profile}/>
+                            <Route exact path="/pipelines/create" component={PipelinesComponent}/>
+                            <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
+                            <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
+                            <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
+                            <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
+                            <Route exact path="/records/view" component={ViewRecordsComponent}/>
+                            <Route exact path="/records/create" component={CreateRecordComponent}/>
+                            <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
+                            <Route exact path="/topics/create" component={TopicComponent}/>
+                            <Route component={NotExist}/>
+                        </Switch>
+                    </div>
+                </Grid>
+            </Grid>
+        </div>
+    );
 }
 
 export default withStyles(useStyles)(App)

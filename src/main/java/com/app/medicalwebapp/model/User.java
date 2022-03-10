@@ -1,6 +1,7 @@
 package com.app.medicalwebapp.model;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "users")
 @Data
+@DynamicUpdate
 public class User {
 
     @Id
@@ -44,5 +46,8 @@ public class User {
 
     @Column(name = "rate")
     private Integer rate;
+
+    @Column(name = "active")
+    private Active active;
 }
 

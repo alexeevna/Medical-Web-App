@@ -1,4 +1,4 @@
-import {Card, Paper, TextField, withStyles} from "@material-ui/core";
+import {Card, Checkbox, Paper, TextField, withStyles} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import UserService from "../services/user.service";
 import Grid from "@material-ui/core/Grid";
@@ -12,6 +12,7 @@ import SockJS from 'sockjs-client';
 import UserCardMessage from "./user-card-msg.component";
 import ChatService from "../services/chat.service";
 import authHeader from "../services/auth-header";
+import {statusMsg} from "../App"
 
 const useStyles = theme => ({
     root: {
@@ -90,81 +91,85 @@ var stompClient = null;
 const API_URL = process.env.REACT_APP_API_URL;
 
 function Chat(props) {
-
-    const [allMessages, setAllMessages] = useState(new Map());
+    const {classes} = props;
+    const {stompClient} = props;
+    const {messages} = props;
+    const {number} = props;
+    const {newUsers} = props;
+    const {minusUnRead} = props
+    const [numberOfUnRead, setNumberOfUnRead] = useState(number);
+    const [allMessages, setAllMessages] = useState(messages);
     const [content, setContent] = useState("");
     const [contentPresence, setContentPresence] = useState(false);
     const [contentCorrect, setContentCorrect] = useState("");
     const [selectedUser, setSelectedUser] = useState(null);
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState(newUsers);
     const [connected, setConnected] = useState(false);
     const [refresh, setRefresh] = useState({});
 
 
     useEffect(() => {
-        console.log(selectedUser);
-        if (!connected) {
-            console.log("HELLO")
-            setConnected(true)
-            getUsers();
-            connectToChat();
-        }
-        console.log(allMessages);
-    }, []);
+        getUsers();
+        // connectToChat();
+        // return () => {
+        //     stompClient.unsubscribe();
+        // };
+    }, [allMessages, refresh]);
 
 
-    const connectToChat = () => {
-        let Sock = new SockJS('http://localhost:7999/api/ws');
-        stompClient = over(Sock);
-        stompClient.connect({}, onConnected, onError);
-    }
+    // function connectToChat() {
+    //     let Sock = new SockJS('http://localhost:7999/api/ws');
+    //     stompClient = over(Sock);
+    //     stompClient.connect({}, onConnected, onError);
+    // }
 
-    const getUsers = () => {
+    function getUsers() {
         const {searchString} = ""
         UserService.getAllByUsername(searchString)
             .then((response) => {
                 const users = response.data;
-                setUsers(users)
+                setUsers(users);
+                // setRefresh({});
             })
             .catch((e) => {
                 console.log(e);
             });
     }
 
-    const onMessageReceived = (response) => {
-        console.log(allMessages);
-        var data = JSON.parse(response.body);
-        if (allMessages.get(data.senderName)) {
-            console.log("я тут")
-            var need = {
-                content: data.content,
-                recipientId: data.recipientId,
-                recipientName: data.recipientName,
-                senderId: data.senderId,
-                senderName: data.senderName,
-            }
-            let list = allMessages.get(data.senderName);
-            list.push(data);
-            setAllMessages(prev => (prev.set(data.senderName, list)));
-            console.log(allMessages);
-        } else {
-            let list = [];
-            list.push(data);
-            setAllMessages(prev => (prev.set(data.senderName, list)));
-            console.log(allMessages);
-        }
-        setRefresh({});
-    }
+    // function onMessageReceived(response) {
+    //     console.log(allMessages);
+    //     var data = JSON.parse(response.body);
+    //     if (allMessages.get(data.senderName)) {
+    //         console.log("я тут")
+    //         var need = {
+    //             content: data.content,
+    //             recipientId: data.recipientId,
+    //             recipientName: data.recipientName,
+    //             senderId: data.senderId,
+    //             senderName: data.senderName,
+    //         }
+    //         let list = allMessages.get(data.senderName);
+    //         list.push(data);
+    //         setAllMessages(prev => (prev.set(data.senderName, list)));
+    //         console.log(allMessages);
+    //     } else {
+    //         let list = [];
+    //         list.push(data);
+    //         setAllMessages(prev => (prev.set(data.senderName, list)));
+    //         console.log(allMessages);
+    //     }
+    //     setRefresh({});
+    // }
 
-    const onConnected = () => {
-        stompClient.subscribe('/topic/' + AuthService.getCurrentUser().username + '/private', onMessageReceived);
-    }
+    // function onConnected() {
+    //     stompClient.subscribe('/topic/' + AuthService.getCurrentUser().username + '/private', onMessageReceived);
+    // }
+    //
+    // function onError(err) {
+    //     console.log(err);
+    // }
 
-    const onError = (err) => {
-        console.log(err);
-    };
-
-    const onChangeMessageContent = (e) => {
+    function onChangeMessageContent(e) {
         let str = e.target.value
         console.log(str);
         str = str.replace(/ {2,}/g, ' ').trim();
@@ -180,7 +185,7 @@ function Chat(props) {
         }
     }
 
-    const sendMessage = () => {
+    function sendMessage() {
         if (stompClient) {
             var message = {
                 content: contentCorrect,
@@ -192,10 +197,10 @@ function Chat(props) {
             console.log(allMessages.get(selectedUser.username));
             if (allMessages.get(selectedUser.username)) {
                 console.log("я тут1");
-                let msg = allMessages.get(selectedUser.username);
+                let msg = allMessages.get(selectedUser.username).messages;
                 msg.push(message);
-                setAllMessages(prev => (prev.set(selectedUser.username, msg)));
-
+                const valueMap = {unRead: -1, messages: msg}
+                setAllMessages(prev => (prev.set(selectedUser.username, valueMap)));
             } else {
                 console.log("я тут2");
                 let msg = [];
@@ -206,27 +211,41 @@ function Chat(props) {
             setContent("");
             setContentCorrect("");
             setContentPresence(false);
+            setRefresh({});
             console.log(allMessages);
         }
     }
 
-    const selectUser = (user) => {
+    function selectUser(user) {
         setSelectedUser(user);
         ChatService.getMessages(AuthService.getCurrentUser().id, user.id)
             .then((response) => {
-                let messages = [];
+                // let messages = [];
+                // console.log(response.data);
+                // (response.data).map((data, index) => (
+                //     messages.push({
+                //         content: data.content,
+                //         recipientId: data.recipientId,
+                //         recipientName: data.recipientName,
+                //         senderId: data.senderId,
+                //         senderName: data.senderName,
+                //     })
+                // ))
+                // console.log(messages)
+                const valueMap = {unRead: 0, messages: response.data};
                 console.log(response.data);
-                (response.data).map((data, index) => (
-                    messages.push({
-                        content: data.content,
-                        recipientId: data.recipientId,
-                        recipientName: data.recipientName,
-                        senderId: data.senderId,
-                        senderName: data.senderName,
-                    })
-                ))
-                console.log(messages)
-                setAllMessages(prev => (prev.set(user.username, messages)));
+                if (allMessages.get(user.username)) {
+                    const unRead = allMessages.get(user.username).unRead
+                    minusUnRead(unRead);
+                    console.log(unRead);
+                    console.log("hello");
+                }
+                console.log(number);
+                console.log(numberOfUnRead);
+                setAllMessages(prev => (prev.set(user.username, valueMap)));
+                const oldUsers = users;
+                setUsers([]);
+                setUsers(oldUsers);
                 setRefresh({});
             })
             .catch((e) => {
@@ -235,7 +254,16 @@ function Chat(props) {
         console.log(allMessages);
     }
 
-    const {classes} = props;
+    function updateMsg(msg) {
+        console.log("я тут");
+        if (msg) {
+            const newMsg = {...msg, statusMsg: statusMsg.READ}
+            console.log(newMsg);
+            setAllMessages(prev => (prev.set(newMsg.senderName, newMsg)));
+        }
+        return undefined;
+    }
+
     return (
         <Grid>
             <Grid xs={12} item className={classes.mainGrid}>
@@ -249,8 +277,10 @@ function Chat(props) {
                                 onClick={() => selectUser(user)}
                                 key={index}
                             >
-                                <UserCardMessage user={user}/>
+                                <UserCardMessage user={user}
+                                                 unRead={allMessages.get(user.username) && allMessages.get(user.username).unRead}/>
                             </Button>
+
                         ))}
                     </Card>
                 </Grid>
@@ -260,34 +290,38 @@ function Chat(props) {
                         <Grid>
                             <Paper
                                 className={classes.messageGrid}>
-                                {/*{selectedUser && (historyMessages.get(selectedUser.username)) && ([...historyMessages.get(selectedUser.username)].map((msg, index) => (*/}
-                                {/*    <p key={index}>{msg.content}</p>*/}
-                                {/*)))}*/}
+                                {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].map((msg, index) => (
 
-                                {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username)].map((msg, index) => (
-                                    ((msg.senderName !== selectedUser.username) &&
-                                        <Paper className={classes.msgMy}
-                                               key={index}><Grid className={classes.txt}>{msg.senderName}</Grid>
+                                    ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
+                                        (<Paper className={classes.msgMy} key={index}>
+                                            <Grid className={classes.txt}>{msg.senderName}</Grid>
                                             {msg.content}
-                                        </Paper>) || ((msg.senderName === selectedUser.username) &&
-                                        <Paper className={classes.msgNotMy} key={index}><Grid
-                                            className={classes.txt}>{msg.senderName}</Grid>{msg.content}</Paper>)
+                                        </Paper>)) || (((msg.senderName === selectedUser.username) &&
+                                            (<Paper className={classes.msgNotMy} key={index}>
+                                                <Grid className={classes.txt}>{msg.senderName}</Grid>
+                                                {msg.content}
+                                            </Paper>))
+                                        // || (() => {
+                                        //     setAllMessages(prev => (prev.set(msg.senderName, {
+                                        //         ...msg,
+                                        //         statusMsg: statusMsg.READ
+                                        //     })))
+                                        //     return undefined;
+                                        // })
+
+                                    ))
+
                                 )))}
-
-                                {/*{selectedUser && (msgs.get(selectedUser.username)) && ([...msgs.get(selectedUser.username)].map((msg, index) => (*/}
-                                {/*    <p key={index}>{msg.content}</p>*/}
-                                {/*)))}*/}
-
                             </Paper>
                             <TextField
                                 className={classes.root}
                                 multiline
                                 minRows={2}
-                                maxRows={10}
+                                maxRows={6}
                                 variant="outlined"
                                 fullWidth
                                 id="content"
-                                label="Оставьте отзыв..."
+                                label="Напишите сообщение..."
                                 name="content"
                                 autoComplete="off"
                                 value={content}
@@ -311,4 +345,4 @@ function Chat(props) {
     );
 }
 
-export default withStyles(useStyles)(Chat)
+export default withStyles(useStyles)(Chat);
