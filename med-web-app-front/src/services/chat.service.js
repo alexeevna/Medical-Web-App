@@ -6,8 +6,6 @@ const API_URL = process.env.REACT_APP_API_URL + '/api/msg/';
 
 class ChatService {
     getMessages(senderId, recipientId) {
-        console.log(senderId)
-        console.log(recipientId)
         let parameters = this.createRequestParamsForGetMsg(senderId, recipientId);
 
         return axios.get(API_URL + 'allMessages',

@@ -45,7 +45,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import MessageIcon from '@material-ui/icons/Message';
 import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
-import Chat from "./components/chat.component";
+import Chat from "./components/messageComponents/chat.component";
 import SockJS from "sockjs-client";
 import {over} from "stompjs";
 import UserService from "./services/user.service";
@@ -204,43 +204,44 @@ function App(props) {
     }
 
     function onMessageReceived(response) {
-        console.log(allMessages);
         const data = JSON.parse(response.body);
+        console.log(data);
+        console.log(allMessages.get(data.senderName));
         if (allMessages.get(data.senderName)) {
-            console.log("я тут")
             const need = {...data, status: statusMsg.UNREAD};
-            console.log(need);
             let list = allMessages.get(data.senderName).messages;
             const unRead = allMessages.get(data.senderName).unRead;
             list.push(need);
+            console.log(unRead);
             const valueMap = {unRead: unRead + 1, messages: list}
+            console.log(valueMap);
             setAllMessages(prev => (prev.set(need.senderName, valueMap)));
             setNumberOfUnRead(prev => (prev + 1));
             // setRefresh({});
-            console.log(allMessages);
         } else {
             let list = [];
             const need = {...data, status: statusMsg.UNREAD};
             list.push(need);
-            const valueMap = {unRead: 1, messages: list}
+            const valueMap = {unRead: 1, messages: list};
+            console.log(valueMap);
             setAllMessages(prev => (prev.set(need.senderName, valueMap)));
             setNumberOfUnRead(prev => (prev + 1));
             // setRefresh({});
-            console.log(allMessages);
         }
-        const searchString = ""
-        UserService.getAllByUsername(searchString)
-            .then((response) => {
-                const users = response.data;
-                console.log(users);
-
-                setUsers(users);
-                setUsers([]);
-                // setRefresh({});
-            })
-            .catch((e) => {
-                console.log(e);
-            });
+        console.log(allMessages);
+        // const searchString = ""
+        // UserService.getAllByUsername(searchString)
+        //     .then((response) => {
+        //         const users = response.data;
+        //         console.log(users);
+        //
+        //         setUsers(users);
+        //         setUsers([]);
+        //         // setRefresh({});
+        //     })
+        //     .catch((e) => {
+        //         console.log(e);
+        //     });
         // setRefresh({});
         // return <Chat stompClient={stompClient} messages={allMessages}/>
     }

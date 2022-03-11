@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import '../styles/Search.css'
+import '../../styles/Search.css'
 import {TableCell, withStyles} from "@material-ui/core";
 import {Link} from '@material-ui/core';
 
@@ -17,7 +17,6 @@ class UserCardMessage extends Component {
         super(props);
         this.user = this.props.user;
         this.unRead = this.props.unRead;
-        console.log(this.unRead);
     }
 
     render() {

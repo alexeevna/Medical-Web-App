@@ -1,8 +1,8 @@
 import {Card, Checkbox, Paper, TextField, withStyles} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
-import UserService from "../services/user.service";
+import UserService from "../../services/user.service";
 import Grid from "@material-ui/core/Grid";
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 import Button from "@material-ui/core/Button";
 import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 
@@ -10,9 +10,11 @@ import {over} from 'stompjs';
 // import { Stomp } from '@stomp/stompjs'
 import SockJS from 'sockjs-client';
 import UserCardMessage from "./user-card-msg.component";
-import ChatService from "../services/chat.service";
-import authHeader from "../services/auth-header";
-import {statusMsg} from "../App"
+import ChatService from "../../services/chat.service";
+import authHeader from "../../services/auth-header";
+import {statusMsg} from "../../App"
+import RecipientMsg from "./recipient.msg.component";
+import SenderMsg from "./sender.msg.component";
 
 const useStyles = theme => ({
     root: {
@@ -171,7 +173,6 @@ function Chat(props) {
 
     function onChangeMessageContent(e) {
         let str = e.target.value
-        console.log(str);
         str = str.replace(/ {2,}/g, ' ').trim();
         str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r');
         if (str.charCodeAt(0) > 32) {
@@ -194,25 +195,22 @@ function Chat(props) {
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
             };
-            console.log(allMessages.get(selectedUser.username));
             if (allMessages.get(selectedUser.username)) {
-                console.log("я тут1");
                 let msg = allMessages.get(selectedUser.username).messages;
                 msg.push(message);
-                const valueMap = {unRead: -1, messages: msg}
+                const valueMap = {unRead: 0, messages: msg}
                 setAllMessages(prev => (prev.set(selectedUser.username, valueMap)));
             } else {
-                console.log("я тут2");
                 let msg = [];
                 msg.push(message);
-                setAllMessages(prev => (prev.set(selectedUser.username, msg)));
+                const valueMap = {unRead: 0, messages: msg}
+                setAllMessages(prev => (prev.set(selectedUser.username, valueMap)));
             }
             stompClient.send("/app/send/" + selectedUser.username, {}, JSON.stringify(message));
             setContent("");
             setContentCorrect("");
             setContentPresence(false);
             setRefresh({});
-            console.log(allMessages);
         }
     }
 
@@ -233,15 +231,10 @@ function Chat(props) {
                 // ))
                 // console.log(messages)
                 const valueMap = {unRead: 0, messages: response.data};
-                console.log(response.data);
                 if (allMessages.get(user.username)) {
                     const unRead = allMessages.get(user.username).unRead
                     minusUnRead(unRead);
-                    console.log(unRead);
-                    console.log("hello");
                 }
-                console.log(number);
-                console.log(numberOfUnRead);
                 setAllMessages(prev => (prev.set(user.username, valueMap)));
                 const oldUsers = users;
                 setUsers([]);
@@ -251,17 +244,28 @@ function Chat(props) {
             .catch((e) => {
                 console.log(e);
             });
-        console.log(allMessages);
     }
 
-    function updateMsg(msg) {
-        console.log("я тут");
-        if (msg) {
-            const newMsg = {...msg, statusMsg: statusMsg.READ}
-            console.log(newMsg);
-            setAllMessages(prev => (prev.set(newMsg.senderName, newMsg)));
+    function updateStatusMsg(msg) {
+        const dataMsg = allMessages.get(msg.senderName);
+        if (dataMsg.unRead > 0) {
+            minusUnRead(dataMsg.unRead);
+            dataMsg.unRead = 0;
+            setAllMessages(prev => (prev.set(msg.senderName, dataMsg)));
         }
-        return undefined;
+        // console.log("я тут");
+        // console.log(msg.status);
+        // console.log(statusMsg.UNREAD);
+        // if (msg.status === statusMsg.UNREAD) {
+        //     const newMsg = {...msg, status: statusMsg.READ}
+        //     const dataMsg = allMessages.get(msg.senderName)
+        //     dataMsg.messages.push(newMsg);
+        //     minusUnRead(dataMsg.unRead);
+        //     dataMsg.unRead = 0;
+        //     console.log(newMsg);
+        //     console.log(dataMsg);
+        //     setAllMessages(prev => (prev.set(newMsg.senderName, dataMsg)));
+        // }
     }
 
     return (
@@ -293,14 +297,13 @@ function Chat(props) {
                                 {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].map((msg, index) => (
 
                                     ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
-                                        (<Paper className={classes.msgMy} key={index}>
-                                            <Grid className={classes.txt}>{msg.senderName}</Grid>
-                                            {msg.content}
-                                        </Paper>)) || (((msg.senderName === selectedUser.username) &&
-                                            (<Paper className={classes.msgNotMy} key={index}>
-                                                <Grid className={classes.txt}>{msg.senderName}</Grid>
-                                                {msg.content}
-                                            </Paper>))
+                                        (
+                                            <SenderMsg msg={msg} key={index}/>
+                                        )) || (((msg.senderName === selectedUser.username) &&
+                                            (
+                                                <RecipientMsg msg={msg} key={index}
+                                                              updateStatusMsg={updateStatusMsg}/>
+                                            ))
                                         // || (() => {
                                         //     setAllMessages(prev => (prev.set(msg.senderName, {
                                         //         ...msg,
