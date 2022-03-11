@@ -210,7 +210,7 @@ function Chat(props) {
             setContent("");
             setContentCorrect("");
             setContentPresence(false);
-            setRefresh({});
+            // setRefresh({});
         }
     }
 
@@ -229,17 +229,17 @@ function Chat(props) {
                 //         senderName: data.senderName,
                 //     })
                 // ))
-                // console.log(messages)
+                // console.log(response.data);
                 const valueMap = {unRead: 0, messages: response.data};
-                if (allMessages.get(user.username)) {
-                    const unRead = allMessages.get(user.username).unRead
-                    minusUnRead(unRead);
-                }
+                // if (allMessages.get(user.username).unRead > 0) {
+                //     const unRead = allMessages.get(user.username).unRead
+                //     minusUnRead(unRead);
+                // }
                 setAllMessages(prev => (prev.set(user.username, valueMap)));
                 const oldUsers = users;
                 setUsers([]);
                 setUsers(oldUsers);
-                setRefresh({});
+                // setRefresh({});
             })
             .catch((e) => {
                 console.log(e);
@@ -249,9 +249,11 @@ function Chat(props) {
     function updateStatusMsg(msg) {
         const dataMsg = allMessages.get(msg.senderName);
         if (dataMsg.unRead > 0) {
+            console.log("1");
             minusUnRead(dataMsg.unRead);
             dataMsg.unRead = 0;
             setAllMessages(prev => (prev.set(msg.senderName, dataMsg)));
+            console.log("2");
         }
         // console.log("я тут");
         // console.log(msg.status);

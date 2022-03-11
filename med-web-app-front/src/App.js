@@ -142,7 +142,7 @@ const useStyles = theme => ({
         // width: '100%',
         //marginLeft: '100px'
     },
-    msgs: {
+    noticeMsg: {
         backgroundColor: '#FF0040',
         textAlign: 'center',
         color: 'white'
@@ -205,16 +205,12 @@ function App(props) {
 
     function onMessageReceived(response) {
         const data = JSON.parse(response.body);
-        console.log(data);
-        console.log(allMessages.get(data.senderName));
         if (allMessages.get(data.senderName)) {
             const need = {...data, status: statusMsg.UNREAD};
             let list = allMessages.get(data.senderName).messages;
             const unRead = allMessages.get(data.senderName).unRead;
             list.push(need);
-            console.log(unRead);
             const valueMap = {unRead: unRead + 1, messages: list}
-            console.log(valueMap);
             setAllMessages(prev => (prev.set(need.senderName, valueMap)));
             setNumberOfUnRead(prev => (prev + 1));
             // setRefresh({});
@@ -223,12 +219,10 @@ function App(props) {
             const need = {...data, status: statusMsg.UNREAD};
             list.push(need);
             const valueMap = {unRead: 1, messages: list};
-            console.log(valueMap);
             setAllMessages(prev => (prev.set(need.senderName, valueMap)));
             setNumberOfUnRead(prev => (prev + 1));
             // setRefresh({});
         }
-        console.log(allMessages);
         // const searchString = ""
         // UserService.getAllByUsername(searchString)
         //     .then((response) => {
@@ -251,7 +245,6 @@ function App(props) {
         UserService.getAllByUsername(searchString)
             .then((response) => {
                 const users = response.data;
-                console.log(users);
                 setUsers(users);
                 // setRefresh({});
             })
@@ -371,7 +364,7 @@ function App(props) {
             path: '/msg',
             numberOfUnRead: numberOfUnRead,
             numberMsg: <Paper
-                className={classes.msgs}>{
+                className={classes.noticeMsg}>{
                 (numberOfUnRead !== 0 && numberOfUnRead < 999 && numberOfUnRead)
                 ||
                 (numberOfUnRead !== 0 && numberOfUnRead >= 999 && "999+")}

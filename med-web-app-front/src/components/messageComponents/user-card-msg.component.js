@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import '../../styles/Search.css'
-import {TableCell, withStyles} from "@material-ui/core";
+import {Paper, TableCell, withStyles} from "@material-ui/core";
 import {Link} from '@material-ui/core';
 
 const useStyles = theme => ({
@@ -9,6 +9,12 @@ const useStyles = theme => ({
             color: "black",
             fontSize: 17
         },
+    },
+    noticeMsg: {
+        backgroundColor: '#FF0040',
+        textAlign: 'center',
+        color: 'white',
+        width: 25
     },
 });
 
@@ -38,7 +44,7 @@ class UserCardMessage extends Component {
                 }
 
                 {
-                    this.unRead > 0 && this.unRead
+                    <Paper className={classes.noticeMsg}>{this.unRead > 0 && this.unRead}</Paper>
                 }
 
             </React.Fragment>
