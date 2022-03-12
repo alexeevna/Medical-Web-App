@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, useEffect} from "react";
 import '../../styles/Search.css'
 import {Paper, TableCell, withStyles} from "@material-ui/core";
 import {Link} from '@material-ui/core';
@@ -28,10 +28,13 @@ const useStyles = theme => ({
 function SenderMsg(props) {
     const {classes} = props;
     const {msg} = props;
-    const {index} = props;
+    const {scrollToBottom} = props;
+    useEffect(() => {
+        scrollToBottom()
+    }, []);
     return (
         <Grid>
-            <Paper className={classes.msgMy} key={index}>
+            <Paper className={classes.msgMy}>
                 <Grid className={classes.txt}>{msg.senderName}</Grid>
                 {msg.content}
             </Paper>

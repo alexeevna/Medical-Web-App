@@ -158,7 +158,7 @@ function App(props) {
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
     const [currentUser, setCurrentUser] = useState(undefined);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [refresh, setRefresh] = useState({});
     const [allMessages, setAllMessages] = useState(new Map());
     const [users, setUsers] = useState([]);
@@ -371,7 +371,6 @@ function App(props) {
             </Paper>,
         },
     ];
-
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -503,7 +502,7 @@ function App(props) {
                             <Route exact path="/home/doctor" component={HomeDoctor}/>
                             <Route exact path="/login" component={Login}/>
                             <Route exact path="/msg">
-                                <Chat stompClient={stompClient} newUsers={users} messages={allMessages}
+                                <Chat stompClient={stompClient} messages={allMessages}
                                       number={numberOfUnRead} minusUnRead={minusUnRead}
                                 />
                             </Route>
