@@ -1,6 +1,7 @@
 package com.app.medicalwebapp.services;
 
 import com.app.medicalwebapp.model.mesages.ChatMessage;
+import com.app.medicalwebapp.model.mesages.StatusMessage;
 import com.app.medicalwebapp.repositories.ChatMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,14 +27,25 @@ public class ChatMessageService {
     }
 
     public List<ChatMessage> findMessages(Long senderId, Long recipientId) {
-//        Long chatId;
         Long chatId = (senderId + recipientId) % 10000; /*TODO. FIX THIS CHAT ID*/
-        System.out.println(chatId);
         List<ChatMessage> messages;
         Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByChatId(chatId);
         messages = messagesOptional.orElseGet(ArrayList::new);
-        System.out.println(messages);
         return messages;
+    }
+
+    public List<ChatMessage> findUnreadMessages(Long recipientId) {
+        List<ChatMessage> messages;
+        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByRecipientIdAndStatusMessage(recipientId, StatusMessage.UNREAD);
+        messages = messagesOptional.orElseGet(ArrayList::new);
+        return messages;
+    }
+
+    public void updateUnreadMessages(List<ChatMessage> messages) {
+        for (ChatMessage message : messages) {
+            message.setStatusMessage(StatusMessage.READ);
+            chatMessageRepository.save(message);
+        }
     }
 }
 

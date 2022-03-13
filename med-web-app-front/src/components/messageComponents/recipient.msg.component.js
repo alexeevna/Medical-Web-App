@@ -27,7 +27,6 @@ const useStyles = theme => ({
 function RecipientMsg(props) {
     const {classes} = props;
     const {msg} = props;
-    const {index} = props;
     const {updateStatusMsg} = props
     useEffect(() => {
         updateStatusMsg(msg);

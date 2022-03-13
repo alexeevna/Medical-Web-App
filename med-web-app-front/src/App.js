@@ -49,6 +49,7 @@ import Chat from "./components/messageComponents/chat.component";
 import SockJS from "sockjs-client";
 import {over} from "stompjs";
 import UserService from "./services/user.service";
+import ChatService from "./services/chat.service";
 
 export const statusMsg = {
     READ: 1,
@@ -161,6 +162,7 @@ function App(props) {
     const [open, setOpen] = useState(true);
     const [refresh, setRefresh] = useState({});
     const [allMessages, setAllMessages] = useState(new Map());
+    const [unreadMessages, setUnreadMessages] = useState(new Map());
     const [users, setUsers] = useState([]);
     // constructor(props) {
     //     super(props);
@@ -191,9 +193,47 @@ function App(props) {
                         logOut();
                     }
                 )
+            connectToChat();
+            getUnreadMessages();
         }
-        connectToChat();
     }, []);
+
+    function getUnreadMessages() {
+        console.log("get unread")
+        ChatService.getUnreadMessages(AuthService.getCurrentUser().id)
+            .then((response) => {
+                if (response.data.length > 0) {
+                    console.log(response.data)
+                    // const unreadMsgMap = new Map();
+                    for (let index = 0; index < response.data.length; index++) {
+                        console.log(response.data[index]);
+                        if (allMessages.get(response.data[index].senderName)) {
+                            let list = allMessages.get(response.data[index].senderName).messages;
+                            list.push(response.data[index])
+                            const unRead = allMessages.get(response.data[index].senderName).unRead
+                            console.log(unRead)
+                            const valueMap = {unRead: unRead + 1, messages: list}
+                            allMessages.set(response.data[index].senderName, valueMap)
+                            setAllMessages(prev => (prev.set(response.data[index].senderName, valueMap)));
+                        } else {
+                            let list = []
+                            list.push(response.data[index])
+                            const valueMap = {unRead: 1, messages: list}
+                            allMessages.set(response.data[index].senderName, valueMap)
+                            setAllMessages(prev => (prev.set(response.data[index].senderName, valueMap)));
+                        }
+                    }
+                    console.log(allMessages)
+                    setNumberOfUnRead(response.data.length)
+                    const unreadMsgMap = new Map(allMessages)
+                    setUnreadMessages(unreadMsgMap)
+                    setRefresh({})
+                }
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+    }
 
     function getUnRead(unRead) {
         if (unRead) {
@@ -204,6 +244,7 @@ function App(props) {
     }
 
     function onMessageReceived(response) {
+        console.log(allMessages)
         const data = JSON.parse(response.body);
         if (allMessages.get(data.senderName)) {
             const need = {...data, status: statusMsg.UNREAD};
@@ -211,33 +252,21 @@ function App(props) {
             const unRead = allMessages.get(data.senderName).unRead;
             list.push(need);
             const valueMap = {unRead: unRead + 1, messages: list}
-            setAllMessages(prev => (prev.set(need.senderName, valueMap)));
+            setAllMessages(prev => (prev.set(need.senderName, valueMap)))
+            setUnreadMessages(prev => (prev.set(need.senderName, valueMap)))
             setNumberOfUnRead(prev => (prev + 1));
             // setRefresh({});
         } else {
+            console.log("тут баг")
             let list = [];
             const need = {...data, status: statusMsg.UNREAD};
             list.push(need);
             const valueMap = {unRead: 1, messages: list};
             setAllMessages(prev => (prev.set(need.senderName, valueMap)));
+            setUnreadMessages(prev => (prev.set(need.senderName, valueMap)))
             setNumberOfUnRead(prev => (prev + 1));
             // setRefresh({});
         }
-        // const searchString = ""
-        // UserService.getAllByUsername(searchString)
-        //     .then((response) => {
-        //         const users = response.data;
-        //         console.log(users);
-        //
-        //         setUsers(users);
-        //         setUsers([]);
-        //         // setRefresh({});
-        //     })
-        //     .catch((e) => {
-        //         console.log(e);
-        //     });
-        // setRefresh({});
-        // return <Chat stompClient={stompClient} messages={allMessages}/>
     }
 
     function getUsers() {
@@ -371,6 +400,8 @@ function App(props) {
             </Paper>,
         },
     ];
+    console.log(allMessages)
+    console.log(unreadMessages)
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -503,7 +534,7 @@ function App(props) {
                             <Route exact path="/login" component={Login}/>
                             <Route exact path="/msg">
                                 <Chat stompClient={stompClient} messages={allMessages}
-                                      number={numberOfUnRead} minusUnRead={minusUnRead}
+                                      number={numberOfUnRead} minusUnRead={minusUnRead} unreadMessages={unreadMessages}
                                 />
                             </Route>
                             <Route exact path="/register" component={Register}/>

@@ -11,6 +11,7 @@ import UserCardMessage from "./user-card-msg.component"
 import ChatService from "../../services/chat.service"
 import RecipientMsg from "./recipient.msg.component"
 import SenderMsg from "./sender.msg.component"
+import UpdateStatusMsg from "./updateStatusMsg.component";
 
 const useStyles = theme => ({
     root: {
@@ -123,7 +124,10 @@ function Chat(props) {
     const {number} = props
     const {newUsers} = props
     const {minusUnRead} = props
+    const {unreadMessages} = props
+    console.log(unreadMessages)
     const [numberOfUnRead, setNumberOfUnRead] = useState(number)
+    const [unreadMsgs, setUnreadMsgs] = useState(unreadMessages)
     const [allMessages, setAllMessages] = useState(messages)
     const [content, setContent] = useState("")
     const [contentPresence, setContentPresence] = useState(false)
@@ -253,46 +257,32 @@ function Chat(props) {
         setSelectedUser(user)
         ChatService.getMessages(AuthService.getCurrentUser().id, user.id)
             .then((response) => {
-                // let messages = []
-                // console.log(response.data)
-                // (response.data).map((data, index) => (
-                //     messages.push({
-                //         content: data.content,
-                //         recipientId: data.recipientId,
-                //         recipientName: data.recipientName,
-                //         senderId: data.senderId,
-                //         senderName: data.senderName,
-                //     })
-                // ))
-                // console.log(response.data)
                 if (response.data.length > 0) {
                     const valueMap = {unRead: 0, messages: response.data}
-                    // if (allMessages.get(user.username).unRead > 0) {
-                    //     const unRead = allMessages.get(user.username).unRead
-                    //     minusUnRead(unRead)
-                    // }
                     setAllMessages(prev => (prev.set(user.username, valueMap)))
                     setRefresh({})
-                    // setUsers([])
-                    // setUsers(users)
                     goToBottom()
                 }
-                // setRefresh({})
             })
             .catch((e) => {
                 console.log(e)
             })
     }
 
-    function updateStatusMsg(msg) {
-        const dataMsg = allMessages.get(msg.senderName)
+    function updateStatusMsg() {
+        console.log("updateStatusMsg")
+        const dataMsg = allMessages.get(selectedUser.username)
         scrollToBottom()
-        if (dataMsg.unRead > 0) {
+        if (dataMsg && dataMsg.unRead > 0) {
+            console.log("updateStatusMsg2")
             // console.log("я тут 2")
             minusUnRead(dataMsg.unRead)
             dataMsg.unRead = 0
-            setAllMessages(prev => (prev.set(msg.senderName, dataMsg)))
+            setAllMessages(prev => (prev.set(selectedUser.username, dataMsg)))
+            setRefresh({})
         }
+        setRefresh({})
+
         // console.log("я тут")
         // console.log(msg.status)
         // console.log(statusMsg.UNREAD)
@@ -308,8 +298,16 @@ function Chat(props) {
         // }
     }
 
+    function updateStatusMsgBack() {
+        if (unreadMsgs.size > 0) {
+            ChatService.updateStatusUnreadMessages(unreadMsgs.get(selectedUser.username).messages).then(r => console.log(r))
+        }
+    }
+
     // console.log(users)
-    // console.log(allMessages.get(user.username).unRead)
+    console.log(allMessages)
+    console.log(unreadMsgs)
+    console.log(selectedUser)
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
@@ -351,6 +349,7 @@ function Chat(props) {
 
                             className={classes.messageGrid}>
                             <Grid>
+
                                 {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].map((msg, index) => (
 
                                     ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
@@ -371,7 +370,12 @@ function Chat(props) {
 
                                     ))
 
-                                )))}
+                                )))
+                                }
+
+                                {selectedUser &&
+                                <UpdateStatusMsg updateStatusMsgBack={updateStatusMsgBack}/>}
+
                             </Grid>
                             <div ref={messagesEndRef}/>
                         </Paper>

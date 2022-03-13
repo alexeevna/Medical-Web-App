@@ -20,6 +20,35 @@ class ChatService {
         return params;
     }
 
+    getUnreadMessages(recipientId) {
+        let parameters = this.createRequestParamsForGetUnreadMsg(recipientId);
+
+        return axios.get(API_URL + 'unreadMessages',
+            {headers: authHeader(), params: parameters});
+    }
+
+    createRequestParamsForGetUnreadMsg(recipientId) {
+        let params = {};
+
+        params["recipientId"] = recipientId;
+        return params;
+    }
+
+    updateStatusUnreadMessages(messages) {
+        console.log(messages)
+        let parameters = this.createRequestParamsForUpdateUnreadMsg(messages);
+
+        return axios.post(API_URL + 'updateMessages', {messages},
+            {headers: authHeader()});
+    }
+
+    createRequestParamsForUpdateUnreadMsg(messages) {
+        let params = {};
+
+        params["messages"] = messages;
+        return params;
+    }
+
 }
 
 export default new ChatService();

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "chatmessages")
 @Data
+@DynamicUpdate
 public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,4 +45,7 @@ public class ChatMessage {
 
     @Column(name = "sendDate")
     private LocalDateTime sendDate;
+
+    @Column(name = "statusMessage")
+    private StatusMessage statusMessage;
 }

@@ -1,6 +1,7 @@
 package com.app.medicalwebapp.repositories;
 
 import com.app.medicalwebapp.model.mesages.ChatMessage;
+import com.app.medicalwebapp.model.mesages.StatusMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     long countBySenderIdAndRecipientId(Long senderId, Long recipientId);
 
     Optional<List<ChatMessage>> findByChatId(Long chatId);
+
+    Optional<List<ChatMessage>> findByRecipientIdAndStatusMessage(Long chatId, StatusMessage UNREAD);
 }
