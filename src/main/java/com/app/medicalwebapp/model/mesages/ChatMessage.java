@@ -25,7 +25,7 @@ public class ChatMessage {
     private Long id;
 
     @Column(name = "chatId")
-    private Long chatId;
+    private String chatId;
 
     @Column(name = "senderId")
     private Long senderId;

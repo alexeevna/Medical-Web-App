@@ -5,6 +5,7 @@ import com.app.medicalwebapp.model.mesages.StatusMessage;
 import com.app.medicalwebapp.repositories.ChatMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,13 @@ public class ChatMessageService {
                 senderId, recipientId);
     }
 
-    public List<ChatMessage> findMessages(Long senderId, Long recipientId) {
-        Long chatId = (senderId + recipientId) % 10000; /*TODO. FIX THIS CHAT ID*/
+    public List<ChatMessage> findMessages(String senderUsername, String recipientUsername) {
+        String chatId;
+        if (senderUsername.compareTo(recipientUsername) < 0) {
+            chatId = (senderUsername + recipientUsername);
+        } else {
+            chatId = (recipientUsername + senderUsername);
+        }
         List<ChatMessage> messages;
         Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByChatId(chatId);
         messages = messagesOptional.orElseGet(ArrayList::new);

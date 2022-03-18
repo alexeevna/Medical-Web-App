@@ -1,26 +1,26 @@
-import React, {Component, useEffect, useState} from "react";
-import {Switch, Route, Link} from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
+import React, {Component, useEffect, useState} from "react"
+import {Switch, Route, Link} from "react-router-dom"
+import "bootstrap/dist/css/bootstrap.min.css"
+import "./App.css"
 
-import Home from "./components/home.component";
-import HomePatient from "./components/home-patient.component";
-import HomeDoctor from "./components/home-doctor.component";
-import Profile from "./components/profile.component";
-import Search from "./components/search.component";
-import ViewAttachmentsComponent from "./components/view-attachments.component";
-import UploadAttachmentsComponent from "./components/upload-attachments.component";
-import PipelinesComponent from "./components/pipelines.component";
-import PipelineResultsComponent from "./components/pipeline-results.component";
-import ViewRecordsComponent from "./components/view-records.component";
-import CreateRecordComponent from "./components/create-record.component";
-import RecordThreadComponent from "./components/record-thread.component";
-import SavePipelineConfigComponent from "./components/save-pipeline-config.component";
-import TopicComponent from "./components/topic.component";
-import Register from "./components/register.component";
-import Login from "./components/login.component";
-import NotExist from "./components/not-exist.component";
-import AuthService from "./services/auth.service";
+import Home from "./components/home.component"
+import HomePatient from "./components/home-patient.component"
+import HomeDoctor from "./components/home-doctor.component"
+import Profile from "./components/profile.component"
+import Search from "./components/search.component"
+import ViewAttachmentsComponent from "./components/view-attachments.component"
+import UploadAttachmentsComponent from "./components/upload-attachments.component"
+import PipelinesComponent from "./components/pipelines.component"
+import PipelineResultsComponent from "./components/pipeline-results.component"
+import ViewRecordsComponent from "./components/view-records.component"
+import CreateRecordComponent from "./components/create-record.component"
+import RecordThreadComponent from "./components/record-thread.component"
+import SavePipelineConfigComponent from "./components/save-pipeline-config.component"
+import TopicComponent from "./components/topic.component"
+import Register from "./components/register.component"
+import Login from "./components/login.component"
+import NotExist from "./components/not-exist.component"
+import AuthService from "./services/auth.service"
 import {
     AppBar,
     Badge,
@@ -31,31 +31,31 @@ import {
     ListItem,
     ListItemIcon, ListItemText, Paper,
     Toolbar, withStyles
-} from "@material-ui/core";
-import clsx from "clsx";
-import MenuIcon from "@material-ui/icons/Menu";
-import Typography from "@material-ui/core/Typography";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
-import HomeIcon from '@material-ui/icons/Home';
-import BallotIcon from '@material-ui/icons/Ballot';
-import ForumIcon from '@material-ui/icons/Forum';
-import SearchIcon from '@material-ui/icons/Search';
-import MessageIcon from '@material-ui/icons/Message';
-import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone';
-import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
-import Chat from "./components/messageComponents/chat.component";
-import SockJS from "sockjs-client";
-import {over} from "stompjs";
-import UserService from "./services/user.service";
-import ChatService from "./services/chat.service";
+} from "@material-ui/core"
+import clsx from "clsx"
+import MenuIcon from "@material-ui/icons/Menu"
+import Typography from "@material-ui/core/Typography"
+import NotificationsIcon from "@material-ui/icons/Notifications"
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
+import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded'
+import HomeIcon from '@material-ui/icons/Home'
+import BallotIcon from '@material-ui/icons/Ballot'
+import ForumIcon from '@material-ui/icons/Forum'
+import SearchIcon from '@material-ui/icons/Search'
+import MessageIcon from '@material-ui/icons/Message'
+import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone'
+import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
+import Chat from "./components/messageComponents/chat.component"
+import SockJS from "sockjs-client"
+import {over} from "stompjs"
+import UserService from "./services/user.service"
+import ChatService from "./services/chat.service"
 
-export const statusMsg = {
-    READ: 1,
-    UNREAD: 2
-}
-const drawerWidth = 240;
+// export const statusMsg = {
+//     READ: 1,
+//     UNREAD: 2
+// }
+const drawerWidth = 240
 
 const useStyles = theme => ({
     root: {
@@ -151,23 +151,25 @@ const useStyles = theme => ({
         //marginLeft: '100px'
     },
 })
-var stompClient = null;
+var stompClient = null
 
 function App(props) {
-    const {classes} = props;
-    const [numberOfUnRead, setNumberOfUnRead] = useState(0);
-    const [showModeratorBoard, setShowModeratorBoard] = useState(false);
-    const [showAdminBoard, setShowAdminBoard] = useState(false);
-    const [currentUser, setCurrentUser] = useState(undefined);
-    const [open, setOpen] = useState(true);
-    const [refresh, setRefresh] = useState({});
-    const [allMessages, setAllMessages] = useState(new Map());
-    const [unreadMessages, setUnreadMessages] = useState(new Map());
-    const [users, setUsers] = useState([]);
+    const {classes} = props
+    const [numberOfUnRead, setNumberOfUnRead] = useState(0)
+    const [showModeratorBoard, setShowModeratorBoard] = useState(false)
+    const [showAdminBoard, setShowAdminBoard] = useState(false)
+    const [currentUser, setCurrentUser] = useState(undefined)
+    const [open, setOpen] = useState(true)
+    const [refresh, setRefresh] = useState({})
+    const [allMessages, setAllMessages] = useState(new Map())
+    // const [unreadMessages, setUnreadMessages] = useState(new Map())
+    // const unreadMessages = new Map()
+
+    const [users, setUsers] = useState([])
     // constructor(props) {
-    //     super(props);
-    //     this.logOut = this.logOut.bind(this);
-    //     //this.displayPageContent = this.displayPageContent.bind(this);
+    //     super(props)
+    //     this.logOut = this.logOut.bind(this)
+    //     //this.displayPageContent = this.displayPageContent.bind(this)
     //
     //     this.state = {
     //         showModeratorBoard: false,
@@ -175,59 +177,62 @@ function App(props) {
     //         currentUser: undefined,
     //         open: true,
     //
-    //     };
+    //     }
     // }
 
     useEffect(() => {
-        const user = AuthService.getCurrentUser();
+        const user = AuthService.getCurrentUser()
 
         if (user) {
             AuthService.checkTokenIsExpired(user.token)
                 .then(response => {
-                    setCurrentUser(user);
+                    setCurrentUser(user)
                     // this.setState({
                     //     currentUser: user
-                    // });
+                    // })
                 })
                 .catch(error => {
-                        logOut();
+                        logOut()
                     }
                 )
-            connectToChat();
-            getUnreadMessages();
+            connectToChat()
+            getUnreadMessages()
         }
-    }, []);
+    }, [])
 
     function getUnreadMessages() {
         console.log("get unread")
         ChatService.getUnreadMessages(AuthService.getCurrentUser().id)
             .then((response) => {
                 if (response.data.length > 0) {
-                    console.log(response.data)
-                    // const unreadMsgMap = new Map();
+                    // let unreadMsgMap = new Map()
                     for (let index = 0; index < response.data.length; index++) {
-                        console.log(response.data[index]);
                         if (allMessages.get(response.data[index].senderName)) {
-                            let list = allMessages.get(response.data[index].senderName).messages;
+                            let list = allMessages.get(response.data[index].senderName).messages
                             list.push(response.data[index])
                             const unRead = allMessages.get(response.data[index].senderName).unRead
-                            console.log(unRead)
                             const valueMap = {unRead: unRead + 1, messages: list}
                             allMessages.set(response.data[index].senderName, valueMap)
-                            setAllMessages(prev => (prev.set(response.data[index].senderName, valueMap)));
+                            setAllMessages(prev => (prev.set(response.data[index].senderName, valueMap)))
+                            // unreadMessages.set(response.data[index].senderName, valueMap)
+                            // setUnreadMessages(prev => (prev.set(response.data[index].senderName, valueMap)))
                         } else {
                             let list = []
                             list.push(response.data[index])
                             const valueMap = {unRead: 1, messages: list}
                             allMessages.set(response.data[index].senderName, valueMap)
-                            setAllMessages(prev => (prev.set(response.data[index].senderName, valueMap)));
+                            setAllMessages(prev => (prev.set(response.data[index].senderName, valueMap)))
+                            // unreadMessages.set(response.data[index].senderName, valueMap)
+                            // setUnreadMessages(prev => (prev.set(response.data[index].senderName, valueMap)))
                         }
                     }
-                    console.log(allMessages)
                     setNumberOfUnRead(response.data.length)
-                    const unreadMsgMap = new Map(allMessages)
-                    setUnreadMessages(unreadMsgMap)
-                    setRefresh({})
+                    // console.log(unreadMessages)
+
+                    // let unreadMsgMap2 = new Map(unreadMsgMap)
+
+                    // setUnreadMessages(unreadMsgMap2)
+                    // setRefresh({})
                 }
             })
             .catch((e) => {
@@ -237,35 +242,39 @@ function App(props) {
 
     function getUnRead(unRead) {
         if (unRead) {
-            return unRead + 1;
+            return unRead + 1
         } else {
-            return 1;
+            return 1
         }
     }
 
     function onMessageReceived(response) {
-        console.log(allMessages)
-        const data = JSON.parse(response.body);
+        // console.log(unreadMessages)
+        // console.log(allMessages)
+        const data = JSON.parse(response.body)
+        console.log(data)
         if (allMessages.get(data.senderName)) {
-            const need = {...data, status: statusMsg.UNREAD};
-            let list = allMessages.get(data.senderName).messages;
-            const unRead = allMessages.get(data.senderName).unRead;
-            list.push(need);
+            // const need = {...data, status: statusMsg.UNREAD}
+            let list = allMessages.get(data.senderName).messages
+            const unRead = allMessages.get(data.senderName).unRead
+            list.push(data)
             const valueMap = {unRead: unRead + 1, messages: list}
-            setAllMessages(prev => (prev.set(need.senderName, valueMap)))
-            setUnreadMessages(prev => (prev.set(need.senderName, valueMap)))
-            setNumberOfUnRead(prev => (prev + 1));
-            // setRefresh({});
+            setAllMessages(prev => (prev.set(data.senderName, valueMap)))
+            // setUnreadMessages(prev => (prev.set(data.senderName, valueMap)))
+            setNumberOfUnRead(prev => (prev + 1))
+            // setRefresh({})
         } else {
-            console.log("тут баг")
-            let list = [];
-            const need = {...data, status: statusMsg.UNREAD};
-            list.push(need);
-            const valueMap = {unRead: 1, messages: list};
-            setAllMessages(prev => (prev.set(need.senderName, valueMap)));
-            setUnreadMessages(prev => (prev.set(need.senderName, valueMap)))
-            setNumberOfUnRead(prev => (prev + 1));
-            // setRefresh({});
+            let list = []
+            // const need = {...data, status: statusMsg.UNREAD}
+            console.log("НЕ ЗАХОДИТЬ")
+            list.push(data)
+            console.log(list)
+            const valueMap = {unRead: 1, messages: list}
+            setAllMessages(prev => (prev.set(data.senderName, valueMap)))
+            // unreadMessages.set(data.senderName, valueMap)
+            // setUnreadMessages(prev => (prev.set(data.senderName, valueMap)))
+            setNumberOfUnRead(prev => (prev + 1))
+            setRefresh({})
         }
     }
 
@@ -273,84 +282,84 @@ function App(props) {
         const {searchString} = ""
         UserService.getAllByUsername(searchString)
             .then((response) => {
-                const users = response.data;
-                setUsers(users);
-                // setRefresh({});
+                const users = response.data
+                setUsers(users)
+                // setRefresh({})
             })
             .catch((e) => {
-                console.log(e);
-            });
+                console.log(e)
+            })
     }
 
     function connectToChat() {
-        let Sock = new SockJS('http://localhost:7999/api/ws');
-        stompClient = over(Sock);
-        stompClient.connect({}, onConnected, onError);
+        let Sock = new SockJS('http://localhost:7999/api/ws')
+        stompClient = over(Sock)
+        stompClient.connect({}, onConnected, onError)
     }
 
     function onConnected() {
-        stompClient.subscribe('/topic/' + AuthService.getCurrentUser().username + '/private', onMessageReceived);
+        stompClient.subscribe('/topic/' + AuthService.getCurrentUser().username + '/private', onMessageReceived)
     }
 
     function onError(err) {
-        console.log(err);
+        console.log(err)
     }
 
     function handleDrawerOpen() {
-        setOpen(true);
+        setOpen(true)
         // this.setState({
         //     open: true
         // })
     }
 
     function handleDrawerClose() {
-        setOpen(false);
+        setOpen(false)
         // this.setState({
         //     open: false
         // })
     }
 
     // componentDidMount() {
-    //     const user = AuthService.getCurrentUser();
+    //     const user = AuthService.getCurrentUser()
     //
     //     if (user) {
     //         AuthService.checkTokenIsExpired(user.token)
     //             .then(response => {
     //                 this.setState({
     //                     currentUser: user
-    //                 });
+    //                 })
     //             })
     //             .catch(error => {
-    //                     this.logOut();
+    //                     this.logOut()
     //                 }
     //             )
     //     }
     // }
 
     function logOut() {
-        AuthService.logout(AuthService.getCurrentUser().username);
-        setCurrentUser(null);
-        // this.setState({currentUser: null});
+        AuthService.logout(AuthService.getCurrentUser().username)
+        setCurrentUser(null)
+        // this.setState({currentUser: null})
     }
 
     /*displayPageContent(path) {
-        console.log(path);
+        console.log(path)
         this.props.history.push({
             pathname: path,
-        });
-        window.location.reload();
+        })
+        window.location.reload()
     }*/
 
     function getPathForProfile() {
-        const currentUser = AuthService.getCurrentUser();
+        const currentUser = AuthService.getCurrentUser()
         if (currentUser)
             return "/profile/" + currentUser.username
         else
-            return null;
+            return null
     }
 
     function minusUnRead(num) {
-        setNumberOfUnRead(prev => (prev - num));
+        setNumberOfUnRead(prev => (prev - num))
     }
 
 
@@ -365,7 +374,7 @@ function App(props) {
             icon: <ForumIcon color="secondary"/>,
             path: '/records/view'
         },
-    ];
+    ]
     const menuItemsForRegisteredUsers = [
         {
             text: 'Главная',
@@ -399,9 +408,8 @@ function App(props) {
                 (numberOfUnRead !== 0 && numberOfUnRead >= 999 && "999+")}
             </Paper>,
         },
-    ];
+    ]
     console.log(allMessages)
-    console.log(unreadMessages)
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -534,7 +542,7 @@ function App(props) {
                             <Route exact path="/login" component={Login}/>
                             <Route exact path="/msg">
                                 <Chat stompClient={stompClient} messages={allMessages}
-                                      number={numberOfUnRead} minusUnRead={minusUnRead} unreadMessages={unreadMessages}
+                                      number={numberOfUnRead} minusUnRead={minusUnRead}
                                 />
                             </Route>
                             <Route exact path="/register" component={Register}/>
@@ -555,7 +563,7 @@ function App(props) {
                 </Grid>
             </Grid>
         </div>
-    );
+    )
 }
 
 export default withStyles(useStyles)(App)

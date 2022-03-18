@@ -31,7 +31,12 @@ public class ChatController {
 
     @MessageMapping("/send/{recipient}")
     public void sendMessage(@DestinationVariable("recipient") String recipient, @Payload ChatMessage chatMessage) {
-        Long chatId = (chatMessage.getSenderId() + chatMessage.getRecipientId()) % 10_000; /*TODO. FIX THIS CHAT ID*/
+        String chatId;
+        if (chatMessage.getSenderName().compareTo(chatMessage.getRecipientName()) < 0) {
+            chatId = (chatMessage.getSenderName() + chatMessage.getRecipientName());
+        } else {
+            chatId = (chatMessage.getRecipientName() + chatMessage.getSenderName());
+        }
         chatMessage.setChatId(chatId);
         chatMessage.setStatusMessage(StatusMessage.UNREAD);
         chatMessageService.save(chatMessage);

@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     long countBySenderIdAndRecipientId(Long senderId, Long recipientId);
 
-    Optional<List<ChatMessage>> findByChatId(Long chatId);
+    Optional<List<ChatMessage>> findByChatId(String chatId);
 
-    Optional<List<ChatMessage>> findByRecipientIdAndStatusMessage(Long chatId, StatusMessage UNREAD);
+    Optional<List<ChatMessage>> findByRecipientIdAndStatusMessage(Long recipientId, StatusMessage UNREAD);
 }

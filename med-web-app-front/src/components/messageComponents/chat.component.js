@@ -124,10 +124,10 @@ function Chat(props) {
     const {number} = props
     const {newUsers} = props
     const {minusUnRead} = props
-    const {unreadMessages} = props
-    console.log(unreadMessages)
+    // const {unreadMessages} = props
     const [numberOfUnRead, setNumberOfUnRead] = useState(number)
-    const [unreadMsgs, setUnreadMsgs] = useState(unreadMessages)
+    const [unreadMessages, setUnreadMessages] = useState([])
+    const [processedUnreadMessages, setProcessedUnreadMessages] = useState([])
     const [allMessages, setAllMessages] = useState(messages)
     const [content, setContent] = useState("")
     const [contentPresence, setContentPresence] = useState(false)
@@ -255,7 +255,7 @@ function Chat(props) {
 
     function selectUser(user) {
         setSelectedUser(user)
-        ChatService.getMessages(AuthService.getCurrentUser().id, user.id)
+        ChatService.getMessages(AuthService.getCurrentUser().username, user.username)
             .then((response) => {
                 if (response.data.length > 0) {
                     const valueMap = {unRead: 0, messages: response.data}
@@ -270,44 +270,29 @@ function Chat(props) {
     }
 
     function updateStatusMsg() {
-        console.log("updateStatusMsg")
+        console.log("ОЧЕНЬ ЧАСТО")
         const dataMsg = allMessages.get(selectedUser.username)
+        // console.log(dataMsg)
         scrollToBottom()
         if (dataMsg && dataMsg.unRead > 0) {
-            console.log("updateStatusMsg2")
-            // console.log("я тут 2")
+            console.log("НАМНОГО РЕЖЕ")
+            console.log(dataMsg)
+            const unreadArr = dataMsg.messages.filter(msg => msg.statusMessage === "UNREAD" && msg.senderName === selectedUser.username && !processedUnreadMessages.includes(msg.id))
+            console.log(unreadArr)
+            if (unreadArr.length > 0) {
+                unreadArr.map(msg => setProcessedUnreadMessages(prevState => (prevState.concat([msg.id]))))
+                console.log("updateStatusBack")
+                ChatService.updateStatusUnreadMessages(unreadArr).then()
+            }
             minusUnRead(dataMsg.unRead)
             dataMsg.unRead = 0
             setAllMessages(prev => (prev.set(selectedUser.username, dataMsg)))
-            setRefresh({})
-        }
-        setRefresh({})
-
-        // console.log("я тут")
-        // console.log(msg.status)
-        // console.log(statusMsg.UNREAD)
-        // if (msg.status === statusMsg.UNREAD) {
-        //     const newMsg = {...msg, status: statusMsg.READ}
-        //     const dataMsg = allMessages.get(msg.senderName)
-        //     dataMsg.messages.push(newMsg)
-        //     minusUnRead(dataMsg.unRead)
-        //     dataMsg.unRead = 0
-        //     console.log(newMsg)
-        //     console.log(dataMsg)
-        //     setAllMessages(prev => (prev.set(newMsg.senderName, dataMsg)))
-        // }
-    }
-
-    function updateStatusMsgBack() {
-        if (unreadMsgs.size > 0) {
-            ChatService.updateStatusUnreadMessages(unreadMsgs.get(selectedUser.username).messages).then(r => console.log(r))
+            // setRefresh({})
         }
     }
 
-    // console.log(users)
     console.log(allMessages)
-    console.log(unreadMsgs)
-    console.log(selectedUser)
+    console.log(processedUnreadMessages)
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
@@ -373,8 +358,8 @@ function Chat(props) {
                                 )))
                                 }
 
-                                {selectedUser &&
-                                <UpdateStatusMsg updateStatusMsgBack={updateStatusMsgBack}/>}
+                                {/*{selectedUser &&*/}
+                                {/*<UpdateStatusMsg updateStatusMsgBack={updateStatusMsgBack}/>}*/}
 
                             </Grid>
                             <div ref={messagesEndRef}/>

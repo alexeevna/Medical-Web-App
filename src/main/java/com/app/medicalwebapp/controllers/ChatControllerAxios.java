@@ -22,10 +22,10 @@ public class ChatControllerAxios {
 
     @GetMapping("/allMessages")
     public ResponseEntity<?> getMessages(
-            @RequestParam Long senderId, @RequestParam Long recipientId
+            @RequestParam String senderUsername, @RequestParam String recipientUsername
     ) {
         try {
-            var messages = chatMessageService.findMessages(senderId, recipientId);
+            var messages = chatMessageService.findMessages(senderUsername, recipientUsername);
             return ResponseEntity.ok().body(messages);
         } catch (Exception e) {
             e.printStackTrace();
