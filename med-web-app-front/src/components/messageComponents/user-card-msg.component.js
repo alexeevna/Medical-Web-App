@@ -11,7 +11,7 @@ const useStyles = theme => ({
         },
     },
     grid: {
-
+        color: "black",
         fontSize: 17,
         marginBottom: 10,
         marginTop: 10,

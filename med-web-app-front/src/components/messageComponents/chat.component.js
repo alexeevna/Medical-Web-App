@@ -1,4 +1,5 @@
 import {Card, Divider, List, Paper, TextField, withStyles} from "@material-ui/core"
+import {Link} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react"
 import UserService from "../../services/user.service"
 import Grid from "@material-ui/core/Grid"
@@ -12,6 +13,7 @@ import ChatService from "../../services/chat.service"
 import RecipientMsg from "./recipient.msg.component"
 import SenderMsg from "./sender.msg.component"
 import UpdateStatusMsg from "./updateStatusMsg.component";
+import {useLocation, useParams} from "react-router-dom";
 
 const useStyles = theme => ({
     root: {
@@ -124,7 +126,7 @@ function Chat(props) {
     const {number} = props
     const {newUsers} = props
     const {minusUnRead} = props
-    // const {unreadMessages} = props
+    const {selected} = useParams()
     const [numberOfUnRead, setNumberOfUnRead] = useState(number)
     const [unreadMessages, setUnreadMessages] = useState([])
     const [processedUnreadMessages, setProcessedUnreadMessages] = useState([])
@@ -136,17 +138,26 @@ function Chat(props) {
     const [users, setUsers] = useState(newUsers)
     const [connected, setConnected] = useState(false)
     const [refresh, setRefresh] = useState({})
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [updateSelectedUser, setUpdateSelectedUser] = useState({})
+    const [selectedIndex, setSelectedIndex] = useState(null)
     const messagesEndRef = useRef(null)
 
 
     useEffect(() => {
         getUsers()
+        if (selected) {
+            UserService.getAllByUsername(selected).then((response) => {
+                console.log(response.data[0])
+                selectUser(response.data[0])
+            }).catch((e) => {
+                console.log(e);
+            });
+        }
         // connectToChat()
         // return () => {
         //     stompClient.unsubscribe()
         // }
-    }, [])
+    }, [updateSelectedUser])
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
@@ -291,8 +302,10 @@ function Chat(props) {
         }
     }
 
-    console.log(allMessages)
-    console.log(processedUnreadMessages)
+    // console.log(selectedUser)
+    // console.log(allMessages)
+    // console.log(processedUnreadMessages)
+    // console.log(refresh)
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
@@ -300,27 +313,21 @@ function Chat(props) {
                     <List className={classes.itemButton}>
                         {users &&
                         users.map((user, index) => (
-
                             <Grid key={index}>
-                                <ListItemButton
-                                    // className={{ selected: classes.active }}
-                                    value={user}
-                                    selected={selectedUser === user}
-                                    onClick={() => selectUser(user)}
-                                >
-
-                                    {/*// <Button*/}
-                                    {/*//     className={classes.button}*/}
-                                    {/*//     value={user}*/}
-                                    {/*//     onClick={() => selectUser(user)}*/}
-                                    {/*//     key={index}*/}
-                                    {/*// >*/}
-                                    <UserCardMessage user={user}
-                                    />
-                                    <Paper
-                                        className={classes.noticeMsg}>{allMessages.get(user.username) && (allMessages.get(user.username).unRead > 0) && allMessages.get(user.username).unRead}</Paper>
-                                </ListItemButton>
-                                <Divider/>
+                                <Link onClick={() => setUpdateSelectedUser({})} to={"/msg/" + user.username} style={{textDecoration: 'none'}}>
+                                    <ListItemButton
+                                        value={user}
+                                        selected={selectedUser && selectedUser.username === user.username}
+                                    >
+                                        <UserCardMessage user={user}
+                                        />
+                                        <Paper
+                                            className={classes.noticeMsg}>{allMessages.get(user.username) && (allMessages.get(user.username).unRead > 0)
+                                        && allMessages.get(user.username).unRead}
+                                        </Paper>
+                                    </ListItemButton>
+                                    <Divider/>
+                                </Link>
                             </Grid>
                         ))}
                     </List>

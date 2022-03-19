@@ -408,6 +408,18 @@ function App(props) {
                 (numberOfUnRead !== 0 && numberOfUnRead >= 999 && "999+")}
             </Paper>,
         },
+        // {
+        //     text: 'Сообщения',
+        //     icon: <MessageIcon color="secondary"/>,
+        //     path: '/msg/:selectedUser',
+        //     numberOfUnRead: numberOfUnRead,
+        //     numberMsg: <Paper
+        //         className={classes.noticeMsg}>{
+        //         (numberOfUnRead !== 0 && numberOfUnRead < 999 && numberOfUnRead)
+        //         ||
+        //         (numberOfUnRead !== 0 && numberOfUnRead >= 999 && "999+")}
+        //     </Paper>,
+        // },
     ]
     console.log(allMessages)
     return (
@@ -540,7 +552,7 @@ function App(props) {
                             <Route exact path="/home/patient" component={HomePatient}/>
                             <Route exact path="/home/doctor" component={HomeDoctor}/>
                             <Route exact path="/login" component={Login}/>
-                            <Route exact path="/msg">
+                            <Route exact path={["/msg", "/msg/:selected"]}>
                                 <Chat stompClient={stompClient} messages={allMessages}
                                       number={numberOfUnRead} minusUnRead={minusUnRead}
                                 />
