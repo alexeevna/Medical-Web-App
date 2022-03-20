@@ -5,6 +5,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -38,7 +39,7 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    @Column(name= "registered_date")
+    @Column(name = "registered_date")
     private LocalDateTime registeredDate;
 
     @Column(name = "status")
@@ -49,5 +50,9 @@ public class User {
 
     @Column(name = "active")
     private Active active;
+
+//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "id")
+//    @Column(name = "contacts")
+//    private List<User> contacts;
 }
 

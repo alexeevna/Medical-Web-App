@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.controllers;
 
+import com.app.medicalwebapp.controllers.requestbody.PushContactsRequest;
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.services.UserService;
 import org.slf4j.Logger;
@@ -7,12 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -115,4 +113,59 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//    @GetMapping("/getContacts")
+//    public ResponseEntity<?> getContacts(@RequestParam String currentUserUsername) {
+//        try {
+//            Optional<User> userOpt = userService.getOneByUsername(currentUserUsername);
+//            User user;
+//            if (userOpt.isPresent()) {
+//                user = userOpt.get();
+//            } else {
+//                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//            return ResponseEntity.ok().body(user.getContacts());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    @PostMapping("/pushContacts")
+//    public ResponseEntity<?> pushContacts(
+//            @RequestBody PushContactsRequest request
+//    ) {
+//        try {
+//            Optional<User> userOpt = userService.getOneByUsername(request.getCurrentUserUsername());
+//            User user;
+//            if (userOpt.isPresent()) {
+//                user = userOpt.get();
+//            } else {
+//                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//
+//            Optional<User> userOpt2 = userService.getOneByUsername(request.getSelectedUserUsername());
+//            User user2;
+//            if (userOpt2.isPresent()) {
+//                user2 = userOpt2.get();
+//            } else {
+//                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//            List<User> userContacts = user.getContacts();
+//            userContacts.add(user2);
+//            user.setContacts(userContacts);
+//            userService.save(user);
+//
+//            List<User> userContacts2 = user2.getContacts();
+//            userContacts2.add(user);
+//            user2.setContacts(userContacts2);
+//            userService.save(user2);
+//
+//            return ResponseEntity.ok().body(user2);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
 }

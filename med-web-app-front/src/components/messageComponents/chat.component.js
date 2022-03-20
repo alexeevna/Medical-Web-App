@@ -144,20 +144,36 @@ function Chat(props) {
 
 
     useEffect(() => {
-        getUsers()
-        if (selected) {
-            UserService.getAllByUsername(selected).then((response) => {
-                console.log(response.data[0])
-                selectUser(response.data[0])
-            }).catch((e) => {
-                console.log(e);
-            });
-        }
+        // let users = []
+        getContacts();
+
+        // getUsers()
+        // if (selected) {
+        //     UserService.getAllByUsername(selected).then((response) => {
+        //         console.log(response.data[0])
+        //         selectUser(response.data[0])
+        //     }).catch((e) => {
+        //         console.log(e);
+        //     });
+        // }
         // connectToChat()
         // return () => {
         //     stompClient.unsubscribe()
         // }
     }, [updateSelectedUser])
+
+    function updateContacts() {
+        UserService.pushContacts(AuthService.getCurrentUser().username, selected)
+            .then((response) => {
+                console.log(response.data)
+                setUsers(prev => prev.concat([response.data]))
+                selectUser(response.data)
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+
+    }
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
@@ -173,6 +189,45 @@ function Chat(props) {
     //     stompClient = over(Sock)
     //     stompClient.connect({}, onConnected, onError)
     // }
+
+    function getContacts() {
+        // let users = []
+        UserService.getContacts(AuthService.getCurrentUser().username)
+            .then((response) => {
+                const users = response.data
+                // users = response.data
+                console.log(users)
+                setUsers([])
+                setUsers(users)
+                const user = users.find(user => user.username === selected)
+                console.log(user)
+                if (selected && !user) {
+                    console.log("HERE1")
+                    updateContacts();
+                } else if (selected && user) {
+                    selectUser(user)
+                } else {
+                    console.log("HERE2")
+                }
+                // setRefresh({})
+            })
+            .catch((e) => {
+                console.log(e)
+
+            })
+        // console.log(selected === users[0].username)
+        // if (selected && !users.some(user => console.log(user) && user.username === selected)) {
+        //     UserService.pushContacts(AuthService.getCurrentUser().username, selected)
+        //         .then((response) => {
+        //             console.log(response.data)
+        //             setUsers(prev => prev.concat([response.data]))
+        //             return response.data
+        //         })
+        //         .catch((e) => {
+        //             console.log(e)
+        //         })
+        // }
+    }
 
     function getUsers() {
         const {searchString} = ""
@@ -302,10 +357,11 @@ function Chat(props) {
         }
     }
 
-    // console.log(selectedUser)
+    // console.log(selected)
     // console.log(allMessages)
     // console.log(processedUnreadMessages)
     // console.log(refresh)
+    // console.log(users)
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
@@ -314,7 +370,8 @@ function Chat(props) {
                         {users &&
                         users.map((user, index) => (
                             <Grid key={index}>
-                                <Link onClick={() => setUpdateSelectedUser({})} to={"/msg/" + user.username} style={{textDecoration: 'none'}}>
+                                <Link onClick={() => setUpdateSelectedUser({})} to={"/msg/" + user.username}
+                                      style={{textDecoration: 'none'}}>
                                     <ListItemButton
                                         value={user}
                                         selected={selectedUser && selectedUser.username === user.username}

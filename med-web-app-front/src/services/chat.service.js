@@ -35,9 +35,6 @@ class ChatService {
     }
 
     updateStatusUnreadMessages(messages) {
-        console.log(messages)
-        let parameters = this.createRequestParamsForUpdateUnreadMsg(messages);
-
         return axios.post(API_URL + 'updateMessages', {messages},
             {headers: authHeader()});
     }
