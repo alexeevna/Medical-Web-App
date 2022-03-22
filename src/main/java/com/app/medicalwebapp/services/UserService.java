@@ -15,12 +15,10 @@ public class UserService {
     private UserRepository userRepository;
 
     public List<User> getAll() {
-        System.out.println("daniel");
         List<User> us = null;
         try {
             us = userRepository.findByRoleNotLikeOrderByInitialsAsc("Модератор");
         } catch (Exception e) {
-            System.out.println("daniel2");
             e.printStackTrace();
         }
         return us;

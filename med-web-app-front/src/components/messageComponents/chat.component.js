@@ -320,9 +320,11 @@ function Chat(props) {
     }
 
     function selectUser(user) {
+        console.log("hi hi")
         setSelectedUser(user)
         ChatService.getMessages(AuthService.getCurrentUser().username, user.username)
             .then((response) => {
+                console.log(response)
                 if (response.data.length > 0) {
                     const valueMap = {unRead: 0, messages: response.data}
                     setAllMessages(prev => (prev.set(user.username, valueMap)))

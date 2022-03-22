@@ -1,5 +1,7 @@
 package com.app.medicalwebapp.model;
 
+import com.app.medicalwebapp.model.mesages.Contacts;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -33,6 +35,7 @@ public class User {
     @Column(name = "initials")
     private String initials;
 
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -51,7 +54,16 @@ public class User {
     @Column(name = "active")
     private Active active;
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contacts_id")
+    private Contacts contacts;
+
+//
+//    @OneToMany
+//    @JoinTable(
+//            name = "inner_table",
+//            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")}
+//    )
 //    @Column(name = "contacts")
 //    private List<User> contacts;
 }
