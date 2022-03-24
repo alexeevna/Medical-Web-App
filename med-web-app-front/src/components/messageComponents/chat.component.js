@@ -205,9 +205,10 @@ function Chat(props) {
                     console.log("HERE1")
                     updateContacts();
                 } else if (selected && user) {
+                    console.log("HERE2")
                     selectUser(user)
                 } else {
-                    console.log("HERE2")
+                    console.log("HERE3")
                 }
                 // setRefresh({})
             })

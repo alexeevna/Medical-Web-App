@@ -2,7 +2,7 @@ package com.app.medicalwebapp.controllers;
 
 import com.app.medicalwebapp.controllers.requestbody.PushContactsRequest;
 import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.mesages.Contacts;
+import com.app.medicalwebapp.model.mesages.Contact;
 import com.app.medicalwebapp.repositories.ContactsRepository;
 import com.app.medicalwebapp.services.ContactsService;
 import com.app.medicalwebapp.services.UserService;
@@ -120,16 +120,96 @@ public class UserController {
         }
     }
 
+//    @GetMapping("/getContacts")
+//    public ResponseEntity<?> getContacts(@RequestParam String currentUserUsername) {
+//        try {
+//            Optional<User> userOptional = userService.getOneByUsername(currentUserUsername);
+//            List<User> contactsList = new ArrayList<>();
+//            if (userOptional.isPresent()) {
+//                contactsList = userOptional.get().getContactsList();
+//            }
+//            System.out.println("get " + currentUserUsername);
+//            System.out.println("get " + userOptional);
+//            System.out.println("get " + contactsList);
+//            return ResponseEntity.ok().body(contactsList);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    @PostMapping("/pushContacts")
+//    public ResponseEntity<?> pushContacts(
+//            @RequestBody PushContactsRequest request
+//    ) {
+//        try {
+//            User user = push(request.getCurrentUserUsername(), request.getSelectedUserUsername());
+////            if (push(request.getSelectedUserUsername(), request.getCurrentUserUsername()) == null) {
+////                return ResponseEntity.badRequest().body("Пользователя с данным логином не существует");
+////            }
+//            if (user == null) {
+//                return ResponseEntity.badRequest().body("Пользователя с данным логином не существует");
+//            }
+//            return ResponseEntity.ok().body(user);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    public User push(String currentUserUsername, String selectedUserUsername) {
+//        Optional<User> userOptionalCurrent = userService.getOneByUsername(currentUserUsername);
+//        User userCurrent;
+//        List<User> contactsListCurrent = new ArrayList<>();
+//        if (userOptionalCurrent.isPresent()) {
+//            userCurrent = userOptionalCurrent.get();
+//            contactsListCurrent = userCurrent.getContactsList();
+//        } else {
+//            System.out.println("bad req");
+//            return null;
+//        }
+////        else {
+//////            contact = new Contact();
+//////            contact.setId((long) Math.random() * (10000L - 1L));
+//////            contact.setContactsOwner(currentUserUsername);
+//////            contact.setContactsList(new ArrayList<>());
+////        }
+//        System.out.println("daniel" + contactsListCurrent);
+//        Optional<User> userOptionalSelected = userService.getOneByUsername(selectedUserUsername);
+//        User userSelected;
+//        List<User> contactsListSelected = new ArrayList<>();
+//        if (userOptionalSelected.isPresent()) {
+//            userSelected = userOptionalSelected.get();
+//            contactsListSelected = userSelected.getContactsList();
+//        } else {
+//            System.out.println("bad req");
+//            return null;
+//        }
+//        System.out.println("ya tuta");
+//        contactsListCurrent.add(userSelected);
+//        System.out.println("ya tuta2");
+//        contactsListSelected.add(userCurrent);
+//        userCurrent.setContactsList(contactsListCurrent);
+//        userSelected.setContactsList(contactsListSelected);
+////        System.out.println(userOptionalCurrent.get());
+////        System.out.println(userOptionalSelected.get());
+//        System.out.println("ya tuta3");
+//        userService.save(userOptionalCurrent.get());
+//        userService.save(userOptionalSelected.get());
+//        return userOptionalSelected.get();
+//    }
+
+
     @GetMapping("/getContacts")
     public ResponseEntity<?> getContacts(@RequestParam String currentUserUsername) {
         try {
-            Optional<Contacts> contactsOptional = contactsService.getByContactsOwner(currentUserUsername);
-            List<User> contactsList = Collections.emptyList();
-            if (contactsOptional.isPresent()) {
-                contactsList = contactsOptional.get().getContactsList();
+            Optional<Contact> contactOptional = contactsService.getByContactsOwner(currentUserUsername);
+            List<User> contactsList = new ArrayList<>();
+            if (contactOptional.isPresent()) {
+                contactsList = contactOptional.get().getContactsList();
             }
             System.out.println("get " + currentUserUsername);
-            System.out.println("get " + contactsOptional);
+            System.out.println("get " + contactOptional);
             System.out.println("get " + contactsList);
             return ResponseEntity.ok().body(contactsList);
         } catch (Exception e) {
@@ -158,16 +238,17 @@ public class UserController {
     }
 
     public User push(String currentUserUsername, String selectedUserUsername) {
-        Optional<Contacts> contactsOptional = contactsService.getByContactsOwner(currentUserUsername);
-        Contacts contacts;
+        Optional<Contact> contactsOptional = contactsService.getByContactsOwner(currentUserUsername);
+        Contact contact;
         if (contactsOptional.isPresent()) {
-            contacts = contactsOptional.get();
+            contact = contactsOptional.get();
         } else {
-            contacts = new Contacts();
-            contacts.setContactsOwner(currentUserUsername);
-            contacts.setContactsList(new ArrayList<>());
+            contact = new Contact();
+//            contact.setId((long) Math.random() * (10000L - 1L));
+            contact.setContactsOwner(currentUserUsername);
+            contact.setContactsList(new ArrayList<>());
         }
-        System.out.println("daniel" + contacts);
+        System.out.println("daniel" + contact);
         Optional<User> userOptional = userService.getOneByUsername(selectedUserUsername);
         User user;
         if (userOptional.isPresent()) {
@@ -176,13 +257,13 @@ public class UserController {
             System.out.println("bad req");
             return null;
         }
-        List<User> userList = contacts.getContactsList();
+        List<User> userList = contact.getContactsList();
         userList.add(user);
-        contacts.setContactsList(userList);
-        System.out.println(contacts);
+        contact.setContactsList(userList);
+        System.out.println(contact);
         System.out.println(user);
         System.out.println("SAVE");
-        contactsRepository.save(contacts);
+        contactsRepository.save(contact);
         return user;
     }
 

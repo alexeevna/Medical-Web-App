@@ -1,6 +1,6 @@
 package com.app.medicalwebapp.model;
 
-import com.app.medicalwebapp.model.mesages.Contacts;
+//import com.app.medicalwebapp.model.mesages.Contact;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
@@ -54,9 +54,18 @@ public class User {
     @Column(name = "active")
     private Active active;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contacts_id")
-    private Contacts contacts;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "contacts_users",
+//            joinColumns = @JoinColumn(name = "contact_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id")
+//    )
+//    private List<User> contactsList;
+
+//    @ManyToOne(targetEntity = Contact.class, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "cont")
+//    private Contact contacts;
+
 
 //
 //    @OneToMany

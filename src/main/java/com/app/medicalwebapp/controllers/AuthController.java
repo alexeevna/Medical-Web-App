@@ -106,7 +106,7 @@ public class AuthController {
         user.setStatus(0);
         user.setRate(0);
         user.setRegisteredDate(LocalDateTime.now());
-
+        System.out.println(user);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("Пользователь был успешно зарегистрирован"));
