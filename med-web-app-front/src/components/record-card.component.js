@@ -44,10 +44,10 @@ const useStyles = theme => ({
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
-        maxWidth: 700,
+        // maxWidth: 700,
         borderColor:"#e9e9e9",
         borderRadius: 10,
-        minWidth: 700,
+        minWidth: 800,
     },
     mainGrid: {
         margin: 0,

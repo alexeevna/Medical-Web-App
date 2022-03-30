@@ -7,6 +7,8 @@ import Review from "./review.component"
 import {ButtonBase, Card, TextField, withStyles} from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
+import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
+import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     txtField: {
@@ -56,6 +58,16 @@ const useStyles = theme => ({
     button: {
         width: 200,
         margin: theme.spacing(1),
+        backgroundColor: '#f50057',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
+    },
+    write: {
+        width: 300,
+        marginTop: theme.spacing(3),
         backgroundColor: '#f50057',
         color: '#fff',
         '&:hover': {
@@ -188,6 +200,13 @@ class Profile extends Component {
                                                     readOnly: true,
                                                 }}
                                             />
+                                            {user && user.username !== AuthService.getCurrentUser().username &&
+                                            <Link to={"/msg/" + user.username} style={{textDecoration: 'none'}}>
+                                                <Button className={classes.write}>
+                                                    Написать
+                                                </Button>
+                                            </Link>
+                                            }
                                         </Grid>
                                     </Grid>
                                 </Card>
@@ -196,12 +215,16 @@ class Profile extends Component {
                             <Grid xs={4} item>
                                 <Card className={classes.paper2}>
                                     <Grid className={classes.grid}>
-                                        <Button variant="contained" href="/files/view" className={classes.button}>
-                                            Мои файлы
-                                        </Button>
-                                        <Button variant="contained" href="/files/upload" className={classes.button}>
-                                            Загрузить файл
-                                        </Button>
+                                        <Link to={"/files/view"} style={{textDecoration: 'none'}}>
+                                            <Button className={classes.button}>
+                                                Мои файлы
+                                            </Button>
+                                        </Link>
+                                        <Link to={"/files/upload"} style={{textDecoration: 'none'}}>
+                                            <Button className={classes.button}>
+                                                Загрузить файл
+                                            </Button>
+                                        </Link>
                                     </Grid>
                                 </Card>
                             </Grid>
