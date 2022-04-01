@@ -9,9 +9,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
+import {FormControl, FormLabel, InputAdornment, Radio, RadioGroup, TextField, withStyles} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import SearchIcon from '@material-ui/icons/Search';
+import Button from "@material-ui/core/Button";
 
 
 const StyledTableRow = withStyles((theme) => ({
@@ -32,6 +33,14 @@ const useStyles = theme => ({
             color: "black",
         }
     },
+    input: {
+        width: 800,
+        marginBottom: theme.spacing(1.5),
+        "& .MuiFormLabel-root": {
+            margin: 0,
+            color: "black"
+        }
+    },
     header: {
         backgroundColor: '#3f51b5',
         color: 'white',
@@ -46,6 +55,12 @@ const useStyles = theme => ({
     label: {
         margin: theme.spacing(2, 0, 1),
         color: "black"
+    },
+    button: {
+        height: 55
+    },
+    inputAdornment: {
+        marginRight: theme.spacing(-1.8),
     }
 });
 
@@ -54,7 +69,7 @@ class Search extends Component {
     constructor(props) {
         super(props);
         this.getUsers = this.getUsers.bind(this)
-        this.onChangeUsername = this.onChangeUsername.bind(this)
+        this.onChangeSearchString = this.onChangeSearchString.bind(this)
         this.onChangeParamsTypeSearch = this.onChangeParamsTypeSearch.bind(this)
         this.onChangeParamsRoleSearch = this.onChangeParamsRoleSearch.bind(this)
         this.state = {
@@ -65,7 +80,7 @@ class Search extends Component {
         };
     }
 
-    onChangeUsername(e) {
+    onChangeSearchString(e) {
         const searchString = e.target.value;
         this.setState({
             searchString: searchString,
@@ -148,25 +163,54 @@ class Search extends Component {
     }
 
     render() {
+        console.log(this.state.searchString)
         const {classes} = this.props;
         return (
             <div>
                 <div className="div-search">
-                    <form className="form-search">
-                        <input className="input-search"
-                               type="text"
-                               placeholder="Искать здесь..."
-                               value={this.state.searchString}
-                               onChange={this.onChangeUsername}
-                        />
-                        <button className="button-search"
-                                type="button"
+                    {/*<form className="form-search">*/}
+                    <TextField
+                        className={classes.input}
+                        multiline
+                        fullWidth
+                        id="content"
+                        label="Искать здесь..."
+                        name="content"
+                        autoComplete="off"
+                        variant="outlined"
+                        type="text"
+                        value={this.state.searchString}
+                        onChange={this.onChangeSearchString}
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end" className={classes.inputAdornment}>
+                                <Button
+                                className={classes.button}
+                                variant="contained"
+                                color="primary"
                                 onClick={this.getUsers}
-                        >
-                            {/*<i className="fa fa-search" aria-hidden="true"/>*/}
-                            <SearchIcon style={{ color: "white" }} />
-                        </button>
-                    </form>
+                            >
+                                {/*<i className="fa fa-search" aria-hidden="true"/>*/}
+                                <SearchIcon style={{color: "white"}}/>
+                            </Button>
+                            </InputAdornment>
+                        }}
+                    />
+                    {/*<input className="input-search"*/}
+                    {/*       type="text"*/}
+                    {/*       placeholder="Искать здесь..."*/}
+                    {/*       value={this.state.searchString}*/}
+                    {/*       onChange={this.onChangeUsername}*/}
+                    {/*/>*/}
+                    {/*<Button*/}
+                    {/*    className={classes.button}*/}
+                    {/*    variant="contained"*/}
+                    {/*    color="primary"*/}
+                    {/*        onClick={this.getUsers}*/}
+                    {/*>*/}
+                    {/*    /!*<i className="fa fa-search" aria-hidden="true"/>*!/*/}
+                    {/*    <SearchIcon style={{color: "white"}}/>*/}
+                    {/*</Button>*/}
+                    {/*</form>*/}
                 </div>
                 <div className="div-search">
                     <FormLabel className={classes.label}>Параметры поиска:</FormLabel>

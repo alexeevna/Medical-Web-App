@@ -93,6 +93,7 @@ class ReplyRecordForm extends Component {
 
         this.state = {
             content: "",
+            title: "",
             contentPresence: false,
             contentCorrect: "",
             availableFiles: [],

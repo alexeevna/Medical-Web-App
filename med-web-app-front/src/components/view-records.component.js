@@ -5,13 +5,14 @@ import SelectReact from 'react-select';
 import RecordCard from "./record-card.component";
 // import Topic from "./topic.component"
 import TopicService from "../services/topic.service";
-import {Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
+import {Card, Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
+import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     button: {
@@ -57,6 +58,27 @@ const useStyles = theme => ({
         fontSize: 15,
         textAlign: "right",
         color: '#f50057',
+    },
+    mainGrid: {
+        display: 'flex',
+        minWidth: 1000,
+    },
+    paper2: {
+        margin: theme.spacing(3),
+        padding: theme.spacing(3),
+        color: "black",
+    },
+    firstGrid: {
+        marginTop: theme.spacing(3),
+    },
+    grid: {
+        margin: theme.spacing(1),
+        alignItems: 'center',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    record: {
+        minWidth: 1000
     },
 })
 
@@ -214,9 +236,9 @@ class ViewRecordsList extends Component {
         } = this.state;
         const {classes} = this.props;
         return (
-            <div className="list row">
-                <div className="col-sm-9">
-                    <div className="input-group mb-3">
+            <Grid item className={classes.mainGrid}>
+                <Grid xs={12} className={classes.firstGrid}>
+                    <Grid xs={8} item>
                         {/*<input
                             type="text"
                             className="form-control"
@@ -273,7 +295,7 @@ class ViewRecordsList extends Component {
                                 ))}
                             </Select>
                         </FormControl>
-                    </div>
+                    </Grid>
 
                     <div className="mt-3">
                         <div className="row">
@@ -312,15 +334,32 @@ class ViewRecordsList extends Component {
                             </Grid>
                         ))}
                     </Grid>
-                </div>
+                </Grid>
 
-                <div className="col-sm-2">
-                    <Button variant="contained" href="/records/create" className={classes.button}>
-                        Создать пост
-                    </Button>
-                    <Button variant="contained" href="/topics/create" className={classes.button}>
-                        Страница тэгов
-                    </Button>
+                <Grid xs={4} item>
+                    <Card className={classes.paper2}>
+                        <Grid className={classes.grid}>
+                            <Link to={"/records/create"} style={{textDecoration: 'none'}}>
+                                <Button className={classes.button}>
+                                    Создать пост
+                                </Button>
+                            </Link>
+                            <Link to={"/topics/create"} style={{textDecoration: 'none'}}>
+                                <Button className={classes.button}>
+                                    Страница тэгов
+                                </Button>
+                            </Link>
+                        </Grid>
+                    </Card>
+                </Grid>
+
+                {/*<div className="col-sm-2">*/}
+                {/*    <Button variant="contained" href="/records/create" className={classes.button}>*/}
+                {/*        Создать пост*/}
+                {/*    </Button>*/}
+                {/*    <Button variant="contained" href="/topics/create" className={classes.button}>*/}
+                {/*        Страница тэгов*/}
+                {/*    </Button>*/}
 
                     {/*<Paper className={classes.topicPaper}>*/}
                     {/*    <Grid container spacing={1} direction={"column"}>*/}
@@ -366,9 +405,9 @@ class ViewRecordsList extends Component {
                     {/*        </Grid>*/}
                     {/*    </Grid>*/}
                     {/*</Paper>*/}
-                </div>
+                {/*</div>*/}
 
-            </div>
+            </Grid>
         );
     }
 }
