@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import '../styles/Search.css'
 import {TableCell, withStyles} from "@material-ui/core";
-import {Link} from '@material-ui/core';
-
+// import {Link} from '@material-ui/core';
+import { Link } from "react-router-dom";
 const useStyles = theme => ({
     root: {
         "& .MuiTypography-root": {
@@ -10,6 +10,10 @@ const useStyles = theme => ({
             fontSize: 17
         },
     },
+    link: {
+        color: "black",
+        fontSize: 17
+    }
 });
 
 class UserCard extends Component {
@@ -23,27 +27,27 @@ class UserCard extends Component {
         return (
             <React.Fragment>
                 {this.user.initials !== null &&
-                <TableCell className={classes.root}>
-                    <Link href={"profile/" + this.user.username}>
+                <TableCell >
+                    <Link to={"profile/" + this.user.username} className={classes.link}>
                         {this.user.initials + " "}
                     </Link>
 
                 </TableCell>}
                 {this.user.initials !== null &&
-                <TableCell className={classes.root} align="right">
-                    <Link href={"profile/" + this.user.username}>
+                <TableCell  align="right">
+                    <Link to={"profile/" + this.user.username} className={classes.link}>
                         {this.user.username}
                     </Link>
                 </TableCell>
                 }
 
                 {this.user.initials === null &&
-                <TableCell className={classes.cells} colSpan={2} align="right">
+                <TableCell colSpan={2} align="right">
                     {this.user.username}
                 </TableCell>
                 }
 
-                <TableCell className={classes.cells} align="right">
+                <TableCell  align="right">
                     {this.user.role}
                 </TableCell>
 
