@@ -201,7 +201,6 @@ function App(props) {
     }, [])
 
     function getUnreadMessages() {
-        console.log("get unread")
         ChatService.getUnreadMessages(AuthService.getCurrentUser().id)
             .then((response) => {
                 if (response.data.length > 0) {
@@ -252,7 +251,6 @@ function App(props) {
         // console.log(unreadMessages)
         // console.log(allMessages)
         const data = JSON.parse(response.body)
-        console.log(data)
         if (allMessages.get(data.senderName)) {
             // const need = {...data, status: statusMsg.UNREAD}
             let list = allMessages.get(data.senderName).messages
@@ -266,9 +264,7 @@ function App(props) {
         } else {
             let list = []
             // const need = {...data, status: statusMsg.UNREAD}
-            console.log("НЕ ЗАХОДИТЬ")
             list.push(data)
-            console.log(list)
             const valueMap = {unRead: 1, messages: list}
             setAllMessages(prev => (prev.set(data.senderName, valueMap)))
             // unreadMessages.set(data.senderName, valueMap)
@@ -421,7 +417,6 @@ function App(props) {
         //     </Paper>,
         // },
     ]
-    console.log(allMessages)
     return (
         <div className={classes.root}>
             <CssBaseline/>

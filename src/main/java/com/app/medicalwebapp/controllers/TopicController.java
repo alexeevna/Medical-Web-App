@@ -49,8 +49,6 @@ public class TopicController {
     public ResponseEntity<?> createNewTopic(@Valid @RequestBody TopicRequest request) {
         try {
             topicService.createNewTopic(request, getAuthenticatedUserId());
-            System.out.println(request.getTopicName());
-            System.out.println(request);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
