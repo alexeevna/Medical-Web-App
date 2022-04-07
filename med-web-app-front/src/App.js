@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
 import Home from "./components/home.component"
+import {useBeforeunload} from 'react-beforeunload';
 import HomePatient from "./components/home-patient.component"
 import HomeDoctor from "./components/home-doctor.component"
 import Profile from "./components/profile.component"
@@ -162,6 +163,8 @@ function App(props) {
     const [open, setOpen] = useState(true)
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
+    const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState([])
+
     // const [unreadMessages, setUnreadMessages] = useState(new Map())
     // const unreadMessages = new Map()
 
@@ -179,6 +182,7 @@ function App(props) {
     //
     //     }
     // }
+    // useBeforeunload(() => logOut());
 
     useEffect(() => {
         const user = AuthService.getCurrentUser()
@@ -198,7 +202,23 @@ function App(props) {
             connectToChat()
             getUnreadMessages()
         }
+
+        // window.addEventListener("beforeunload", function (e) {
+        //     $.ajax({
+        //         type: "POST",
+        //         url: startTimerUrl,
+        //         async: false
+        //     });
+        //     return;
+        // });
+        // return () => {
+        //     window.removeEventListener('onunload', onbeforeunloadFn);
+        // }
     }, [])
+
+    function onbeforeunloadFn() {
+        logOut()
+    }
 
     function getUnreadMessages() {
         ChatService.getUnreadMessages(AuthService.getCurrentUser().id)
@@ -251,6 +271,42 @@ function App(props) {
         // console.log(unreadMessages)
         // console.log(allMessages)
         const data = JSON.parse(response.body)
+        console.log(usersWithLastMsgReceived)
+        const index = usersWithLastMsgReceived.findIndex(user => user.first.username === data.senderName)
+        console.log(index)
+        if (index >= 0) {
+            console.log("ya tut")
+            let copy = usersWithLastMsgReceived
+            usersWithLastMsgReceived[index].second = data
+            usersWithLastMsgReceived.sort(function (a, b) {
+                const aTime = new Date(a.second.sendDate)
+                const bTime = new Date(b.second.sendDate)
+                if (aTime > bTime) {
+                    return -1
+                }
+                if (aTime < bTime) {
+                    return 1
+                }
+                return 0
+            })
+            // setUsersWithLastMsgReceived([])
+            setUsersWithLastMsgReceived(usersWithLastMsgReceived)
+        } else
+        {
+            UserService.getAllByUsername(data.senderName)
+                .then((response) => {
+                    const user = response.data.shift();
+                    let userWithLastMsg = {first: user, second: data}
+                    let copy = usersWithLastMsgReceived
+                    // copy.concat([])
+                    console.log(userWithLastMsg)
+                    setUsersWithLastMsgReceived(prev => prev.push(userWithLastMsg))
+                    // setRefresh({})
+                })
+                .catch((e) => {
+                    console.log(e);
+                })
+        }
         if (allMessages.get(data.senderName)) {
             // const need = {...data, status: statusMsg.UNREAD}
             let list = allMessages.get(data.senderName).messages
@@ -417,6 +473,7 @@ function App(props) {
         //     </Paper>,
         // },
     ]
+    console.log(usersWithLastMsgReceived)
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -550,6 +607,7 @@ function App(props) {
                             <Route exact path={["/msg", "/msg/:selected"]}>
                                 <Chat stompClient={stompClient} messages={allMessages}
                                       number={numberOfUnRead} minusUnRead={minusUnRead}
+                                      usersWithLastMsgReceived={usersWithLastMsgReceived}
                                 />
                             </Route>
                             <Route exact path="/register" component={Register}/>
