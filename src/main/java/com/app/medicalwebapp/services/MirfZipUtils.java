@@ -54,7 +54,6 @@ public class MirfZipUtils {
 
         File tempResultFile = File.createTempFile("pipeline-result", ".pdf");
         while (zipEntry != null) {
-            System.out.println(zipEntry.getName());
             if (zipEntry.getName().contains("input")) {
                 Files.copy(zis, tempResultFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }

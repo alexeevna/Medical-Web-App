@@ -61,12 +61,6 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-//        System.out.println(userDetails.getUsername());
-//        System.out.println(signInRequest.getUsername());
-//        System.out.println(signInRequest.getPassword());
-//        System.out.println(authentication);
-//        System.out.println(jwt);
-//        System.out.println(roles);
 
         Optional<User> user = userRepository.findByUsernameAndRoleNotLike(signInRequest.getUsername(), "Модератор");
         if (user.isPresent()) {
@@ -80,7 +74,9 @@ public class AuthController {
                 roles,
                 userDetails.getRate(),
                 userDetails.getStatus(),
-                userDetails.getRegisteredDate()));
+                userDetails.getRegisteredDate(),
+                userDetails.getInitials())
+        );
     }
 
     @PostMapping("/signup")
@@ -106,7 +102,6 @@ public class AuthController {
         user.setStatus(0);
         user.setRate(0);
         user.setRegisteredDate(LocalDateTime.now());
-        System.out.println(user);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("Пользователь был успешно зарегистрирован"));

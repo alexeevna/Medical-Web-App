@@ -35,14 +35,14 @@ public class ChatMessageService {
             chatId = (recipientUsername + senderUsername);
         }
         List<ChatMessage> messages;
-        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByChatId(chatId);
+        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByChatIdOrderBySendDateAsc(chatId);
         messages = messagesOptional.orElseGet(ArrayList::new);
         return messages;
     }
 
     public List<ChatMessage> findUnreadMessages(Long recipientId) {
         List<ChatMessage> messages;
-        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByRecipientIdAndStatusMessage(recipientId, StatusMessage.UNREAD);
+        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByRecipientIdAndStatusMessageOrderBySendDateAsc(recipientId, StatusMessage.UNREAD);
         messages = messagesOptional.orElseGet(ArrayList::new);
         return messages;
     }

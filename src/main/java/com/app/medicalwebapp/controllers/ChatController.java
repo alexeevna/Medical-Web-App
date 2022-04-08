@@ -39,6 +39,7 @@ public class ChatController {
         }
         chatMessage.setChatId(chatId);
         chatMessage.setStatusMessage(StatusMessage.UNREAD);
+        chatMessage.setSendDate(LocalDateTime.now());
         chatMessageService.save(chatMessage);
         simpMessagingTemplate.convertAndSendToUser(recipient, "/private", chatMessage);
     }

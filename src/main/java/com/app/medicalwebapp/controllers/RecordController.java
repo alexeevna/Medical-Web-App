@@ -72,7 +72,6 @@ public class RecordController {
     public ResponseEntity<?> saveRecord(@Valid @RequestBody RecordCreationRequest request) {
         try {
             recordService.saveRecord(request, getAuthenticatedUserId(), request.getParentId());
-            System.out.println(request.getParentId());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
