@@ -11,6 +11,25 @@ class UserService {
         this.createRequestParamsForGetInitials = this.createRequestParamsForGetInitials.bind(this);
     }
 
+    getContacts(currentUserUsername) {
+        let parameters = this.createRequestParamsForGetContacts(currentUserUsername);
+        return axios.get(API_URL + 'getContacts',
+            {headers: authHeader(), params: parameters});
+    }
+
+    createRequestParamsForGetContacts(currentUserUsername) {
+        let params = {};
+
+        if (currentUserUsername) params["currentUserUsername"] = currentUserUsername;
+        return params;
+    }
+
+
+    pushContacts(currentUserUsername, selectedUserUsername) {
+        return axios.post(API_URL + 'pushContacts', {currentUserUsername, selectedUserUsername},
+            {headers: authHeader()});
+    }
+
     getAllByUsername(username) {
         let parameters = this.createRequestParamsForGetUsername(username);
 

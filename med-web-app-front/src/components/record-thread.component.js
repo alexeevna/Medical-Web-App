@@ -4,6 +4,7 @@ import RecordCard from "./record-card.component";
 import ReplyRecordForm from "./reply-record.component";
 import {Card, Grid, withStyles} from "@material-ui/core";
 import ReviewCard from "./review-card.component";
+import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
@@ -119,12 +120,26 @@ class RecordThreadComponent extends Component {
                 <Grid xs={4} item>
                     <Card className={classes.paper2}>
                         <Grid className={classes.grid}>
-                            <Button variant="contained" href="/records/create" className={classes.button}>
-                                Создать пост
-                            </Button>
-                            <Button variant="contained" href="/records/view" className={classes.button}>
-                                Обратно к постам
-                            </Button>
+                            {/*<Link to={"/records/create"} className="nav-link card-link-custom color-orange">*/}
+                            {/*    Создать пост*/}
+                            {/*</Link>*/}
+                            {/*<Link to={"/records/view"} className="nav-link card-link-custom color-orange">*/}
+                            {/*    Обратно к постам*/}
+                            {/*</Link>*/}
+                            {/*<Button >*/}
+                                <Link  to={"/records/create"} style={{ textDecoration: 'none' }}>
+                                    <Button className={classes.button}>
+                                    Создать пост
+                                    </Button>
+                                </Link>
+                            {/*</Button>*/}
+                            {/*<Button >*/}
+                                <Link to={"/records/view"} style={{ textDecoration: 'none' }}>
+                                    <Button className={classes.button}>
+                                    Обратно к постам
+                                    </Button>
+                                </Link>
+                            {/*</Button>*/}
                         </Grid>
                     </Card>
                 </Grid>

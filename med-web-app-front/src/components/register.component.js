@@ -1,13 +1,16 @@
-import React, {Component} from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
+import React, {Component, useState} from 'react'
+import Button from '@material-ui/core/Button'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
+import Container from '@material-ui/core/Container'
 import '../styles/Search.css'
-import {Card, FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
-import AuthService from "../services/auth.service";
+import {Card, Checkbox, FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core"
+import AuthService from "../services/auth.service"
+import {TextField, InputAdornment, IconButton} from "@material-ui/core";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import {Alert} from "@material-ui/lab";
 
 // const required = value => {
 //     if (!value) {
@@ -15,9 +18,9 @@ import AuthService from "../services/auth.service";
 //             <div className="alert alert-danger" role="alert">
 //                 Нужно заполнить это поле!
 //             </div>
-//         );
+//         )
 //     }
-// };
+// }
 
 // const email = value => {
 //     if (!isEmail(value)) {
@@ -25,9 +28,9 @@ import AuthService from "../services/auth.service";
 //             <div className="alert alert-danger" role="alert">
 //                 This is not a valid email.
 //             </div>
-//         );
+//         )
 //     }
-// };
+// }
 
 const useStyles = theme => ({
     root: {
@@ -36,22 +39,22 @@ const useStyles = theme => ({
         }
     },
     div: {
-        margin: theme.spacing(4),
+        margin: theme.spacing(3),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
     paper: {
-        marginTop: theme.spacing(8),
-        minWidth: 300,
-        minHeight: 300
+        marginTop: theme.spacing(5),
+        marginBottom: theme.spacing(3),
+        minWidth: 200,
     },
     form: {
         width: '100%',
         marginTop: theme.spacing(2),
     },
     submit: {
-        margin: theme.spacing(1, 0, 1),
+        margin: theme.spacing(1, 0, 2),
         backgroundColor: '#3f51b5',
     },
     formControlLab: {
@@ -60,308 +63,377 @@ const useStyles = theme => ({
     label: {
         margin: theme.spacing(2, 0, 1),
         color: "black"
-    }
-});
+    },
 
-class Register extends Component {
+})
 
-    constructor(props) {
-        super(props);
-        this.handleRegister = this.handleRegister.bind(this);
-        this.onChangeUsername = this.onChangeUsername.bind(this);
-        this.onChangeFirstname = this.onChangeFirstname.bind(this);
-        this.onChangeLastname = this.onChangeLastname.bind(this);
-        // this.onChangeEmail = this.onChangeEmail.bind(this);
-        this.onChangePassword = this.onChangePassword.bind(this);
-        this.onChangePatronymic = this.onChangePatronymic.bind(this);
-        this.onChangeRole = this.onChangeRole.bind(this);
-        this.vusername = this.vusername.bind(this)
-        this.vpassword = this.vpassword.bind(this)
+function Register(props) {
+    const {classes} = props
 
-        this.state = {
-            username: "",
-            firstname: "",
-            lastname: "",
-            patronymic: "",
-            // email: "",
-            password: "",
-            chosenRole: "Пользователь",
-            successful: false,
-            message: "",
-            usernameError: false,
-            passwordError: false,
-            validateForm: false
-        };
-    }
+    // this.handleRegister = this.handleRegister.bind(this)
+    // this.onChangeUsername = this.onChangeUsername.bind(this)
+    // this.onChangeFirstname = this.onChangeFirstname.bind(this)
+    // this.onChangeLastname = this.onChangeLastname.bind(this)
+    // // this.onChangeEmail = this.onChangeEmail.bind(this)
+    // this.onChangePassword = this.onChangePassword.bind(this)
+    // this.onChangePatronymic = this.onChangePatronymic.bind(this)
+    // this.onChangeRole = this.onChangeRole.bind(this)
+    // this.vusername = this.vusername.bind(this)
+    // this.vpassword = this.vpassword.bind(this)
 
-    vusername = value => {
+    const [username, setUsername] = useState("")
+    const [firstname, setFirstname] = useState("")
+    const [lastname, setLastname] = useState("")
+    const [patronymic, setPatronymic] = useState("")
+    const [password, setPassword] = useState("")
+    const [passwordRepeat, setPasswordRepeat] = useState("")
+    const [chosenRole, setChosenRole] = useState("Пользователь")
+    const [successful, setSuccessful] = useState(false)
+    const [message, setMessage] = useState("")
+    const [usernameError, setUsernameError] = useState(false)
+    const [passwordError, setPasswordError] = useState(false)
+    const [passwordErrorRepeat, setPasswordErrorRepeat] = useState(false)
+    const [validateForm, setValidateForm] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+    const [passwordMatch, setPasswordMatch] = useState(false)
+
+
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
+    const handleMouseDownPassword = () => setShowPassword(!showPassword);
+
+    // this.state = {
+    //     username: "",
+    //     firstname: "",
+    //     lastname: "",
+    //     patronymic: "",
+    //     // email: "",
+    //     password: "",
+    //     chosenRole: "Пользователь",
+    //     successful: false,
+    //     message: "",
+    //     usernameError: false,
+    //     passwordError: false,
+    //     validateForm: false
+    // }
+
+
+    function vusername(value) {
         if (value.length < 3 || value.length > 25) {
-            this.setState({
-                usernameError: true
-            })
+            setUsernameError(true)
         } else {
-            this.setState({
-                usernameError: false
-            })
+            setUsernameError(false)
         }
-    };
+    }
 
-    vpassword = value => {
+    function vpassword(value) {
         if (value.length < 6 || value.length > 40) {
-            this.setState({
-                passwordError: true
-            })
+            setPasswordError(true)
         } else {
-            this.setState({
-                passwordError: false
-            })
+            setPasswordError(false)
         }
+        console.log(value === passwordRepeat)
+        // console.log(passwordRepeat)
+        if (value === passwordRepeat) {
+            setPasswordMatch(true)
+        } else {
+            setPasswordMatch(false)
+        }
+    }
 
-    };
+    function vpasswordRepeat(value) {
+        if (value.length < 6 || value.length > 40) {
+            setPasswordErrorRepeat(true)
+        } else {
+            setPasswordErrorRepeat(false)
+        }
+        console.log(value === password)
+        if (value === password) {
+            setPasswordMatch(true)
+        } else {
+            setPasswordMatch(false)
+        }
+    }
 
-    onChangeUsername(e) {
-        this.setState({
-            username: e.target.value
-        });
-        this.vusername(e.target.value)
+    function onChangeUsername(e) {
+        setUsername(e.target.value)
+        vusername(e.target.value)
     }
 
     // onChangeEmail(e) {
     //     this.setState({
     //         email: e.target.value
-    //     });
+    //     })
     // }
 
-    onChangePassword(e) {
-        this.setState({
-            password: e.target.value
-        });
-        this.vpassword(e.target.value)
+    function onChangePassword(e) {
+        setPassword(e.target.value)
+        vpassword(e.target.value)
     }
 
-    onChangeFirstname(e) {
-        this.setState({
-            firstname: e.target.value
-        });
+    function onChangePasswordRepeat(e) {
+        setPasswordRepeat(e.target.value)
+        vpasswordRepeat(e.target.value)
     }
 
-    onChangeLastname(e) {
-        this.setState({
-            lastname: e.target.value
-        });
-    }
-    onChangePatronymic(e) {
-        this.setState({
-            patronymic: e.target.value
-        });
+    function onChangeFirstname(e) {
+        setFirstname(e.target.value)
     }
 
-    onChangeRole(e) {
-        this.setState({
-            chosenRole: e.target.value
-        });
+    function onChangeLastname(e) {
+        setLastname(e.target.value)
     }
 
-    handleRegister(e) {
-        e.preventDefault();
+    function onChangePatronymic(e) {
+        setPatronymic(e.target.value)
+    }
 
-        this.setState({
-            message: "",
-            successful: false
-        });
+    function onChangeRole(e) {
+        setChosenRole(e.target.value)
+    }
+
+    function handleRegister(e) {
+        e.preventDefault()
+        setMessage("")
+        setSuccessful(false)
 
         let initials
-        if (this.state.patronymic !== ""){
-            initials = this.state.lastname + " " + this.state.firstname + " " + this.state.patronymic
-        }else{
-            initials = this.state.lastname + " " + this.state.firstname
+        if (patronymic !== "") {
+            initials = lastname + " " + firstname + " " + patronymic
+        } else {
+            initials = lastname + " " + firstname
         }
-        if (!this.state.usernameError && !this.state.passwordError) {
+        if (!usernameError && !passwordError && passwordMatch) {
             AuthService.register(
-                this.state.username,
+                username,
                 initials,
-                this.state.firstname,
-                this.state.lastname,
-                this.state.patronymic,
-                // this.state.email,
-                this.state.password,
-                this.state.chosenRole,
+                firstname,
+                lastname,
+                patronymic,
+                // email,
+                password,
+                chosenRole,
             ).then(
                 response => {
-                    this.setState({
-                        message: response.data.message,
-                        successful: true,
-                        username: "",
-                        firstname: "",
-                        lastname: "",
-                        patronymic: "",
-                        // email: "",
-                        password: "",
-                        chosenRole: "Пользователь",
-                    });
+                    setMessage(response.data.message)
+                    setSuccessful(true)
+                    setUsername("")
+                    setFirstname("")
+                    setLastname("")
+                    setPatronymic("")
+                    setPassword("")
+                    setPasswordRepeat("")
+                    setChosenRole("Пользователь")
                 },
                 error => {
                     const resMessage =
                         (error.response && error.response.data && error.response.data.message) ||
-                        error.message || error.toString();
-
-                    this.setState({
-                        successful: false,
-                        message: resMessage
-                    });
+                        error.message || error.toString()
+                    setSuccessful(false)
+                    setMessage(resMessage)
                 }
-            );
+            )
         }
     }
 
-    render() {
-        const {classes} = this.props;
-        return (
-            <Container component="main" maxWidth="sm">
-                <Card className={classes.paper}>
-                    <div className={classes.div}>
-                        <Typography component="h1" variant="h5">
-                            Регистрация
-                        </Typography>
-                        <form className={classes.form}
-                              onSubmit={this.handleRegister}
-                        >
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        className={classes.root}
-                                        variant="outlined"
-                                        fullWidth
-                                        id="lastName"
-                                        label="Фамилия"
-                                        name="lastName"
-                                        autoFocus
-                                        autoComplete="lname"
-                                        value={this.state.lastname}
-                                        onChange={this.onChangeLastname}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        className={classes.root}
-                                        autoComplete="fname"
-                                        name="firstName"
-                                        variant="outlined"
-                                        fullWidth
-                                        id="firstName"
-                                        label="Имя"
-                                        value={this.state.firstname}
-                                        onChange={this.onChangeFirstname}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        className={classes.root}
-                                        variant="outlined"
-                                        fullWidth
-                                        id="patronymic"
-                                        label="Отчество"
-                                        name="patronymic"
-                                        autoComplete="patronymic"
-                                        value={this.state.patronymic}
-                                        onChange={this.onChangePatronymic}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        className={classes.root}
-                                        variant="outlined"
-                                        required
-                                        fullWidth
-                                        id="username"
-                                        label="Логин"
-                                        name="username"
-                                        autoComplete="username"
-                                        error={this.state.usernameError}
-                                        helperText={this.state.usernameError && "Логин должен быть не менее 3 символов"}
-                                        value={this.state.username}
-                                        onChange={this.onChangeUsername}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        className={classes.root}
-                                        variant="outlined"
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        label="Пароль"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="current-password"
-                                        error={this.state.passwordError}
-                                        helperText={this.state.passwordError && "Пароль должен быть не менее 6 символов"}
-                                        value={this.state.password}
-                                        onChange={this.onChangePassword}
-                                    />
-                                </Grid>
-                                {/*<Grid item xs={12}>*/}
-                                {/*    <FormControlLabel*/}
-                                {/*        control={<Checkbox value="allowExtraEmails" color="primary"/>}*/}
-                                {/*        label="I want to receive inspiration, marketing promotions and updates via email."*/}
-                                {/*    />*/}
-                                {/*</Grid>*/}
+
+    return (
+        <Container component="main" maxWidth="sm">
+            <Card className={classes.paper}>
+                <Grid className={classes.div}>
+                    <Typography component="h1" variant="h5">
+                        Регистрация
+                    </Typography>
+                    <form className={classes.form}
+                          onSubmit={handleRegister}
+                    >
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    required
+                                    className={classes.root}
+                                    variant="outlined"
+                                    fullWidth
+                                    id="lastName"
+                                    label="Фамилия"
+                                    name="lastName"
+                                    autoFocus
+                                    autoComplete="on"
+                                    value={lastname}
+                                    onChange={onChangeLastname}
+                                />
                             </Grid>
-                            <FormLabel className={classes.label}>Выберите роль:</FormLabel>
-                            <FormControl>
-                                <RadioGroup value={this.state.chosenRole} onChange={this.onChangeRole}>
-                                    <FormControlLabel className={classes.formControlLab}
-                                                      control={<Radio color="primary"/>}
-                                                      value="Пользователь"
-                                                      label="Пользователь"
-                                    />
-                                    <FormControlLabel className={classes.formControlLab}
-                                                      control={<Radio color="primary"/>}
-                                                      value="Врач"
-                                                      label="Врач"
-                                                      labelPlacement='end'
-                                    />
-                                </RadioGroup>
-                            </FormControl>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                // onClick={this.handleRegister}
-                                className={classes.submit}
-                            >
-                                Зарегистрироваться
-                            </Button>
-                            {/*<Grid container justifyContent="flex-end">*/}
-                            {/*    <Grid item>*/}
-                            {/*        <Link href="#" variant="body2">*/}
-                            {/*            Already have an account? Sign in*/}
-                            {/*        </Link>*/}
-                            {/*    </Grid>*/}
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    required
+                                    className={classes.root}
+                                    autoComplete="on"
+                                    name="firstName"
+                                    variant="outlined"
+                                    fullWidth
+                                    id="firstName"
+                                    label="Имя"
+                                    value={firstname}
+                                    onChange={onChangeFirstname}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    className={classes.root}
+                                    variant="outlined"
+                                    fullWidth
+                                    id="patronymic"
+                                    label="Отчество"
+                                    name="patronymic"
+                                    autoComplete="on"
+                                    value={patronymic}
+                                    onChange={onChangePatronymic}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    className={classes.root}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="username"
+                                    label="Логин"
+                                    name="username"
+                                    autoComplete="on"
+                                    error={usernameError}
+                                    helperText={usernameError && "Логин должен быть не менее 3 символов"}
+                                    value={username}
+                                    onChange={onChangeUsername}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    className={classes.root}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    name="password"
+                                    label="Пароль"
+                                    type={showPassword ? "text" : "password"}
+                                    id="password"
+                                    autoComplete="off"
+                                    error={passwordError}
+                                    helperText={passwordError && "Пароль должен быть не менее 6 символов"}
+                                    value={password}
+                                    onChange={onChangePassword}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    // onMouseDown={handleMouseDownPassword}
+                                                >
+                                                    {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    className={classes.root}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    name="passwordRepeat"
+                                    label="Подтвердите пароль"
+                                    type={showPassword ? "text" : "password"}
+                                    id="passwordRepeat"
+                                    autoComplete="off"
+                                    error={passwordErrorRepeat}
+                                    helperText={passwordErrorRepeat && "Пароль должен быть не менее 6 символов"}
+                                    // helperText={passwordErrorRepeat && "hi"}
+                                    value={passwordRepeat}
+                                    onChange={onChangePasswordRepeat}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    // onMouseDown={handleMouseDownPassword}
+                                                >
+                                                    {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                {!passwordMatch && password.length > 0 && passwordRepeat.length > 0 &&
+                                <Alert className={classes.alrt} variant="outlined" severity="error">
+                                    Пароли не совпадают
+                                </Alert>}
+                            </Grid>
+                            {/*<Grid item xs={12}>*/}
+                            {/*    <FormControlLabel*/}
+                            {/*        control={<Checkbox value="allowExtraEmails" color="primary"/>}*/}
+                            {/*        label="I want to receive inspiration, marketing promotions and updates via email."*/}
+                            {/*    />*/}
                             {/*</Grid>*/}
-                            {this.state.message && (
-                                <div className="form-group">
-                                    <div
-                                        className={
-                                            this.state.successful
-                                                ? "alert alert-success"
-                                                : "alert alert-danger"
-                                        }
-                                        role="alert"
-                                    >
-                                        {this.state.message}
-                                    </div>
-                                </div>
-                            )}
-                        </form>
-                    </div>
-                </Card>
-            </Container>
-        );
-    }
+                        </Grid>
+                        <FormLabel className={classes.label}>Выберите роль:</FormLabel>
+                        <FormControl>
+                            <RadioGroup value={chosenRole} onChange={onChangeRole}>
+                                <FormControlLabel className={classes.formControlLab}
+                                                  control={<Radio color="primary"/>}
+                                                  value="Пользователь"
+                                                  label="Пользователь"
+                                />
+                                <FormControlLabel className={classes.formControlLab}
+                                                  control={<Radio color="primary"/>}
+                                                  value="Врач"
+                                                  label="Врач"
+                                                  labelPlacement='end'
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            // onClick={handleRegister}
+                            className={classes.submit}
+                        >
+                            Зарегистрироваться
+                        </Button>
+                        {/*<Grid container justifyContent="flex-end">*/}
+                        {/*    <Grid item>*/}
+                        {/*        <Link href="#" variant="body2">*/}
+                        {/*            Already have an account? Sign in*/}
+                        {/*        </Link>*/}
+                        {/*    </Grid>*/}
+                        {/*</Grid>*/}
+                        {message && (
+                            <Grid>
+                                <Grid
+                                    className={
+                                        successful
+                                            ? "alert alert-success"
+                                            : "alert alert-danger"
+                                    }
+                                    role="alert"
+                                >
+                                    {message}
+                                </Grid>
+                            </Grid>
+                        )}
+                    </form>
+                </Grid>
+            </Card>
+        </Container>
+    )
+
 }
 
 export default withStyles(useStyles)(Register)
