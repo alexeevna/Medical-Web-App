@@ -264,20 +264,23 @@ function Chat(props) {
             })
     }
 
-    function sortContacts(){
+    function sortContacts() {
         let sortedContacts = [...usersWithLastMsg.values()]
+        console.log(sortedContacts)
         sortedContacts.sort(function (a, b) {
-            const aTime = new Date(a.second.sendDate)
-            const bTime = new Date(b.second.sendDate)
-            if (aTime > bTime) {
-                return -1
-            }
-            if (aTime < bTime) {
-                return 1
+            if (a.second !== null && b.second !== null) {
+                const aTime = new Date(a.second.sendDate)
+                const bTime = new Date(b.second.sendDate)
+                if (aTime > bTime) {
+                    return -1
+                }
+                if (aTime < bTime) {
+                    return 1
+                }
+                return 0
             }
             return 0
         })
-        console.log(sortedContacts)
         return (sortedContacts.map((userAndLastMsg, index) => (
             <Grid key={index}>
                 <Link onClick={() => selectUser(userAndLastMsg.first)}
@@ -303,7 +306,7 @@ function Chat(props) {
                                         <Grid xs={2} item>
                                             <Grid className={classes.lastMsgTimeContent}>
                                                 {
-                                                    userAndLastMsg.second && new Date(userAndLastMsg.second.sendDate).getHours() + ":"
+                                                    userAndLastMsg.second && userAndLastMsg.second.sendDate && new Date(userAndLastMsg.second.sendDate).getHours() + ":"
                                                     + ((new Date(userAndLastMsg.second.sendDate).getMinutes() < 10 && "0" + new Date(userAndLastMsg.second.sendDate).getMinutes())
                                                         || (new Date(userAndLastMsg.second.sendDate).getMinutes() > 10 && new Date(userAndLastMsg.second.sendDate).getMinutes())
                                                     )
