@@ -14,7 +14,8 @@ const useStyles = theme => ({
         whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
         maxWidth: 400,
-        elevation: 2
+        elevation: 2,
+        backgroundColor: '#eeeeee'
     },
     txt: {
         fontWeight: 'bold',

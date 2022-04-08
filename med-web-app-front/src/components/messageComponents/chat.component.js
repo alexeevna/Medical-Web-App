@@ -16,6 +16,7 @@ import UpdateStatusMsg from "./updateStatusMsg.component";
 import {useLocation, useParams} from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 
+
 const useStyles = theme => ({
     root: {
         // width: 635,
@@ -142,48 +143,22 @@ const API_URL = process.env.REACT_APP_API_URL
 function Chat(props) {
     const {classes} = props
     const {stompClient} = props
-    const {messages} = props
-    const {number} = props
-    const {newUsers} = props
     const {minusUnRead} = props
-    const {usersWithLastMsgReceived} = props
+    const {usersWithLastMsg} = props
+    const {setUsersWithLastMsg} = props
+    const {allMessages} = props
+    const {setAllMessages} = props
     const {selected} = useParams()
-    const [numberOfUnRead, setNumberOfUnRead] = useState(number)
-    const [unreadMessages, setUnreadMessages] = useState([])
     const [processedUnreadMessages, setProcessedUnreadMessages] = useState([])
-    const [allMessages, setAllMessages] = useState(messages)
     const [content, setContent] = useState("")
     const [contentPresence, setContentPresence] = useState(false)
     const [contentCorrect, setContentCorrect] = useState("")
     const [selectedUser, setSelectedUser] = useState(null)
-    // const [users, setUsers] = useState(newUsers)
-    const [connected, setConnected] = useState(false)
     const [refresh, setRefresh] = useState({})
-    const [updateSelectedUser, setUpdateSelectedUser] = useState({})
-    const [selectedIndex, setSelectedIndex] = useState(null)
-    const [usersWithLastMsg, setUsersWithLastMsg] = useState(usersWithLastMsgReceived)
     const messagesEndRef = useRef(null)
 
-    console.log(usersWithLastMsgReceived)
-    console.log(usersWithLastMsg)
-
     useEffect(() => {
-        // let users = []
-        console.log("useEffect")
         getContacts();
-        // getUsers()
-        // if (selected) {
-        //     UserService.getAllByUsername(selected).then((response) => {
-        //         console.log(response.data[0])
-        //         selectUser(response.data[0])
-        //     }).catch((e) => {
-        //         console.log(e);
-        //     });
-        // }
-        // connectToChat()
-        // return () => {
-        //     stompClient.unsubscribe()
-        // }
     }, [])
 
     function updateContacts() {
@@ -192,22 +167,12 @@ function Chat(props) {
                 console.log(response.data)
                 let userWithLastMsg = {first: response.data, second: null}
                 console.log(userWithLastMsg)
-                setUsersWithLastMsg(prev => prev.concat([userWithLastMsg]))
+                setUsersWithLastMsg(prev => prev.set(response.data.username, userWithLastMsg))
                 selectUser(response.data)
             })
             .catch((e) => {
                 console.log(e)
             })
-        // UserService.pushContacts(AuthService.getCurrentUser().username, selected)
-        //     .then((response) => {
-        //         console.log(response.data)
-        //         setUsers(prev => prev.concat([response.data]))
-        //         selectUser(response.data)
-        //     })
-        //     .catch((e) => {
-        //         console.log(e)
-        //     })
-
     }
 
     const scrollToBottom = () => {
@@ -218,124 +183,26 @@ function Chat(props) {
         messagesEndRef.current?.scrollIntoView({behavior: "auto"})
     }
 
-
-    // function connectToChat() {
-    //     let Sock = new SockJS('http://localhost:7999/api/ws')
-    //     stompClient = over(Sock)
-    //     stompClient.connect({}, onConnected, onError)
-    // }
-
     function getContacts() {
-        // let users = []
         UserService.getContacts(AuthService.getCurrentUser().username)
             .then((response) => {
                 const userWithLastMsgArray = response.data.contactWithLastMsg
-                userWithLastMsgArray.sort(function (a, b) {
-                    if (a.second.sendDate > b.second.sendDate) {
-                        return -1
-                    }
-                    if (a.second.sendDate < b.second.sendDate) {
-                        return 1
-                    }
-                    return 0
+                userWithLastMsgArray.map(user => {
+                    setUsersWithLastMsg(prev => prev.set(user.first.username, user))
                 })
-                // console.log(response.data.contactWithLastMsg)
-                // let users = []
-                // for (let item of userWithLastMsgArray.values()) {
-                //     users.push(item.first)
-                // }
-                // console.log(users)
-                // setUsersWithLastMsg([])
-                setUsersWithLastMsg(userWithLastMsgArray)
-                // setUsers([])
-                // setUsers(users)
                 const user = userWithLastMsgArray.find(user => user.first.username === selected)
                 if (selected && !user) {
                     updateContacts();
                 } else if (selected && user) {
                     selectUser(user.first)
                 }
-                // setRefresh({})
+                // This state update is artificial, for forced rendering contacts list.
+                setRefresh({})
             })
             .catch((e) => {
                 console.log(e)
             })
     }
-
-    // function getContacts() {
-    //     // let users = []
-    //     UserService.getContacts(AuthService.getCurrentUser().username)
-    //         .then((response) => {
-    //             const users = response.data
-    //             // users = response.data
-    //             console.log(users)
-    //             setUsers([])
-    //             setUsers(users)
-    //             const user = users.find(user => user.username === selected)
-    //             console.log(user)
-    //             if (selected && !user) {
-    //                 console.log("HERE1")
-    //                 updateContacts();
-    //             } else if (selected && user) {
-    //                 console.log("HERE2")
-    //                 selectUser(user)
-    //             } else {
-    //                 console.log("HERE3")
-    //             }
-    //             // setRefresh({})
-    //         })
-    //         .catch((e) => {
-    //             console.log(e)
-    //
-    //         })
-    // }
-
-    // function getUsers() {
-    //     const {searchString} = ""
-    //     UserService.getAllByUsername(searchString)
-    //         .then((response) => {
-    //             const users = response.data
-    //             setUsers([])
-    //             setUsers(users)
-    //             // setRefresh({})
-    //         })
-    //         .catch((e) => {
-    //             console.log(e)
-    //         })
-    // }
-
-    // function onMessageReceived(response) {
-    //     console.log(allMessages)
-    //     var data = JSON.parse(response.body)
-    //     if (allMessages.get(data.senderName)) {
-    //         console.log("я тут")
-    //         var need = {
-    //             content: data.content,
-    //             recipientId: data.recipientId,
-    //             recipientName: data.recipientName,
-    //             senderId: data.senderId,
-    //             senderName: data.senderName,
-    //         }
-    //         let list = allMessages.get(data.senderName)
-    //         list.push(data)
-    //         setAllMessages(prev => (prev.set(data.senderName, list)))
-    //         console.log(allMessages)
-    //     } else {
-    //         let list = []
-    //         list.push(data)
-    //         setAllMessages(prev => (prev.set(data.senderName, list)))
-    //         console.log(allMessages)
-    //     }
-    //     setRefresh({})
-    // }
-
-    // function onConnected() {
-    //     stompClient.subscribe('/topic/' + AuthService.getCurrentUser().username + '/private', onMessageReceived)
-    // }
-    //
-    // function onError(err) {
-    //     console.log(err)
-    // }
 
     function onChangeMessageContent(e) {
         let str = e.target.value
@@ -373,22 +240,7 @@ function Chat(props) {
                 const valueMap = {unRead: 0, messages: msg}
                 setAllMessages(prev => (prev.set(selectedUser.username, valueMap)))
             }
-            let copy = usersWithLastMsg
-            const index = usersWithLastMsg.findIndex(user => user.first.username === selected)
-            copy[index].second = message
-            copy.sort(function (a, b) {
-                const aTime = new Date(a.second.sendDate)
-                const bTime = new Date(b.second.sendDate)
-                if (aTime > bTime) {
-                    return -1
-                }
-                if (aTime < bTime) {
-                    return 1
-                }
-                return 0
-            })
-            setUsersWithLastMsg([])
-            setUsersWithLastMsg(copy)
+            setUsersWithLastMsg(prev => prev.set(selectedUser.username, {first: selectedUser, second: message}))
             stompClient.send("/app/send/" + selectedUser.username, {}, JSON.stringify(message))
             setContent("")
             setContentCorrect("")
@@ -412,89 +264,100 @@ function Chat(props) {
             })
     }
 
+    function sortContacts(){
+        let sortedContacts = [...usersWithLastMsg.values()]
+        sortedContacts.sort(function (a, b) {
+            const aTime = new Date(a.second.sendDate)
+            const bTime = new Date(b.second.sendDate)
+            if (aTime > bTime) {
+                return -1
+            }
+            if (aTime < bTime) {
+                return 1
+            }
+            return 0
+        })
+        console.log(sortedContacts)
+        return (sortedContacts.map((userAndLastMsg, index) => (
+            <Grid key={index}>
+                <Link onClick={() => selectUser(userAndLastMsg.first)}
+                      to={"/msg/" + userAndLastMsg.first.username}
+                      style={{textDecoration: 'none'}}>
+                    <ListItemButton
+                        value={userAndLastMsg.first}
+                        selected={selectedUser && selectedUser.username === userAndLastMsg.first.username}
+                    >
+                        <Grid className={classes.flex} xs={12} item>
+                            <Grid xs={2} item>
+                                <Avatar className={classes.avatar}>
+                                    2
+                                </Avatar>
+                            </Grid>
+                            <Grid xs={10} item>
+                                <Grid className={classes.gridFullWidth}>
+                                    <Grid className={classes.flex} xs={12} item>
+                                        <Grid xs={10} item>
+                                            <UserCardMessage user={userAndLastMsg.first}
+                                            />
+                                        </Grid>
+                                        <Grid xs={2} item>
+                                            <Grid className={classes.lastMsgTimeContent}>
+                                                {
+                                                    userAndLastMsg.second && new Date(userAndLastMsg.second.sendDate).getHours() + ":"
+                                                    + ((new Date(userAndLastMsg.second.sendDate).getMinutes() < 10 && "0" + new Date(userAndLastMsg.second.sendDate).getMinutes())
+                                                        || (new Date(userAndLastMsg.second.sendDate).getMinutes() > 10 && new Date(userAndLastMsg.second.sendDate).getMinutes())
+                                                    )
+                                                }
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid className={classes.flex} xs={12} item>
+                                    <Grid xs={10} item
+                                          className={classes.lastMsgTimeContent}>{(userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...") ||
+                                    (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length < 25 && userAndLastMsg.second.content)}
+                                    </Grid>
+                                    {allMessages.get(userAndLastMsg.first.username) && (allMessages.get(userAndLastMsg.first.username).unRead > 0)
+                                    && <Grid>
+                                        <Paper
+                                            className={classes.noticeMsg}>{allMessages.get(userAndLastMsg.first.username).unRead}
+                                        </Paper>
+                                    </Grid>}
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </ListItemButton>
+                    <Divider/>
+                </Link>
+            </Grid>
+        )))
+    }
+
     function updateStatusMsg() {
-        console.log("ОЧЕНЬ ЧАСТО")
+        //Сюда заходить очень часто во время отображения сообщений, надо бы оптимизировать
         const dataMsg = allMessages.get(selectedUser.username)
         scrollToBottom()
         if (dataMsg && dataMsg.unRead > 0) {
-            console.log("НАМНОГО РЕЖЕ")
-            console.log(dataMsg)
             const unreadArr = dataMsg.messages.filter(msg => msg.statusMessage === "UNREAD" && msg.senderName === selectedUser.username && !processedUnreadMessages.includes(msg.id))
             console.log(unreadArr)
             if (unreadArr.length > 0) {
                 unreadArr.map(msg => setProcessedUnreadMessages(prevState => (prevState.concat([msg.id]))))
-                console.log("updateStatusBack")
                 ChatService.updateStatusUnreadMessages(unreadArr).then()
             }
             minusUnRead(dataMsg.unRead)
             dataMsg.unRead = 0
             setAllMessages(prev => (prev.set(selectedUser.username, dataMsg)))
-            // setRefresh({})
         }
     }
 
-    // console.log(usersWithLastMsgReceived)
-    // console.log(usersWithLastMsg)
-    console.log(allMessages)
-    console.log(messages)
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
                 <Card className={classes.paper}>
                     <List className={classes.itemButton}>
-                        {usersWithLastMsg &&
-                        usersWithLastMsg.map((user, index) => (
-                            <Grid key={index}>
-                                <Link onClick={() => selectUser(user.first)} to={"/msg/" + user.first.username}
-                                      style={{textDecoration: 'none'}}>
-                                    <ListItemButton
-                                        value={user.first}
-                                        selected={selectedUser && selectedUser.username === user.first.username}
-                                    >
-                                        <Grid className={classes.flex} xs={12} item>
-                                            <Grid xs={2} item>
-                                                <Avatar className={classes.avatar}>
-                                                    2
-                                                </Avatar>
-                                            </Grid>
-                                            <Grid xs={10} item>
-                                                <Grid className={classes.gridFullWidth}>
-                                                    <Grid className={classes.flex} xs={12} item>
-                                                        <Grid xs={10} item>
-                                                            <UserCardMessage user={user.first}
-                                                            />
-                                                        </Grid>
-                                                        <Grid xs={2} item>
-                                                            <Grid className={classes.lastMsgTimeContent}>
-                                                                {
-                                                                    user.second && new Date(user.second.sendDate).getHours() + ":"
-                                                                    + ((new Date(user.second.sendDate).getMinutes() < 10 && "0" + new Date(user.second.sendDate).getMinutes())
-                                                                        || (new Date(user.second.sendDate).getMinutes() > 10 && new Date(user.second.sendDate).getMinutes())
-                                                                    )
-                                                                }
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Grid>
-                                                </Grid>
-                                                <Grid className={classes.flex} xs={12} item>
-                                                    <Grid xs={10} item
-                                                          className={classes.lastMsgTimeContent}>{(user.second && user.second.content && user.second.content.length > 25 && user.second.content.slice(0, 25) + "...") ||
-                                                    (user.second && user.second.content && user.second.content.length < 25 && user.second.content)}
-                                                    </Grid>
-                                                    {allMessages.get(user.first.username) && (allMessages.get(user.first.username).unRead > 0)
-                                                    && <Grid>
-                                                        <Paper
-                                                            className={classes.noticeMsg}>{allMessages.get(user.first.username).unRead}
-                                                        </Paper>
-                                                    </Grid>}
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </ListItemButton>
-                                    <Divider/>
-                                </Link>
-                            </Grid>
-                        ))}
+
+                        {usersWithLastMsg && sortContacts()
+                        }
                     </List>
                 </Card>
             </Grid>
@@ -518,22 +381,10 @@ function Chat(props) {
                                                               initialsSender={selectedUser.initials}
                                                               updateStatusMsg={updateStatusMsg}/>
                                             ))
-                                        // || (() => {
-                                        //     setAllMessages(prev => (prev.set(msg.senderName, {
-                                        //         ...msg,
-                                        //         statusMsg: statusMsg.READ
-                                        //     })))
-                                        //     return undefined
-                                        // })
-
                                     ))
 
                                 )))
                                 }
-
-                                {/*{selectedUser &&*/}
-                                {/*<UpdateStatusMsg updateStatusMsgBack={updateStatusMsgBack}/>}*/}
-
                             </Grid>
                             <div ref={messagesEndRef}/>
                         </Paper>
