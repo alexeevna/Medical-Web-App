@@ -17,17 +17,18 @@ public class JwtResponse {
     private String mobilePhone;
     private int rate;
     private int status;
+    private String initials;
     //private String chosenRole;
     private List<String> roles;
     private LocalDateTime registeredDate;
 
     public JwtResponse(String accessToken, Long id, String username,
-                       List<String> roles, int rate, int status, LocalDateTime registeredDate) {
+                       List<String> roles, int rate, int status, LocalDateTime registeredDate, String initials) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
         this.roles = roles;
-//        this.realName = realName;
+        this.initials = initials;
 //        this.mobilePhone = mobilePhone;
         this.rate = rate;
         this.status = status;

@@ -163,7 +163,6 @@ class Search extends Component {
     }
 
     render() {
-        console.log(this.state.searchString)
         const {classes} = this.props;
         return (
             <div>
