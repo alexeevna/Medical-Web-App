@@ -11,7 +11,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import {Link} from "react-router-dom";
 import SearchIcon from '@material-ui/icons/Search';
 
 
@@ -173,6 +172,7 @@ class Search extends Component {
                     <FormLabel className={classes.label}>Параметры поиска:</FormLabel>
                     <FormControl>
                         <RadioGroup value={this.state.searchParamsType} onChange={this.onChangeParamsTypeSearch}>
+
                             <FormControlLabel className={classes.formControlLab}
                                               control={<Radio color="primary"/>}
                                               value="login"
@@ -229,8 +229,6 @@ class Search extends Component {
                                 {this.state.users &&
                                 this.state.users.map((user, index) => (
                                     <StyledTableRow
-                                        component={Link}
-                                        to={"profile/" + user.username}
                                         key={index}
                                     >
                                         <UserCard user={user}/>

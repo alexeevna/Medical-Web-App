@@ -2,9 +2,69 @@ import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import '../styles/Record.css'
-import {Link} from "react-router-dom";
+import {Grid, Link, Paper, withStyles} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import {purple} from "@material-ui/core/colors";
 
-export default class RecordCard extends Component {
+const useStyles = theme => ({
+    palette: {
+        primary: {
+            // Purple and green play nicely together.
+            main: purple[500],
+        },
+        secondary: {
+            // This is green.A700 as hex.
+            main: '#11cb5f',
+        },
+        textPrimary: {
+            main: "#1B435D",
+        }
+    },
+    gridCreatorName: {
+        display: 'flex',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        "& .MuiTypography-root": {
+            color: "black",
+        },
+    },
+    grid: {
+        "& .MuiTypography-root": {
+            color: "black",
+        },
+        margin: theme.spacing(1.5,0,0,1),
+    },
+    ggrid: {
+        margin: theme.spacing(0,0,0,1),
+        display: 'flex',
+    },
+    gridContent: {
+        margin: theme.spacing(1),
+    },
+    paper: {
+        padding: theme.spacing(2),
+        margin: 'auto',
+        maxWidth: 700,
+        borderColor:"#e9e9e9",
+        borderRadius: 10,
+        minWidth: 700,
+    },
+    mainGrid: {
+        margin: 0,
+    },
+    tagsColor: {
+        color: "#6d6d6d",
+    },
+    content: {
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+    },
+    titleStyle: {
+        size: 15,
+    },
+})
+
+class RecordCardNew extends Component {
     constructor(props) {
         super(props);
 
@@ -12,6 +72,7 @@ export default class RecordCard extends Component {
         this.convertTZ = this.convertTZ.bind(this);
         this.formatTime = this.formatTime.bind(this);
         this.getContent = this.getContent.bind(this);
+        this.displayRecordThread = this.displayRecordThread.bind(this);
 
         this.state = {
             currentUser: AuthService.getCurrentUser(),
@@ -29,8 +90,8 @@ export default class RecordCard extends Component {
     }
 
     getContent(content) {
-        if (this.props.isPreview && content != null && content.length > 40) {
-            return content.substring(0, 110) + '...';
+        if (this.props.isPreview && content != null && content.length > 1000) {
+            return content.substring(0, 1000) + '...';
         }
         return content;
     }
@@ -42,6 +103,14 @@ export default class RecordCard extends Component {
         var minutes = userDate.getMinutes();
         minutes = minutes >= 10 ? minutes : '0' + minutes;
         return hours + ':' + minutes;
+    }
+
+    displayRecordThread() {
+        this.props.history.push({
+            pathname: '/records/thread/' + this.record.id,
+            state: { recordId: this.record.id }
+        });
+        window.location.reload();
     }
 
     componentDidMount() {
@@ -66,56 +135,74 @@ export default class RecordCard extends Component {
         AttachmentService.downloadAttachment(fileId, initialFileName);
     }
 
-
     endsWith(str, suffix) {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
 
     render() {
-
+        const {classes} = this.props;
         return (
-            <div className="row color-light-blue record-card top-buffer-30">
-                <div className="col-sm-3 ">
-                    <div className="record-info-box align-content-center">
-                        <div className="center-vertical">
-                            <Link to={"/profile/" + this.record.creator.username} style={{ textDecoration: 'none', color: 'dark-blue'}}>
-                                <h6 className="fa fa-user line-break"> {this.record.creator.username}</h6>
+            <Paper className={classes.paper} variant="outlined" >
+                <Grid container item xs={12} sm direction={"column"} className={classes.mainGrid}>
+                    <Grid container item className={classes.ggrid} xs direction={"row"} spacing={1}>
+                        <Grid className={classes.gridCreatorName}>
+                            <Link variant={"subtitle2"} href={"/profile/" + this.record.creator.username}>
+                                {this.record.creator.username}
                             </Link>
-                            <br/>
-                            <h6 className="fa fa-calendar"> {new Date(this.record.creationTime).toLocaleDateString()}</h6>
-                            <br/>
-                            <h6>{this.creationTime}</h6>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-sm-9">
-                    {!this.props.isReply &&
-                    <header className="record-jumbotron align-center bottom-buffer-10 line-break">
-                        <h3><strong>{this.record.title}</strong></h3>
-                    </header>
-                    }
-
-                    <div className="bottom-buffer-10">{this.getContent(this.record.content)}</div>
-                    <div className="row top-buffer-10">
-                        Тэги:
+                        </Grid>
+                        <Grid className={classes.ggrid}>
+                            <Typography variant={"subtitle1"}>
+                                {new Date(this.record.creationTime).toLocaleDateString()}
+                            </Typography>
+                        </Grid>
+                        <Grid className={classes.ggrid}>
+                            <Typography variant={"subtitle1"}>
+                                {this.creationTime}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid className={classes.grid}>
+                        {this.isPreview ? (
+                            <Typography variant="h6">{/*gutterBottom*/}
+                                <Link href={"/records/thread/" + this.record.id}>
+                                    {this.record.title}
+                                </Link>
+                            </Typography>
+                            ): (
+                            <Typography variant="h6">{/*gutterBottom*/}
+                                {this.record.title}
+                            </Typography>)
+                        }
+                    </Grid>
+                    <Grid className={classes.gridContent}>
+                        <Typography variant="body1" className={classes.content}>{/*gutterBottom*/}
+                            {this.getContent(this.record.content)}
+                        </Typography>
+                    </Grid>
+                    <Grid className={classes.grid} container direction={"row"} spacing={1}>
                         {this.record.topics && this.record.topics.map(el => (
-                            <div className="bottom-buffer-4">{el.name }&nbsp;</div>
+                            <Grid item key={el.id} color={"#616161"}>
+                                <Typography className={classes.tagsColor}>
+                                    {el.name}
+                                </Typography>
+                            </Grid>
                         ))}
-                    </div>
+                    </Grid>
+
+
 
                     {!this.isPreview && this.state.filePreviews.map(el => (
-                        <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image}/>
+                        <img key={el.id} alt="" className="col-sm-12 top-buffer-10" src={el.image}/>
                     ))}
 
                     {!this.isPreview && this.record.attachments.map(el => (
                         // <img key={el.id} alt="" className="col-sm-6 top-buffer-10" src={el.image} />
-                        <div key={el.id} className="row color-light-blue top-buffer-10">
+                        <div key={el.id} className="row top-buffer-10">
                             {/*<div className="col-sm-5">{el.initialName}</div>*/}
                             <div>
                                 <button
                                     style={{marginLeft: "30px", borderStyle: "none"}}
-                                    className="btn-sm btn-primary color-light-blue"
+                                    className="btn-sm btn-primary color-white"
                                     onClick={() => this.download(el.id, el.initialName)}>
                                     <i className="fa fa-download"> Скачать {el.initialName}</i>
                                 </button>
@@ -125,11 +212,16 @@ export default class RecordCard extends Component {
 
 
                     {this.isPreview &&
-                    <div className="col-sm-4 fa fa-comments"
+                    <div className="col-sm-2 fa fa-comments"
                          style={{"float": "right"}}> {this.record.numberOfReplies}</div>
                     }
-                </div>
-            </div>
+
+
+
+                </Grid>
+            </Paper>
         );
     }
 }
+
+export default withStyles(useStyles)(RecordCardNew)

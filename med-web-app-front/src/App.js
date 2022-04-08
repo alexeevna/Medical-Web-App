@@ -3,8 +3,6 @@ import {Switch, Route, Link} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import {Client} from '@stomp/stompjs';
-
 import Home from "./components/home.component";
 import HomePatient from "./components/home-patient.component";
 import HomeDoctor from "./components/home-doctor.component";
@@ -164,36 +162,6 @@ class App extends Component {
     };
 
     componentDidMount() {
-
-
-        console.log('Component did mount');
-        // The compat mode syntax is totally different, converting to v5 syntax
-        // Client is imported from '@stomp/stompjs'
-        this.client = new Client();
-
-        this.client.configure({
-            brokerURL: 'ws://medicalWebApp/chat/msg',
-            onConnect: () => {
-                console.log('onConnect');
-
-                // this.client.subscribe('/queue/now', message => {
-                // console.log(message);
-                // this.setState({serverTime: message.body});
-                // });
-
-                this.client.subscribe('/topic/messages/' + AuthService.getCurrentUser().username, message => {
-                    alert(message.body);
-                });
-            },
-            // Helps during debugging, remove in production
-            debug: (str) => {
-                console.log(new Date(), str);
-            }
-        });
-
-        this.client.activate();
-
-
         const user = AuthService.getCurrentUser();
 
         if (user) {

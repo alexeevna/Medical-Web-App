@@ -137,6 +137,18 @@ services:
     networks:
       - app_net
 
+  testcontainerpostgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=secretpassword
+      - POSTGRES_DB=medwebappdb
+      - POSTGRES_PORT=1111
+      - PGPORT=1111
+    ports:
+      - "1111:1111"
+    networks:
+      - app_net
+
   sftp:
     image: atmoz/sftp
 #    volumes:
@@ -148,7 +160,7 @@ services:
       - app_net
 
   orthanc:
-    image: jodogne/orthanc
+    image: jodogne/orthanc-plugins
     #    volumes:
     #      - <host-dir>/upload:/home/foo/upload
     ports:
@@ -156,6 +168,16 @@ services:
     networks:
       - app_net
 
+  proxy:
+    image: nginx:1.15-alpine
+    ports:
+      - 8899:80
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on: 
+      - orthanc
+    networks:
+      - app_net
 
 #  medwebapp:
 #    image: ashvyrkova/medwebapp
