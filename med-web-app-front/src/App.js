@@ -1,10 +1,9 @@
 import React, {Component, useEffect, useState} from "react"
-import {Switch, Route, Link} from "react-router-dom"
+import {Switch, Route, Link, Redirect} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
 import Home from "./components/home.component"
-import {useBeforeunload} from 'react-beforeunload';
 import HomePatient from "./components/home-patient.component"
 import HomeDoctor from "./components/home-doctor.component"
 import Profile from "./components/profile.component"
@@ -155,7 +154,7 @@ function App(props) {
     const [numberOfUnRead, setNumberOfUnRead] = useState(0)
     const [showModeratorBoard, setShowModeratorBoard] = useState(false)
     const [showAdminBoard, setShowAdminBoard] = useState(false)
-    const [currentUser, setCurrentUser] = useState(undefined)
+    const [currentUser, setCurrentUser] = useState(null)
     const [open, setOpen] = useState(true)
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
@@ -163,7 +162,6 @@ function App(props) {
 
     useEffect(() => {
         const user = AuthService.getCurrentUser()
-        console.log("useEffectApp")
         if (user) {
             AuthService.checkTokenIsExpired(user.token)
                 .then(() => {
@@ -292,6 +290,15 @@ function App(props) {
             return "/profile/" + currentUser.username
         else
             return null
+    }
+
+    function checkCurrentUser(component){
+        const currentUser = AuthService.getCurrentUser()
+        if (currentUser){
+            return component
+        } else {
+            return <Redirect to="/login"/>
+        }
     }
 
     function minusUnRead(num) {
@@ -477,25 +484,42 @@ function App(props) {
                             <Route exact path="/home/doctor" component={HomeDoctor}/>
                             <Route exact path="/login" component={Login}/>
                             <Route exact path={["/msg", "/msg/:selected"]}>
-                                <Chat stompClient={stompClient} allMessages={allMessages}
-                                      setAllMessages = {setAllMessages}
-                                      number={numberOfUnRead} minusUnRead={minusUnRead}
-                                      usersWithLastMsg={usersWithLastMsgReceived}
-                                      setUsersWithLastMsg={setUsersWithLastMsgReceived}
-                                />
+                                {((AuthService.getCurrentUser() )) ?
+                                    (<Chat stompClient={stompClient} allMessages={allMessages}
+                                          setAllMessages={setAllMessages}
+                                          number={numberOfUnRead} minusUnRead={minusUnRead}
+                                          usersWithLastMsg={usersWithLastMsgReceived}
+                                          setUsersWithLastMsg={setUsersWithLastMsgReceived}
+                                    />) : (<Redirect to="/login"/>)}
                             </Route>
                             <Route exact path="/register" component={Register}/>
-                            <Route exact path="/search" component={Search}/>
-                            <Route exact path="/profile/:username" component={Profile}/>
-                            <Route exact path="/pipelines/create" component={PipelinesComponent}/>
-                            <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
-                            <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
-                            <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
-                            <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
+                            <Route exact path="/search">
+                                {AuthService.getCurrentUser() ? <Search/> : <Redirect to="/login"/> }
+                            </Route>
+                            <Route exact path={["/profile/:usernamePath"]}>
+                                {AuthService.getCurrentUser() ? <Profile/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/create" component={PipelinesComponent}>
+                                {AuthService.getCurrentUser() ? <PipelinesComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/results" component={PipelineResultsComponent}>
+                                {AuthService.getCurrentUser() ? <PipelineResultsComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}>
+                                {AuthService.getCurrentUser() ? <SavePipelineConfigComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/files/view" component={ViewAttachmentsComponent}>
+                                {AuthService.getCurrentUser() ? <ViewAttachmentsComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/files/upload" component={UploadAttachmentsComponent}>
+                                {AuthService.getCurrentUser() ? <UploadAttachmentsComponent/> : <Redirect to="/login"/>}
+                            </Route>
                             <Route exact path="/records/view" component={ViewRecordsComponent}/>
                             <Route exact path="/records/create" component={CreateRecordComponent}/>
                             <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
-                            <Route exact path="/topics/create" component={TopicComponent}/>
+                            <Route exact path="/topics/create" component={TopicComponent}>
+                                {AuthService.getCurrentUser() ? <TopicComponent/> : <Redirect to="/login"/>}
+                            </Route>
                             <Route component={NotExist}/>
                         </Switch>
                     </div>

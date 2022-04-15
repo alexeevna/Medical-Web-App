@@ -1,4 +1,4 @@
-import {Card, Divider, List, Paper, TextField, withStyles} from "@material-ui/core"
+import {Card, Divider, Input, InputBase, List, Paper, TextField, withStyles} from "@material-ui/core"
 import {Link} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react"
 import UserService from "../../services/user.service"
@@ -15,12 +15,19 @@ import SenderMsg from "./sender.msg.component"
 import UpdateStatusMsg from "./updateStatusMsg.component";
 import {useLocation, useParams} from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import SendIcon from '@mui/icons-material/Send';
+import {Box} from "@mui/material";
 
 
 const useStyles = theme => ({
     root: {
-        // width: 635,
-        marginBottom: theme.spacing(1.5),
+        width: 510,
+        // position: 'relative',
+        // marginTop: theme.spacing(1.5),
+        // marginBottom: theme.spacing(1.5),
+        marginLeft: 6,
+        marginRight: 6,
         "& .MuiFormLabel-root": {
             margin: 0,
             color: "black"
@@ -60,7 +67,7 @@ const useStyles = theme => ({
     },
     messageGrid: {
         width: 650,
-        height: 440,
+        height: 507,
         overflowY: "auto",
         // overflowX: "visible",
         marginBottom: theme.spacing(1.5),
@@ -134,6 +141,13 @@ const useStyles = theme => ({
     },
     gridFullWidth: {
         width: '100%'
+    },
+    // input: {
+    //     width: '94%'
+    // },
+    iconInput: {
+        width: "100%",
+        height: 56,
     }
 })
 
@@ -155,7 +169,9 @@ function Chat(props) {
     const [contentCorrect, setContentCorrect] = useState("")
     const [selectedUser, setSelectedUser] = useState(null)
     const [refresh, setRefresh] = useState({})
+    const [selectedFiles, setSelectedFiles] = useState(null)
     const messagesEndRef = useRef(null)
+    const fileInput = useRef(null)
 
     useEffect(() => {
         getContacts();
@@ -219,6 +235,12 @@ function Chat(props) {
         }
     }
 
+    function checkKey(key) {
+        if (key.key === "Enter" && key.shiftKey === false && selectedUser && contentPresence) {
+            sendMessage()
+        }
+    }
+
     function sendMessage() {
         if (stompClient) {
             var message = {
@@ -264,9 +286,12 @@ function Chat(props) {
             })
     }
 
+    function selectFile() {
+        fileInput.current.click()
+    }
+
     function sortContacts() {
         let sortedContacts = [...usersWithLastMsg.values()]
-        console.log(sortedContacts)
         sortedContacts.sort(function (a, b) {
             if (a.second !== null && b.second !== null) {
                 const aTime = new Date(a.second.sendDate)
@@ -353,6 +378,22 @@ function Chat(props) {
         }
     }
 
+    function createFilesArray() {
+        let filesArray = []
+        for (let i = 0; i < selectedFiles.length; i++) {
+            filesArray.push(selectedFiles[i])
+        }
+        return filesArray
+    }
+
+    function disableButton() {
+        if (selectedUser) {
+            return !(contentPresence || selectedFiles);
+
+        }
+        return true
+    }
+
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
@@ -391,29 +432,54 @@ function Chat(props) {
                             </Grid>
                             <div ref={messagesEndRef}/>
                         </Paper>
-                        <TextField
-                            className={classes.root}
-                            multiline
-                            minRows={2}
-                            maxRows={6}
-                            variant="outlined"
-                            fullWidth
-                            id="content"
-                            label="Напишите сообщение..."
-                            name="content"
-                            autoComplete="off"
-                            value={content}
-                            onChange={onChangeMessageContent}
-                        />
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            onClick={sendMessage}
-                            disabled={(!contentPresence) || (!selectedUser)}
-                        >
-                            <DoneOutlineIcon/>
-                        </Button>
+
+                        <Grid container>
+                            <Grid>
+                                <input type="file" style={{"display": "none"}} ref={fileInput} multiple
+                                       onChange={(e) => setSelectedFiles(e.target.files)}/>
+                                <Button className={classes.iconInput}
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={selectFile}
+                                        disabled={(!selectedUser)}
+                                >
+                                    <AttachFileIcon>
+                                    </AttachFileIcon>
+                                </Button>
+                            </Grid>
+                            <Grid>
+                                <TextField
+                                    className={classes.root}
+                                    multiline
+                                    minRows={1}
+                                    maxRows={6}
+                                    variant="outlined"
+
+                                    id="content"
+                                    label="Напишите сообщение..."
+                                    name="content"
+                                    autoComplete="off"
+                                    value={content}
+                                    onChange={(content) => onChangeMessageContent(content)}
+                                    onKeyPress={(key) => checkKey(key)}
+                                />
+                            </Grid>
+                            <Grid>
+                                <Button
+                                    className={classes.iconInput}
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={sendMessage}
+                                    disabled={disableButton()}
+                                >
+                                    <SendIcon/>
+                                </Button>
+                            </Grid>
+                            <Grid>
+                                {selectedFiles && createFilesArray().map((file) => (file.name))}
+                            </Grid>
+                        </Grid>
+
                     </Grid>
                 </Card>
             </Grid>

@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, useEffect, useState} from "react";
 import AuthService from "../services/auth.service";
 import ProfileService from "../services/profile.service";
 import Grid from '@material-ui/core/Grid';
@@ -8,7 +8,7 @@ import {ButtonBase, Card, TextField, withStyles} from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
 import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 const useStyles = theme => ({
     txtField: {
@@ -96,149 +96,154 @@ const useStyles = theme => ({
     }
 });
 
-class Profile extends Component {
-    constructor(props) {
-        super(props);
+function Profile(props) {
+    const {classes} = props
+    console.log(props)
+    const [user, setUser] = useState(null)
+    const {usernamePath} = useParams()
+    const [username, setUsername] = useState(usernamePath)
+    const [showReviews, setShowReviews] = useState(true)
+    console.log(usernamePath)
+    // constructor(props) {
+    //     super(props);
+    //
+    //     this.getUser = this.getUser.bind(this);
+    //     this.getUsername = this.getUsername.bind(this);
+    //
+    //     this.state = {
+    //         user: null,
+    //         username: useParams(),
+    //         showReviews: true,
+    //     };
+    // }
 
-        this.getUser = this.getUser.bind(this);
-        this.getUsername = this.getUsername.bind(this);
-
-        this.state = {
-            user: null,
-            username: this.props.match.params.username,
-            showReviews: true,
-        };
-    }
-
-    getUser(username1) {
+    function getUser(username1) {
         ProfileService.getProfile(username1).then(
             response => {
                 const user = response.data;
-                this.refreshList();
-                this.setState({
-                    user: user,
-                });
+                refreshList();
+                setUser(user)
+                // this.setState({
+                //     user: user,
+                // });
             })
             .catch((e) => {
                 console.log(e);
             });
     }
 
-    refreshList() {
-        this.setState({
-            user: null,
-        });
+    function refreshList() {
+        setUser(null)
+        // this.setState({
+        //     user: null,
+        // });
     }
 
-    getUsername(prevState, props) {
-        return {
-            username: props.match.params.username,
-        };
-    }
+    // function getUsername(prevState, props) {
+    //     setUsername(usernamePath)
+    //     return usernamePath
+    // }
 
-    setNewUsername() {
-        this.setState(this.getUsername);
-    }
+    // function setNewUsername() {
+    //     setUsername(getUsername);
+    // }
 
-    componentDidMount() {
-        this.setNewUsername();
-        this.getUser(this.props.match.params.username);
-    }
+    useEffect(() => {
+        setUsername(usernamePath)
+        getUser(usernamePath);
+    }, [usernamePath])
 
-    render() {
-        if (this.props.match.params.username !== this.state.username) {
-            this.setNewUsername();
-            this.getUser(this.props.match.params.username);
-        }
-        const {user} = this.state;
-        const {showReviews} = this.state;
-        const {classes} = this.props;
-        return (
-            <div>
-                {
-                    user &&
-                    <Grid>
-                        <Grid xs={12} item className={classes.mainGrid}>
-                            <Grid xs={8} item>
-                                <Card className={classes.paper}>
-                                    <Grid className={classes.gridInPaper}>
-                                        <Grid className={classes.grid}>
-                                            <ButtonBase>
-                                                <Avatar className={classes.avatar}>
-                                                    Photo
-                                                </Avatar>
-                                            </ButtonBase>
-                                            <div>Дата регистрации:</div>
-                                            <div>{new Date(user.registeredDate).toLocaleDateString()}</div>
-                                        </Grid>
-                                        <Grid className={classes.gridData}>
-                                            <TextField
-                                                multiline
-                                                className={classes.txtField}
-                                                id="standard-read-only-input"
-                                                maxRows={4}
-                                                defaultValue={user.initials}
-                                                InputProps={{
-                                                    readOnly: true,
-                                                }}
-                                            />
-                                            <TextField
-                                                multiline
-                                                className={classes.txtFieldUsername}
-                                                id="standard-read-only-input"
-                                                maxRows={4}
-                                                defaultValue={user.username}
-                                                InputProps={{
-                                                    readOnly: true,
-                                                }}
-                                            />
-                                            <TextField
-                                                className={classes.txtFieldRole}
-                                                id="standard-read-only-input"
-                                                defaultValue={user.role}
-                                                InputProps={{
-                                                    readOnly: true,
-                                                }}
-                                            />
-                                            {user && user.username !== AuthService.getCurrentUser().username &&
-                                            <Link to={"/msg/" + user.username} style={{textDecoration: 'none'}}>
-                                                <Button className={classes.write}>
-                                                    Написать
-                                                </Button>
-                                            </Link>
-                                            }
-                                        </Grid>
-                                    </Grid>
-                                </Card>
-                            </Grid>
-                            {user && user.username === AuthService.getCurrentUser().username &&
-                            <Grid xs={4} item>
-                                <Card className={classes.paper2}>
+
+    // if (props.match.params.username !== username) {
+    //     setNewUsername();
+    //     getUser(props.match.params.username);
+    // }
+    return (
+        <div>
+            {
+                user &&
+                <Grid>
+                    <Grid xs={12} item className={classes.mainGrid}>
+                        <Grid xs={8} item>
+                            <Card className={classes.paper}>
+                                <Grid className={classes.gridInPaper}>
                                     <Grid className={classes.grid}>
-                                        <Link to={"/files/view"} style={{textDecoration: 'none'}}>
-                                            <Button className={classes.button}>
-                                                Мои файлы
-                                            </Button>
-                                        </Link>
-                                        <Link to={"/files/upload"} style={{textDecoration: 'none'}}>
-                                            <Button className={classes.button}>
-                                                Загрузить файл
-                                            </Button>
-                                        </Link>
+                                        <ButtonBase>
+                                            <Avatar className={classes.avatar}>
+                                                Photo
+                                            </Avatar>
+                                        </ButtonBase>
+                                        <div>Дата регистрации:</div>
+                                        <div>{new Date(user.registeredDate).toLocaleDateString()}</div>
                                     </Grid>
-                                </Card>
-                            </Grid>
-                            }
+                                    <Grid className={classes.gridData}>
+                                        <TextField
+                                            multiline
+                                            className={classes.txtField}
+                                            id="standard-read-only-input"
+                                            maxRows={4}
+                                            defaultValue={user.initials}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                        />
+                                        <TextField
+                                            multiline
+                                            className={classes.txtFieldUsername}
+                                            id="standard-read-only-input"
+                                            maxRows={4}
+                                            defaultValue={user.username}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                        />
+                                        <TextField
+                                            className={classes.txtFieldRole}
+                                            id="standard-read-only-input"
+                                            defaultValue={user.role}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                        />
+                                        {user && user.username !== AuthService.getCurrentUser().username &&
+                                        <Link to={"/msg/" + user.username} style={{textDecoration: 'none'}}>
+                                            <Button className={classes.write}>
+                                                Написать
+                                            </Button>
+                                        </Link>
+                                        }
+                                    </Grid>
+                                </Grid>
+                            </Card>
                         </Grid>
-
-                        {showReviews && (
-                            <Review targetId={user.id}/>
-                        )}
+                        {user && user.username === AuthService.getCurrentUser().username &&
+                        <Grid xs={4} item>
+                            <Card className={classes.paper2}>
+                                <Grid className={classes.grid}>
+                                    <Link to={"/files/view"} style={{textDecoration: 'none'}}>
+                                        <Button className={classes.button}>
+                                            Мои файлы
+                                        </Button>
+                                    </Link>
+                                    <Link to={"/files/upload"} style={{textDecoration: 'none'}}>
+                                        <Button className={classes.button}>
+                                            Загрузить файл
+                                        </Button>
+                                    </Link>
+                                </Grid>
+                            </Card>
+                        </Grid>
+                        }
                     </Grid>
-                }
-            </div>
-        );
-    }
+
+                    {showReviews && (
+                        <Review targetId={user.id}/>
+                    )}
+                </Grid>
+            }
+        </div>
+    );
+
 
 }
 
