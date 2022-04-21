@@ -207,6 +207,15 @@ function App(props) {
 
     function onMessageReceived(response) {
         const data = JSON.parse(response.body)
+        console.log(data)
+        if (data && data.contentFile) {
+            fetch(data.contentFile)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], "File name", {type: "image/png"})
+                    console.log(file)
+                })
+        }
         let presenceUserInContacts = false
         let presenceUsername
         for (let username of usersWithLastMsgReceived.keys()) {
@@ -292,9 +301,9 @@ function App(props) {
             return null
     }
 
-    function checkCurrentUser(component){
+    function checkCurrentUser(component) {
         const currentUser = AuthService.getCurrentUser()
-        if (currentUser){
+        if (currentUser) {
             return component
         } else {
             return <Redirect to="/login"/>
@@ -484,17 +493,17 @@ function App(props) {
                             <Route exact path="/home/doctor" component={HomeDoctor}/>
                             <Route exact path="/login" component={Login}/>
                             <Route exact path={["/msg", "/msg/:selected"]}>
-                                {((AuthService.getCurrentUser() )) ?
+                                {((AuthService.getCurrentUser())) ?
                                     (<Chat stompClient={stompClient} allMessages={allMessages}
-                                          setAllMessages={setAllMessages}
-                                          number={numberOfUnRead} minusUnRead={minusUnRead}
-                                          usersWithLastMsg={usersWithLastMsgReceived}
-                                          setUsersWithLastMsg={setUsersWithLastMsgReceived}
+                                           setAllMessages={setAllMessages}
+                                           number={numberOfUnRead} minusUnRead={minusUnRead}
+                                           usersWithLastMsg={usersWithLastMsgReceived}
+                                           setUsersWithLastMsg={setUsersWithLastMsgReceived}
                                     />) : (<Redirect to="/login"/>)}
                             </Route>
                             <Route exact path="/register" component={Register}/>
                             <Route exact path="/search">
-                                {AuthService.getCurrentUser() ? <Search/> : <Redirect to="/login"/> }
+                                {AuthService.getCurrentUser() ? <Search/> : <Redirect to="/login"/>}
                             </Route>
                             <Route exact path={["/profile/:usernamePath"]}>
                                 {AuthService.getCurrentUser() ? <Profile/> : <Redirect to="/login"/>}
@@ -506,7 +515,8 @@ function App(props) {
                                 {AuthService.getCurrentUser() ? <PipelineResultsComponent/> : <Redirect to="/login"/>}
                             </Route>
                             <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}>
-                                {AuthService.getCurrentUser() ? <SavePipelineConfigComponent/> : <Redirect to="/login"/>}
+                                {AuthService.getCurrentUser() ? <SavePipelineConfigComponent/> :
+                                    <Redirect to="/login"/>}
                             </Route>
                             <Route exact path="/files/view" component={ViewAttachmentsComponent}>
                                 {AuthService.getCurrentUser() ? <ViewAttachmentsComponent/> : <Redirect to="/login"/>}

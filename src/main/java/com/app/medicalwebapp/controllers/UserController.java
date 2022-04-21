@@ -131,7 +131,6 @@ public class UserController {
     public ResponseEntity<?> getContacts(@RequestParam String currentUserUsername) {
         try {
             Optional<Contact> contactOptional = contactsService.getByContactsOwner(currentUserUsername);
-            System.out.println("ya tut" + contactOptional);
             List<User> contactsList = new ArrayList<>();
 //            Map<User, ChatMessage> contactWithLastMsg = new HashMap<>();
             ContactsResponse contactWithLastMsg = new ContactsResponse();
@@ -168,7 +167,6 @@ public class UserController {
                 }
                 contactWithLastMsg.setContactWithLastMsg(contacts);
             }
-            System.out.println(contactWithLastMsg.getContactWithLastMsg());
             return ResponseEntity.ok().body(contactWithLastMsg);
         } catch (Exception e) {
             e.printStackTrace();

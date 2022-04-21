@@ -10,6 +10,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 // import { Stomp } from '@stomp/stompjs'
 import UserCardMessage from "./user-card-msg.component"
 import ChatService from "../../services/chat.service"
+import axios from "axios";
+// import io from "socket.io-client";
 import RecipientMsg from "./recipient.msg.component"
 import SenderMsg from "./sender.msg.component"
 import UpdateStatusMsg from "./updateStatusMsg.component";
@@ -18,6 +20,7 @@ import Avatar from "@material-ui/core/Avatar";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
 import {Box} from "@mui/material";
+import authHeader from "../../services/auth-header";
 
 
 const useStyles = theme => ({
@@ -163,6 +166,7 @@ function Chat(props) {
     const {allMessages} = props
     const {setAllMessages} = props
     const {selected} = useParams()
+    const [yourID, setYourID] = useState();
     const [processedUnreadMessages, setProcessedUnreadMessages] = useState([])
     const [content, setContent] = useState("")
     const [contentPresence, setContentPresence] = useState(false)
@@ -172,8 +176,16 @@ function Chat(props) {
     const [selectedFiles, setSelectedFiles] = useState(null)
     const messagesEndRef = useRef(null)
     const fileInput = useRef(null)
-
+    // const socketRef = useRef();
     useEffect(() => {
+        // socketRef.current = io.connect('/');
+        // socketRef.current.on("your id", id => {
+        //     console.log(id)
+        //     setYourID(id);
+        // })
+        // socketRef.current.on("message", (message) => {
+        //     console.log("here");
+        // })
         getContacts();
     }, [])
 
@@ -241,7 +253,7 @@ function Chat(props) {
         }
     }
 
-    function sendMessage() {
+    async function sendMessage() {
         if (stompClient) {
             var message = {
                 content: contentCorrect,
@@ -264,12 +276,28 @@ function Chat(props) {
             }
             setUsersWithLastMsg(prev => prev.set(selectedUser.username, {first: selectedUser, second: message}))
             stompClient.send("/app/send/" + selectedUser.username, {}, JSON.stringify(message))
+            if (selectedFiles) {
+
+                let readerPromise = new Promise((resolve, reject) => {
+                    let reader = new FileReader();
+                    reader.onload = () => {
+                        resolve(reader.result);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(selectedFiles[0]);
+                })
+
+                let arrayBuffer = {contentFile: await readerPromise};
+                console.log(arrayBuffer)
+                stompClient.send("/app/sendFile/" + selectedUser.username, {}, JSON.stringify(arrayBuffer))
+            }
             setContent("")
             setContentCorrect("")
             setContentPresence(false)
         }
     }
 
+    // console.log(selectedFiles[0])
     function selectUser(user) {
         setSelectedUser(user)
         ChatService.getMessages(AuthService.getCurrentUser().username, user.username)
@@ -393,7 +421,7 @@ function Chat(props) {
         }
         return true
     }
-
+    console.log(allMessages)
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
