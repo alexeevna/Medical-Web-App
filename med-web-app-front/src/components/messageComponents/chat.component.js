@@ -255,12 +255,32 @@ function Chat(props) {
 
     async function sendMessage() {
         if (stompClient) {
-            var message = {
+            let fileNameAndStringBase64 = []
+            if (selectedFiles) {
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    let readerPromise = new Promise((resolve, reject) => {
+                        let reader = new FileReader();
+                        reader.onload = () => {
+                            resolve(reader.result);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(selectedFiles[0]);
+                    })
+                    console.log("start")
+                    const fileStringBase64 = await readerPromise;
+                    console.log("end")
+                    const pairFileNameBase64 = {first: selectedFiles[i].name, second: fileStringBase64}
+                    fileNameAndStringBase64.push(pairFileNameBase64)
+                }
+            }
+            console.log(fileNameAndStringBase64)
+            const message = {
                 content: contentCorrect,
                 recipientId: selectedUser.id,
                 recipientName: selectedUser.username,
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
+                fileNameAndStringBase64: fileNameAndStringBase64,
                 sendDate: new Date()
             }
             if (allMessages.get(selectedUser.username)) {
@@ -276,21 +296,7 @@ function Chat(props) {
             }
             setUsersWithLastMsg(prev => prev.set(selectedUser.username, {first: selectedUser, second: message}))
             stompClient.send("/app/send/" + selectedUser.username, {}, JSON.stringify(message))
-            if (selectedFiles) {
 
-                let readerPromise = new Promise((resolve, reject) => {
-                    let reader = new FileReader();
-                    reader.onload = () => {
-                        resolve(reader.result);
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(selectedFiles[0]);
-                })
-
-                let arrayBuffer = {contentFile: await readerPromise};
-                console.log(arrayBuffer)
-                stompClient.send("/app/sendFile/" + selectedUser.username, {}, JSON.stringify(arrayBuffer))
-            }
             setContent("")
             setContentCorrect("")
             setContentPresence(false)
@@ -421,6 +427,7 @@ function Chat(props) {
         }
         return true
     }
+
     console.log(allMessages)
     return (
         <Grid xs={12} item className={classes.mainGrid}>

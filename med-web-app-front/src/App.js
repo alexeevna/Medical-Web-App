@@ -50,6 +50,7 @@ import SockJS from "sockjs-client"
 import {over} from "stompjs"
 import UserService from "./services/user.service"
 import ChatService from "./services/chat.service"
+import AttachmentService from "./services/attachment.service";
 
 const drawerWidth = 240
 
@@ -159,6 +160,7 @@ function App(props) {
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
     const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState(new Map())
+    // const [filePreviews, setFilePreviews] = useState([])
 
     useEffect(() => {
         const user = AuthService.getCurrentUser()
@@ -206,16 +208,7 @@ function App(props) {
     }
 
     function onMessageReceived(response) {
-        const data = JSON.parse(response.body)
-        console.log(data)
-        if (data && data.contentFile) {
-            fetch(data.contentFile)
-                .then(res => res.blob())
-                .then(blob => {
-                    const file = new File([blob], "File name", {type: "image/png"})
-                    console.log(file)
-                })
-        }
+        let data = JSON.parse(response.body)
         let presenceUserInContacts = false
         let presenceUsername
         for (let username of usersWithLastMsgReceived.keys()) {

@@ -11,10 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ContactsResponse {
-//    List<User> contacts;
-//    List<ChatMessage> lastMessages;
 
-    //    Map<User, ChatMessage> contactWithLastMsg;
     List<Pair<User, ChatMessage>> contactWithLastMsg;
 
 }

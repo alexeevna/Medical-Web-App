@@ -1,6 +1,7 @@
 package com.app.medicalwebapp.config;
 
 import com.app.medicalwebapp.model.mesages.ChatMessage;
+import com.app.medicalwebapp.security.WsHandshakeInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -32,9 +33,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(2000000); // default : 64 * 1024
-        registration.setSendTimeLimit(30 * 10000); // default : 10 * 10000
-        registration.setSendBufferSizeLimit(5 * 512 * 1024); // default : 512 * 1024
+        registration.setMessageSizeLimit(200000000); // default : 64 * 1024
+        registration.setSendTimeLimit(100 * 10000); // default : 10 * 10000
+        registration.setSendBufferSizeLimit(100 * 512 * 1024); // default : 512 * 1024
 
     }
 

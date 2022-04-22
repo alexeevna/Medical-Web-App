@@ -1,9 +1,10 @@
-import React, {Component, useEffect} from "react";
+import React, {Component, useEffect, useState} from "react";
 import '../../styles/Search.css'
 import {Paper, TableCell, Typography, withStyles} from "@material-ui/core";
 import {Link} from '@material-ui/core';
 import Grid from "@material-ui/core/Grid";
 import AuthService from "../../services/auth.service";
+import AttachmentService from "../../services/attachment.service";
 
 const useStyles = theme => ({
 
@@ -27,7 +28,7 @@ const useStyles = theme => ({
         color: '#888888',
         fontSize: 12,
         marginTop: theme.spacing(0.5),
-        textAlign:"right"
+        textAlign: "right"
         // marginBottom: 10
     },
 });
@@ -36,14 +37,42 @@ function SenderMsg(props) {
     const {classes} = props;
     const {msg} = props;
     const {scrollToBottom} = props;
+    const [files, setFiles] = useState([])
     useEffect(() => {
+        getFiles()
         scrollToBottom()
     }, []);
+    console.log(msg)
+    function getFiles() {
+        let preview = [];
+        if (msg.attachments && msg.attachments.length > 0) {
+            for (let i = 0; i < msg.attachments.length; i++) {
+                if (msg.attachments[i].initialName.endsWith(".jpg") ||
+                    msg.attachments[i].initialName.endsWith(".png") ||
+                    msg.attachments[i].initialName.endsWith(".dcm")) {
+                    AttachmentService.getPreviewNew(msg.attachments[i].id).then(response => {
+                        console.log(response)
+                        preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(response.data)})
+                        console.log(preview)
+                        setFiles(preview)
+                    }).catch(error => {
+                        console.log(error);
+                    })
+                }
+            }
+        }
+    }
+    console.log(files)
     return (
         <Grid>
             <Paper className={classes.msgMy}>
                 <Grid className={classes.txt}>{AuthService.getCurrentUser().initials}</Grid>
-                <Grid>{msg.content}</Grid>
+                <Grid>
+                    <Grid>{msg.content}</Grid>
+                    <Grid>
+                        {files && files.map((file, index) => <img key={index} alt="" className="col-sm-12 top-buffer-10" src={file.image}/>)}
+                    </Grid>
+                </Grid>
                 <Grid
                     className={classes.time}>
                     {

@@ -1,5 +1,7 @@
 package com.app.medicalwebapp.model.mesages;
 
+import com.app.medicalwebapp.model.FileObject;
+import com.app.medicalwebapp.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,8 +42,7 @@ public class ChatMessage {
     @Column(name = "recipientName")
     private String recipientName;
 
-    @Column(name = "content")
-    @Size(max = 3000)
+    @Column(name = "content", length = 2000)
     private String content;
 
     @Column(name = "sendDate")
@@ -48,4 +50,12 @@ public class ChatMessage {
 
     @Column(name = "statusMessage")
     private StatusMessage statusMessage;
+
+    @ManyToMany
+    @JoinTable(
+            name = "files_msgs",
+            joinColumns = @JoinColumn(name = "msg_id"),
+            inverseJoinColumns = @JoinColumn(name = "file_id")
+    )
+    private List<FileObject> attachments;
 }
