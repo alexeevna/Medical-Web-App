@@ -264,7 +264,7 @@ function Chat(props) {
                             resolve(reader.result);
                         };
                         reader.onerror = reject;
-                        reader.readAsDataURL(selectedFiles[0]);
+                        reader.readAsDataURL(selectedFiles[i]);
                     })
                     console.log("start")
                     const fileStringBase64 = await readerPromise;
@@ -280,7 +280,8 @@ function Chat(props) {
                 recipientName: selectedUser.username,
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
-                fileNameAndStringBase64: fileNameAndStringBase64,
+                attachments: fileNameAndStringBase64,
+                fileBlob: selectedFiles[0],
                 sendDate: new Date()
             }
             if (allMessages.get(selectedUser.username)) {
@@ -296,12 +297,14 @@ function Chat(props) {
             }
             setUsersWithLastMsg(prev => prev.set(selectedUser.username, {first: selectedUser, second: message}))
             stompClient.send("/app/send/" + selectedUser.username, {}, JSON.stringify(message))
-
+            setSelectedFiles(null)
             setContent("")
             setContentCorrect("")
             setContentPresence(false)
         }
     }
+
+    console.log(allMessages)
 
     // console.log(selectedFiles[0])
     function selectUser(user) {

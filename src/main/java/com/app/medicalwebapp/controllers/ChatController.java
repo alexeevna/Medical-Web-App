@@ -42,35 +42,36 @@ public class ChatController {
     @MessageMapping("/send/{recipient}")
     public void sendMessage(@DestinationVariable("recipient") String recipient, @RequestParam ChatMessageRequest msg) {
         try {
-            var hey = (msg.getFileNameAndStringBase64().stream().map(Pair::getFirst).collect(Collectors.toList()));
-            System.out.println(hey);
-//            List<FileObject> files = new ArrayList<>();
-//            byte[] decodedFileByte;
-//            if (msg.getContentStringFileBase64() != null) {
-//                Base64.Decoder decoder = Base64.getDecoder();
-//                decodedFileByte = decoder.decode(msg.getContentStringFileBase64().split(",")[1]);
-//                files.add(fileService.saveFile(msg.getFileName(), decodedFileByte, msg.getSenderId()));
-//            }
-//            String chatId;
-//            if (msg.getSenderName().compareTo(msg.getRecipientName()) < 0) {
-//                chatId = (msg.getSenderName() + msg.getRecipientName());
-//            } else {
-//                chatId = (msg.getRecipientName() + msg.getSenderName());
-//            }
-//            ChatMessage chatMessage = new ChatMessage();
-//            chatMessage.setChatId(chatId);
-//            chatMessage.setRecipientId(msg.getRecipientId());
-//            chatMessage.setSenderId(msg.getSenderId());
-//            chatMessage.setRecipientName(msg.getRecipientName());
-//            chatMessage.setSenderName(msg.getSenderName());
-//            chatMessage.setContent(msg.getContent());
-//            chatMessage.setStatusMessage(StatusMessage.UNREAD);
-//            chatMessage.setSendDate(LocalDateTime.now());
-//            chatMessage.setAttachments(files);
-//            System.out.println(msg.getContentStringFileBase64());
-//            System.out.println(chatMessage);
-//            chatMessageService.save(chatMessage);
-//            simpMessagingTemplate.convertAndSendToUser(recipient, "/private", chatMessage);
+            List<FileObject> files = new ArrayList<>();
+//            System.out.println(msg.getFileNameAndStringBase64());
+            if (msg.getAttachments() != null) {
+                for (Pair<String, String> pair : msg.getAttachments()) {
+                    System.out.println(pair.getFirst());
+                    Base64.Decoder decoder = Base64.getDecoder();
+                    byte[] decodedFileByte = decoder.decode(pair.getSecond().split(",")[1]);
+                    files.add(fileService.saveFile(pair.getFirst(), decodedFileByte, msg.getSenderId()));
+                }
+            }
+//            System.out.println(files);
+            String chatId;
+            if (msg.getSenderName().compareTo(msg.getRecipientName()) < 0) {
+                chatId = (msg.getSenderName() + msg.getRecipientName());
+            } else {
+                chatId = (msg.getRecipientName() + msg.getSenderName());
+            }
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setChatId(chatId);
+            chatMessage.setRecipientId(msg.getRecipientId());
+            chatMessage.setSenderId(msg.getSenderId());
+            chatMessage.setRecipientName(msg.getRecipientName());
+            chatMessage.setSenderName(msg.getSenderName());
+            chatMessage.setContent(msg.getContent());
+            chatMessage.setStatusMessage(StatusMessage.UNREAD);
+            chatMessage.setSendDate(LocalDateTime.now());
+            chatMessage.setAttachments(files);
+            System.out.println(chatMessage);
+            chatMessageService.save(chatMessage);
+            simpMessagingTemplate.convertAndSendToUser(recipient, "/private", chatMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }

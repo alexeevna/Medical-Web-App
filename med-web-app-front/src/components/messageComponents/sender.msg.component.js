@@ -42,27 +42,37 @@ function SenderMsg(props) {
         getFiles()
         scrollToBottom()
     }, []);
-    console.log(msg)
+
     function getFiles() {
+        console.log("ya tut -6")
         let preview = [];
         if (msg.attachments && msg.attachments.length > 0) {
             for (let i = 0; i < msg.attachments.length; i++) {
-                if (msg.attachments[i].initialName.endsWith(".jpg") ||
-                    msg.attachments[i].initialName.endsWith(".png") ||
-                    msg.attachments[i].initialName.endsWith(".dcm")) {
-                    AttachmentService.getPreviewNew(msg.attachments[i].id).then(response => {
-                        console.log(response)
-                        preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(response.data)})
-                        console.log(preview)
-                        setFiles(preview)
-                    }).catch(error => {
-                        console.log(error);
-                    })
+                if (msg.attachments[i].initialName) {
+                    if (msg.attachments[i].initialName.endsWith(".jpg") ||
+                        msg.attachments[i].initialName.endsWith(".png") ||
+                        msg.attachments[i].initialName.endsWith(".dcm")) {
+
+                        AttachmentService.getPreviewNew(msg.attachments[i].id).then(response => {
+
+                            preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(response.data)})
+
+                            setFiles(preview)
+                        }).catch(error => {
+                            console.log(error);
+                        })
+
+                    }
+                } else {
+                    console.log("ya tut -5")
+                    preview.push({id: null, image: URL.createObjectURL(msg.fileBlob)})
+
+                    setFiles(preview)
                 }
             }
         }
     }
-    console.log(files)
+
     return (
         <Grid>
             <Paper className={classes.msgMy}>
@@ -70,7 +80,8 @@ function SenderMsg(props) {
                 <Grid>
                     <Grid>{msg.content}</Grid>
                     <Grid>
-                        {files && files.map((file, index) => <img key={index} alt="" className="col-sm-12 top-buffer-10" src={file.image}/>)}
+                        {files && files.map((file, index) => <img key={index} alt="" className="col-sm-12 top-buffer-10"
+                                                                  src={file.image}/>)}
                     </Grid>
                 </Grid>
                 <Grid

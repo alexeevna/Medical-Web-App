@@ -11,16 +11,16 @@ import java.util.Map;
 
 @Getter
 public class ChatMessageRequest {
-     Long senderId;
+    Long senderId;
 
-     Long recipientId;
+    Long recipientId;
 
-     String senderName;
+    String senderName;
 
-     String recipientName;
+    String recipientName;
 
-     String content;
+    String content;
 
-     List<Pair<String, String>> fileNameAndStringBase64;
+    List<Pair<String, String>> attachments;
 
 }
