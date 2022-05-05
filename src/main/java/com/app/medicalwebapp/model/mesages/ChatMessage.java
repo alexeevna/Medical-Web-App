@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
+import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -58,4 +59,19 @@ public class ChatMessage {
             inverseJoinColumns = @JoinColumn(name = "file_id")
     )
     private List<FileObject> attachments;
+
+    @Lob
+    List<byte[]> DataBlob;
+//
+//    @Lob
+//    @Column(name = "DTA_BLOB")
+//    byte[] DataBlob;
+//
+//    public byte[] getDataBlob(){
+//        return DataBlob;
+//    }
+//
+//    public void setDataBlob(byte[] DataBlob) {
+//        this.DataBlob = DataBlob;
+//    }
 }

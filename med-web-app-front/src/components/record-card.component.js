@@ -122,6 +122,7 @@ class RecordCardNew extends Component {
                     this.record.attachments[i].initialName.endsWith(".png") ||
                     this.record.attachments[i].initialName.endsWith(".dcm")) {
                     AttachmentService.getPreviewNew(this.record.attachments[i].id).then(response => {
+                        console.log(response)
                         preview.push({id: this.record.attachments[i].id, image: URL.createObjectURL(response.data)});
                         this.setState({filePreviews: preview});
                     }).catch(error => {

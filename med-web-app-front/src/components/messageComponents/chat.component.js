@@ -281,7 +281,6 @@ function Chat(props) {
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
                 attachments: fileNameAndStringBase64,
-                fileBlob: selectedFiles[0],
                 sendDate: new Date()
             }
             if (allMessages.get(selectedUser.username)) {
@@ -312,6 +311,7 @@ function Chat(props) {
         ChatService.getMessages(AuthService.getCurrentUser().username, user.username)
             .then((response) => {
                 if (response.data.length > 0) {
+                    console.log(user)
                     const valueMap = {unRead: 0, messages: response.data}
                     setAllMessages(prev => (prev.set(user.username, valueMap)))
                     setRefresh({})
