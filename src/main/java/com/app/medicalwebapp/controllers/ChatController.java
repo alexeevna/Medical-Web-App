@@ -3,12 +3,14 @@ package com.app.medicalwebapp.controllers;
 import com.app.medicalwebapp.controllers.requestbody.ChatMessageRequest;
 import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.model.FileObject;
+import com.app.medicalwebapp.model.FileObjectFormat;
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.model.mesages.ChatMessage;
 import com.app.medicalwebapp.model.mesages.StatusMessage;
 import com.app.medicalwebapp.security.UserDetailsImpl;
 import com.app.medicalwebapp.services.ChatMessageService;
 import com.app.medicalwebapp.services.FileService;
+import com.app.medicalwebapp.utils.FileFormatResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -43,13 +45,22 @@ public class ChatController {
     public void sendMessage(@DestinationVariable("recipient") String recipient, @RequestParam ChatMessageRequest msg) {
         try {
             List<FileObject> files = new ArrayList<>();
+            List<String> filesBase64 = new ArrayList<>();
+            List<byte[]> filesDataBlob = new ArrayList<>();
 //            System.out.println(msg.getFileNameAndStringBase64());
             if (msg.getAttachments() != null) {
                 for (Pair<String, String> pair : msg.getAttachments()) {
                     System.out.println(pair.getFirst());
                     Base64.Decoder decoder = Base64.getDecoder();
-                    byte[] decodedFileByte = decoder.decode(pair.getSecond().split(",")[1]);
-                    files.add(fileService.saveFile(pair.getFirst(), decodedFileByte, msg.getSenderId()));
+                    String fileBase64 = pair.getSecond().split(",")[1];
+                    filesBase64.add(fileBase64);
+                    byte[] decodedFileByte = decoder.decode(fileBase64);
+                    FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(pair.getFirst());
+                    if (fileFormat == FileObjectFormat.DICOM) {
+                        files.add(fileService.saveFile(pair.getFirst(), decodedFileByte, msg.getSenderId()));
+                    } else {
+                        filesDataBlob.add(decodedFileByte);
+                    }
                 }
             }
 //            System.out.println(files);
@@ -69,9 +80,10 @@ public class ChatController {
             chatMessage.setStatusMessage(StatusMessage.UNREAD);
             chatMessage.setSendDate(LocalDateTime.now());
             chatMessage.setAttachments(files);
+            chatMessage.setDataBlob(filesDataBlob);
             System.out.println(chatMessage);
             chatMessageService.save(chatMessage);
-            simpMessagingTemplate.convertAndSendToUser(recipient, "/private", chatMessage);
+            simpMessagingTemplate.convertAndSendToUser(recipient, "/private", Pair.of(chatMessage, filesBase64));
         } catch (Exception e) {
             e.printStackTrace();
         }

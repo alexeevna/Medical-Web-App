@@ -60,8 +60,9 @@ public class ChatMessage {
     )
     private List<FileObject> attachments;
 
-    @Lob
-    List<byte[]> DataBlob;
+    @ElementCollection
+    @Column(name = "dataBlob")
+    List<byte[]> dataBlob;
 //
 //    @Lob
 //    @Column(name = "DTA_BLOB")

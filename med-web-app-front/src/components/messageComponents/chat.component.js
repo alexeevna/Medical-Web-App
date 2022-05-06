@@ -281,6 +281,7 @@ function Chat(props) {
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
                 attachments: fileNameAndStringBase64,
+                attachmentsBlob: selectedFiles,
                 sendDate: new Date()
             }
             if (allMessages.get(selectedUser.username)) {
@@ -308,9 +309,12 @@ function Chat(props) {
     // console.log(selectedFiles[0])
     function selectUser(user) {
         setSelectedUser(user)
+        const start = new Date().getTime();
         ChatService.getMessages(AuthService.getCurrentUser().username, user.username)
             .then((response) => {
                 if (response.data.length > 0) {
+                    const end = new Date().getTime();
+                    console.log(`Работа на бэке: ${end - start}ms`);
                     console.log(user)
                     const valueMap = {unRead: 0, messages: response.data}
                     setAllMessages(prev => (prev.set(user.username, valueMap)))
@@ -321,6 +325,7 @@ function Chat(props) {
             .catch((e) => {
                 console.log(e)
             })
+
     }
 
     function selectFile() {
@@ -403,7 +408,8 @@ function Chat(props) {
         const dataMsg = allMessages.get(selectedUser.username)
         scrollToBottom()
         if (dataMsg && dataMsg.unRead > 0) {
-            const unreadArr = dataMsg.messages.filter(msg => msg.statusMessage === "UNREAD" && msg.senderName === selectedUser.username && !processedUnreadMessages.includes(msg.id))
+            let unreadArr = dataMsg.messages.filter(msg => msg.statusMessage === "UNREAD" && msg.senderName === selectedUser.username && !processedUnreadMessages.includes(msg.id))
+            delete unreadArr.dataBlob
             console.log(unreadArr)
             if (unreadArr.length > 0) {
                 unreadArr.map(msg => setProcessedUnreadMessages(prevState => (prevState.concat([msg.id]))))
@@ -429,6 +435,34 @@ function Chat(props) {
 
         }
         return true
+    }
+
+    function uploadFiles(e) {
+        const MAX_NUM_FILES = 6
+        const MAX_SIZE_FILES = 52428800
+        let err_files = false
+        let files = Array.from(e.target.files)
+        if (files.length > MAX_NUM_FILES) {
+            files.splice(MAX_NUM_FILES)
+            err_files = true
+        }
+        let removedCount = 0
+        const length = files.length
+        for (let i = 0; i < length; i++) {
+            if (files[i - removedCount].size > MAX_SIZE_FILES) {
+                files.splice(i - removedCount, 1)
+                removedCount++
+                err_files = true
+            }
+        }
+        if (err_files) {
+            alert("Кол-во <= 6, размер <= 50МБ")
+        }
+        if (files.length === 0) {
+            files = null
+        }
+        console.log(files)
+        setSelectedFiles(files)
     }
 
     console.log(allMessages)
@@ -474,7 +508,7 @@ function Chat(props) {
                         <Grid container>
                             <Grid>
                                 <input type="file" style={{"display": "none"}} ref={fileInput} multiple
-                                       onChange={(e) => setSelectedFiles(e.target.files)}/>
+                                       onChange={(e) => uploadFiles(e)}/>
                                 <Button className={classes.iconInput}
                                         variant="contained"
                                         color="primary"
