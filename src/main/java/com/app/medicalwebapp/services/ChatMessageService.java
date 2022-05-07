@@ -57,12 +57,12 @@ public class ChatMessageService {
         for (ChatMessage message : messages) {
             if (message.getAttachments().size() > 0) {
                 ArrayList<byte[]> data = new ArrayList<>();
-                message.setDataBlob(data);
+                message.setDataFilesDicom(data);
                 for (int j = 0; j < message.getAttachments().size(); j++) {
                     if (message.getAttachments().get(j).getFormat() == FileObjectFormat.DICOM) {
                         FileObject fileObject = message.getAttachments().get(j);
                         byte[] fileContent = fileService.previewFile(fileObject);
-                        message.getDataBlob().add(fileContent);
+                        message.getDataFilesDicom().add(fileContent);
                     }
                 }
             }

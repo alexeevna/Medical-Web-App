@@ -21,6 +21,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
 import {Box} from "@mui/material";
 import authHeader from "../../services/auth-header";
+import DicomAnonymizerService from "../../services/dicom-anonymizer.service";
 
 
 const useStyles = theme => ({
@@ -256,20 +257,38 @@ function Chat(props) {
     async function sendMessage() {
         if (stompClient) {
             let fileNameAndStringBase64 = []
+            let pairFileNameBase64;
             if (selectedFiles) {
                 for (let i = 0; i < selectedFiles.length; i++) {
-                    let readerPromise = new Promise((resolve, reject) => {
-                        let reader = new FileReader();
-                        reader.onload = () => {
-                            resolve(reader.result);
-                        };
-                        reader.onerror = reject;
-                        reader.readAsDataURL(selectedFiles[i]);
-                    })
-                    console.log("start")
-                    const fileStringBase64 = await readerPromise;
-                    console.log("end")
-                    const pairFileNameBase64 = {first: selectedFiles[i].name, second: fileStringBase64}
+                    console.log(selectedFiles)
+                    if (selectedFiles[i].name.endsWith(".dcm")) {
+                        const anonymizedDicomBlobArrayBuff = await DicomAnonymizerService.anonymizeInstance(selectedFiles[i]);
+                        console.log(anonymizedDicomBlobArrayBuff)
+                        const blobDicom = new Blob([anonymizedDicomBlobArrayBuff])
+                        console.log(blobDicom)
+                        let readerPromise = new Promise((resolve, reject) => {
+                            let reader = new FileReader();
+                            reader.onload = () => {
+                                resolve(reader.result);
+                            };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blobDicom);
+                        })
+                        const fileStringBase64 = await readerPromise;
+                        console.log(fileStringBase64)
+                        pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
+                    } else {
+                        let readerPromise = new Promise((resolve, reject) => {
+                            let reader = new FileReader();
+                            reader.onload = () => {
+                                resolve(reader.result);
+                            };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(selectedFiles[i]);
+                        })
+                        const fileStringBase64 = await readerPromise;
+                        pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
+                    }
                     fileNameAndStringBase64.push(pairFileNameBase64)
                 }
             }
@@ -280,8 +299,9 @@ function Chat(props) {
                 recipientName: selectedUser.username,
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
-                attachments: fileNameAndStringBase64,
-                attachmentsBlob: selectedFiles,
+                // attachments: fileNameAndStringBase64,
+                attachmentsBlobForImageClient: selectedFiles,
+                localFiles: fileNameAndStringBase64,
                 sendDate: new Date()
             }
             if (allMessages.get(selectedUser.username)) {
@@ -315,7 +335,7 @@ function Chat(props) {
                 if (response.data.length > 0) {
                     const end = new Date().getTime();
                     console.log(`Работа на бэке: ${end - start}ms`);
-                    console.log(user)
+                    console.log(response.data)
                     const valueMap = {unRead: 0, messages: response.data}
                     setAllMessages(prev => (prev.set(user.username, valueMap)))
                     setRefresh({})
@@ -330,6 +350,11 @@ function Chat(props) {
 
     function selectFile() {
         fileInput.current.click()
+    }
+
+    function processTimeSend(userAndLastMsg) {
+        console.log(userAndLastMsg)
+        console.log(new Date())
     }
 
     function sortContacts() {
@@ -378,6 +403,7 @@ function Chat(props) {
                                                         || (new Date(userAndLastMsg.second.sendDate).getMinutes() > 10 && new Date(userAndLastMsg.second.sendDate).getMinutes())
                                                     )
                                                 }
+                                                {/*{processTimeSend(userAndLastMsg)}*/}
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -406,13 +432,12 @@ function Chat(props) {
     function updateStatusMsg() {
         //Сюда заходить очень часто во время отображения сообщений, надо бы оптимизировать
         const dataMsg = allMessages.get(selectedUser.username)
-        scrollToBottom()
         if (dataMsg && dataMsg.unRead > 0) {
             let unreadArr = dataMsg.messages.filter(msg => msg.statusMessage === "UNREAD" && msg.senderName === selectedUser.username && !processedUnreadMessages.includes(msg.id))
-            delete unreadArr.dataBlob
             console.log(unreadArr)
             if (unreadArr.length > 0) {
                 unreadArr.map(msg => setProcessedUnreadMessages(prevState => (prevState.concat([msg.id]))))
+                console.log(unreadArr)
                 ChatService.updateStatusUnreadMessages(unreadArr).then()
             }
             minusUnRead(dataMsg.unRead)
@@ -495,7 +520,9 @@ function Chat(props) {
                                             (
                                                 <RecipientMsg msg={msg} key={index}
                                                               initialsSender={selectedUser.initials}
-                                                              updateStatusMsg={updateStatusMsg}/>
+                                                              updateStatusMsg={updateStatusMsg}
+                                                              scrollToBottom={scrollToBottom}
+                                                />
                                             ))
                                     ))
 

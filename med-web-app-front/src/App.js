@@ -210,16 +210,16 @@ function App(props) {
     console.log(allMessages)
 
     function onMessageReceived(response) {
-        let dataPair = JSON.parse(response.body)
-
-        let fileBase64 = null;
-        if (dataPair.second.length > 0) {
-            fileBase64 = dataPair.second
-        }
-        dataPair.first = {...dataPair.first, dataBlob: fileBase64}
-        let data = dataPair.first
-        console.log(dataPair)
-        console.log(data)
+        let data = JSON.parse(response.body)
+        // console.log(dataPair)
+        // let fileBase64 = null;
+        // if (dataPair.second.length > 0) {
+        //     fileBase64 = dataPair.second
+        // }
+        // dataPair.first = {...dataPair.first, dataBlob: fileBase64}
+        // let data = dataPair.first
+        // console.log(dataPair)
+        // data.localFiles = new Map(new Map(Object.entries(data.localFiles)))
         let presenceUserInContacts = false
         let presenceUsername
         for (let username of usersWithLastMsgReceived.keys()) {

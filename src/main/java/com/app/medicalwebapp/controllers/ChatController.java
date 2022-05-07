@@ -1,16 +1,21 @@
 package com.app.medicalwebapp.controllers;
 
+import com.app.medicalwebapp.controllers.requestbody.ChatFileRequest;
 import com.app.medicalwebapp.controllers.requestbody.ChatMessageRequest;
 import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
 import com.app.medicalwebapp.model.User;
+import com.app.medicalwebapp.model.mesages.ChatFile;
 import com.app.medicalwebapp.model.mesages.ChatMessage;
 import com.app.medicalwebapp.model.mesages.StatusMessage;
+import com.app.medicalwebapp.repositories.ChatFileRepository;
 import com.app.medicalwebapp.security.UserDetailsImpl;
 import com.app.medicalwebapp.services.ChatMessageService;
 import com.app.medicalwebapp.services.FileService;
 import com.app.medicalwebapp.utils.FileFormatResolver;
+import org.openjdk.jol.info.ClassLayout;
+import org.openjdk.jol.vm.VM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -39,31 +44,37 @@ public class ChatController {
     private ChatMessageService chatMessageService;
 
     @Autowired
+    ChatFileRepository chatFileRepository;
+    @Autowired
     FileService fileService;
 
     @MessageMapping("/send/{recipient}")
     public void sendMessage(@DestinationVariable("recipient") String recipient, @RequestParam ChatMessageRequest msg) {
         try {
             List<FileObject> files = new ArrayList<>();
-            List<String> filesBase64 = new ArrayList<>();
-            List<byte[]> filesDataBlob = new ArrayList<>();
-//            System.out.println(msg.getFileNameAndStringBase64());
-            if (msg.getAttachments() != null) {
-                for (Pair<String, String> pair : msg.getAttachments()) {
-                    System.out.println(pair.getFirst());
+//            System.out.println(msg.getLocalFiles().get(0));
+//            List<String> filesBase64 = new ArrayList<>();
+            List<ChatFile> localFiles = new ArrayList<>();
+//            Map<String, String> localFiles = new HashMap<>();
+//            List<byte[]> filesDataBlob = new ArrayList<>();
+            if (msg.getLocalFiles() != null) {
+                for (ChatFileRequest file : msg.getLocalFiles()) {
+                    FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(file.getFileName());
                     Base64.Decoder decoder = Base64.getDecoder();
-                    String fileBase64 = pair.getSecond().split(",")[1];
-                    filesBase64.add(fileBase64);
+                    String fileBase64 = file.getFileContent().split(",")[1];
                     byte[] decodedFileByte = decoder.decode(fileBase64);
-                    FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(pair.getFirst());
                     if (fileFormat == FileObjectFormat.DICOM) {
-                        files.add(fileService.saveFile(pair.getFirst(), decodedFileByte, msg.getSenderId()));
+                        files.add(fileService.saveFile(file.getFileName(), decodedFileByte, msg.getSenderId()));
                     } else {
-                        filesDataBlob.add(decodedFileByte);
+                        ChatFile localFile = new ChatFile();
+                        localFile.setFileName(file.getFileName());
+                        localFile.setFileContent(decodedFileByte);
+                        localFile.setFormat(fileFormat);
+                        var fl = chatFileRepository.save(localFile);
+                        localFiles.add(fl);
                     }
                 }
             }
-//            System.out.println(files);
             String chatId;
             if (msg.getSenderName().compareTo(msg.getRecipientName()) < 0) {
                 chatId = (msg.getSenderName() + msg.getRecipientName());
@@ -80,10 +91,10 @@ public class ChatController {
             chatMessage.setStatusMessage(StatusMessage.UNREAD);
             chatMessage.setSendDate(LocalDateTime.now());
             chatMessage.setAttachments(files);
-            chatMessage.setDataBlob(filesDataBlob);
-            System.out.println(chatMessage);
+            chatMessage.setLocalFiles(localFiles);
+//            System.out.println(chatMessage);
             chatMessageService.save(chatMessage);
-            simpMessagingTemplate.convertAndSendToUser(recipient, "/private", Pair.of(chatMessage, filesBase64));
+            simpMessagingTemplate.convertAndSendToUser(recipient, "/private", chatMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }

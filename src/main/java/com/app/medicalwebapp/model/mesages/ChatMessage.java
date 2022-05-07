@@ -1,7 +1,6 @@
 package com.app.medicalwebapp.model.mesages;
 
 import com.app.medicalwebapp.model.FileObject;
-import com.app.medicalwebapp.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Size;
-import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -60,19 +56,30 @@ public class ChatMessage {
     )
     private List<FileObject> attachments;
 
+    @ManyToMany
+    @JoinTable(
+            name = "chatmessages_chatfiles",
+            joinColumns = @JoinColumn(name = "chatmessage_id"),
+            inverseJoinColumns = @JoinColumn(name = "chatfile_id")
+    )
+    private List<ChatFile> localFiles;
+
+//    @ElementCollection
+//    @Column(name = "localFilesName")
+//    List<String> localFilesName;
+//
+//    @ElementCollection
+//    @Column(name = "localFilesContent")
+//    List<String> localFilesContent;
+
+//    @ElementCollection
+//    @Column(columnDefinition = "TEXT", length = 1000000000)
+//    @CollectionTable(name = "localFiles")
+//    private Map<String, String> localFiles;
+
+    //    @ElementCollection
+//    private List<String> localFiles;
+//
     @ElementCollection
-    @Column(name = "dataBlob")
-    List<byte[]> dataBlob;
-//
-//    @Lob
-//    @Column(name = "DTA_BLOB")
-//    byte[] DataBlob;
-//
-//    public byte[] getDataBlob(){
-//        return DataBlob;
-//    }
-//
-//    public void setDataBlob(byte[] DataBlob) {
-//        this.DataBlob = DataBlob;
-//    }
+    private List<byte[]> dataFilesDicom;
 }

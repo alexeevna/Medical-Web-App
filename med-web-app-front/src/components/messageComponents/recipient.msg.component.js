@@ -35,29 +35,47 @@ function RecipientMsg(props) {
     const {msg} = props;
     const {updateStatusMsg} = props
     const {initialsSender} = props
+    const {scrollToBottom} = props;
     const [files, setFiles] = useState([])
     useEffect(async () => {
         updateStatusMsg(msg)
         await getFiles()
+        scrollToBottom()
     }, [msg]);
 
     async function getFiles() {
         setFiles([])
         let preview = [];
-        if (msg.attachments && msg.attachments.length > 0) {
-            for (let i = 0; i < msg.attachments.length; i++) {
-                if (msg.attachments[i].initialName) {
-                    if (msg.attachments[i].initialName.endsWith(".jpg") ||
-                        msg.attachments[i].initialName.endsWith(".png") ||
-                        msg.attachments[i].initialName.endsWith(".dcm")) {
-                        const base64Data = msg.dataBlob[i]
-                        const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
-                        const blob = await base64Response.blob()
-                        preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(blob)})
-                    }
-                } else {
-                    preview.push({id: null, image: URL.createObjectURL(msg.attachmentsBlob[i])})
+        if (msg.attachmentsBlobForImageClient && msg.attachmentsBlobForImageClient.length > 0) {
+            for (let i = 0; i < msg.attachmentsBlobForImageClient.length; i++) {
+                if (msg.attachmentsBlobForImageClient[i].name.endsWith(".jpg") ||
+                    msg.attachmentsBlobForImageClient[i].name.endsWith(".png") ||
+                    msg.attachmentsBlobForImageClient[i].name.endsWith(".dcm")
+                ) {
+                    console.log(msg.attachmentsBlobForImageClient[i])
+                    preview.push({
+                        id: msg.localFiles[i].id,
+                        image: URL.createObjectURL(msg.attachmentsBlobForImageClient[i])
+                    })
                 }
+            }
+        } else if (msg.localFiles && msg.localFiles.length > 0) {
+            for (let i = 0; i < msg.localFiles.length; i++) {
+                if (msg.localFiles[i].fileName.endsWith(".jpg") ||
+                    msg.localFiles[i].fileName.endsWith(".png")) {
+                    const base64Data = msg.localFiles[i].fileContent
+                    const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
+                    const blob = await base64Response.blob()
+                    preview.push({id: msg.localFiles[i].id, image: URL.createObjectURL(blob)})
+                }
+            }
+        } else if (msg.dataFilesDicom && msg.dataFilesDicom.length > 0) {
+            for (let i = 0; i < msg.dataFilesDicom.length; i++) {
+                const base64Data = msg.dataFilesDicom[i]
+                const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
+                const blob = await base64Response.blob()
+                console.log(blob)
+                preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(blob)})
             }
         }
         setFiles(preview)
@@ -70,7 +88,7 @@ function RecipientMsg(props) {
                 <Grid>
                     <Grid>{msg.content}</Grid>
                     <Grid>
-                        <ImageList sx={{width: 500, height: 450}} cols={3} rowHeight={164}>
+                        <ImageList cols={3} rowHeight={200} gap={3}>
                             {files && files.map((file, index) =>
                                 <ImageListItem key={index}>
                                     <img
