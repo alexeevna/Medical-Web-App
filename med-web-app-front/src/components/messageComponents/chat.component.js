@@ -141,7 +141,11 @@ const useStyles = theme => ({
         // position: 'auto',
     },
     lastMsgTimeContent: {
-        color: '#888888'
+        color: '#888888',
+        textAlign: "right"
+    },
+    lastMsgTextContent: {
+        color: '#888888',
     },
     gridFullWidth: {
         width: '100%'
@@ -352,9 +356,44 @@ function Chat(props) {
         fileInput.current.click()
     }
 
+    function getDayOfWeek(yesterday1, messageTime, days) {
+        yesterday1.setDate(yesterday1.getDate() - 1)
+        if (yesterday1.getDate() === messageTime.getDate()) {
+            return days [messageTime.getDay()]
+        } else {
+            return false
+        }
+    }
+
     function processTimeSend(userAndLastMsg) {
-        console.log(userAndLastMsg)
-        console.log(new Date())
+        let today = new Date()
+        let messageTime = new Date(userAndLastMsg.second.sendDate)
+        if (today.toDateString() === messageTime.toDateString()) {
+            return (((messageTime.getHours() < 10 && "0" + messageTime.getHours()) || messageTime.getHours() >= 10 && messageTime.getHours()) + ":"
+                + ((messageTime.getMinutes() < 10 && "0" + messageTime.getMinutes())
+                    || (messageTime.getMinutes() >= 10 && messageTime.getMinutes())
+                ))
+        } else if (today.getFullYear() === messageTime.getFullYear()) {
+            let yesterday1 = new Date(today)
+            yesterday1.setDate(yesterday1.getDate() - 1)
+            if (yesterday1.getDate() === messageTime.getDate()) {
+                return "Вчера"
+            }
+            const days = ["ВC", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"]
+            for (let i = 0; i < 5; i++) {
+                const dayOfWeek = getDayOfWeek(yesterday1, messageTime, days)
+                if (dayOfWeek) {
+                    return dayOfWeek
+                }
+            }
+        }
+        return (
+            ((messageTime.getDate() < 10 && "0" + messageTime.getDate()) || (messageTime.getDate() >= 10 && messageTime.getDate()))
+            + "."
+            + (((messageTime.getMonth() + 1) < 10 && "0" + (messageTime.getMonth() + 1)) || (((messageTime.getMonth() + 1) >= 10 && (messageTime.getMonth() + 1))))
+            + "." + messageTime.getFullYear()
+        )
+
     }
 
     function sortContacts() {
@@ -391,18 +430,21 @@ function Chat(props) {
                             <Grid xs={10} item>
                                 <Grid className={classes.gridFullWidth}>
                                     <Grid className={classes.flex} xs={12} item>
-                                        <Grid xs={10} item>
+                                        <Grid xs={9} item>
                                             <UserCardMessage user={userAndLastMsg.first}
                                             />
                                         </Grid>
-                                        <Grid xs={2} item>
+                                        <Grid xs={3} item>
                                             <Grid className={classes.lastMsgTimeContent}>
                                                 {
-                                                    userAndLastMsg.second && userAndLastMsg.second.sendDate && new Date(userAndLastMsg.second.sendDate).getHours() + ":"
-                                                    + ((new Date(userAndLastMsg.second.sendDate).getMinutes() < 10 && "0" + new Date(userAndLastMsg.second.sendDate).getMinutes())
-                                                        || (new Date(userAndLastMsg.second.sendDate).getMinutes() > 10 && new Date(userAndLastMsg.second.sendDate).getMinutes())
-                                                    )
+                                                    userAndLastMsg.second && userAndLastMsg.second.sendDate && processTimeSend(userAndLastMsg)
                                                 }
+                                                {/*{*/}
+                                                {/*    userAndLastMsg.second && userAndLastMsg.second.sendDate && new Date(userAndLastMsg.second.sendDate).getHours() + ":"*/}
+                                                {/*    + ((new Date(userAndLastMsg.second.sendDate).getMinutes() < 10 && "0" + new Date(userAndLastMsg.second.sendDate).getMinutes())*/}
+                                                {/*        || (new Date(userAndLastMsg.second.sendDate).getMinutes() > 10 && new Date(userAndLastMsg.second.sendDate).getMinutes())*/}
+                                                {/*    )*/}
+                                                {/*}*/}
                                                 {/*{processTimeSend(userAndLastMsg)}*/}
                                             </Grid>
                                         </Grid>
@@ -410,7 +452,7 @@ function Chat(props) {
                                 </Grid>
                                 <Grid className={classes.flex} xs={12} item>
                                     <Grid xs={10} item
-                                          className={classes.lastMsgTimeContent}>{(userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...") ||
+                                          className={classes.lastMsgTextContent}>{(userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...") ||
                                     (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length < 25 && userAndLastMsg.second.content)}
                                     </Grid>
                                     {allMessages.get(userAndLastMsg.first.username) && (allMessages.get(userAndLastMsg.first.username).unRead > 0)
