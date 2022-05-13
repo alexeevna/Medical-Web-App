@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from "react";
+import React, {Component, useEffect, useRef, useState} from "react";
 import AuthService from "../services/auth.service";
 import ProfileService from "../services/profile.service";
 import Grid from '@material-ui/core/Grid';
@@ -9,6 +9,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
 import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 import {Link, useParams} from "react-router-dom";
+import UserService from "../services/user.service"
 
 const useStyles = theme => ({
     txtField: {
@@ -49,8 +50,10 @@ const useStyles = theme => ({
         minWidth: 1000,
     },
     avatar: {
-        width: 130,
-        height: 130,
+        width: 150,
+        height: 160,
+    },
+    btnbase: {
         marginBottom: theme.spacing(3),
         marginRight: theme.spacing(4),
         marginLeft: theme.spacing(4),
@@ -103,29 +106,30 @@ function Profile(props) {
     const {usernamePath} = useParams()
     const [username, setUsername] = useState(usernamePath)
     const [showReviews, setShowReviews] = useState(true)
+    const fileInput = useRef(null)
+    const [selectedFile, setSelectedFile] = useState(null)
     console.log(usernamePath)
-    // constructor(props) {
-    //     super(props);
-    //
-    //     this.getUser = this.getUser.bind(this);
-    //     this.getUsername = this.getUsername.bind(this);
-    //
-    //     this.state = {
-    //         user: null,
-    //         username: useParams(),
-    //         showReviews: true,
-    //     };
-    // }
+
+    function selectFile() {
+        if (user && user.username === AuthService.getCurrentUser().username) {
+            fileInput.current.click()
+        }
+    }
+
 
     function getUser(username1) {
         ProfileService.getProfile(username1).then(
-            response => {
+            async response => {
                 const user = response.data;
+                console.log(user)
+                if (user && user.avatar) {
+                    const base64Data = user.avatar
+                    const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
+                    const blob = await base64Response.blob()
+                    setSelectedFile(URL.createObjectURL(blob))
+                }
                 refreshList();
                 setUser(user)
-                // this.setState({
-                //     user: user,
-                // });
             })
             .catch((e) => {
                 console.log(e);
@@ -153,11 +157,17 @@ function Profile(props) {
         getUser(usernamePath);
     }, [usernamePath])
 
+    function uploadFiles(e) {
+            const MAX_SIZE_FILES = 52428800
+            if (e.target.files[0] > MAX_SIZE_FILES) {
+                alert("Размер <= 50МБ")
+            } else {
+                UserService.uploadAvatar(e.target.files[0]).then(r => console.log(r))
+                setSelectedFile(URL.createObjectURL(e.target.files[0]))
+            }
+    }
 
-    // if (props.match.params.username !== username) {
-    //     setNewUsername();
-    //     getUser(props.match.params.username);
-    // }
+    console.log(selectedFile)
     return (
         <div>
             {
@@ -168,8 +178,12 @@ function Profile(props) {
                             <Card className={classes.paper}>
                                 <Grid className={classes.gridInPaper}>
                                     <Grid className={classes.grid}>
-                                        <ButtonBase>
-                                            <Avatar className={classes.avatar}>
+                                        <ButtonBase className={classes.btnbase} onClick={selectFile}
+                                                    onMouseOver={(e) => console.log("hello")}>
+                                            <input type="file" style={{"display": "none"}} ref={fileInput}
+                                                   accept="image/*"
+                                                   onChange={(e) => uploadFiles(e)}/>
+                                            <Avatar className={classes.avatar} variant="rounded" src={selectedFile}>
                                                 Photo
                                             </Avatar>
                                         </ButtonBase>

@@ -1,12 +1,14 @@
 package com.app.medicalwebapp.controllers;
 
 import com.app.medicalwebapp.controllers.requestbody.ContactsResponse;
+import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.controllers.requestbody.PushContactsRequest;
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.model.mesages.ChatMessage;
 import com.app.medicalwebapp.model.mesages.Contact;
 import com.app.medicalwebapp.repositories.ChatMessageRepository;
 import com.app.medicalwebapp.repositories.ContactsRepository;
+import com.app.medicalwebapp.security.UserDetailsImpl;
 import com.app.medicalwebapp.services.ContactsService;
 import com.app.medicalwebapp.services.UserService;
 import org.slf4j.Logger;
@@ -15,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -58,6 +62,17 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/uploadAvatar")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            userService.uploadUserAvatar(file.getBytes(), getAuthenticatedUser().getId());
+            return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + file.getOriginalFilename()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при загрузке файлa"));
         }
     }
 
@@ -216,6 +231,10 @@ public class UserController {
         contact.setContactsList(userList);
         contactsRepository.save(contact);
         return user;
+    }
+
+    private UserDetailsImpl getAuthenticatedUser() {
+        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

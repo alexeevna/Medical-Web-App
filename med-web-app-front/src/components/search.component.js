@@ -164,6 +164,7 @@ class Search extends Component {
 
     render() {
         const {classes} = this.props;
+        console.log(this.state.users)
         return (
             <div>
                 <div className="div-search">

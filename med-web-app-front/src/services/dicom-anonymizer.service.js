@@ -28,9 +28,8 @@ class DicomAnonymizerService {
         this.anonymizeTag(dicomTagsDataset, 'PerformingPhysicianName', 'Anonymized_PerformingPhysicianName');
         this.anonymizeTag(dicomTagsDataset, 'InstitutionName', 'Anonymized_InstitutionName');
         this.anonymizeTag(dicomTagsDataset, 'InstitutionAddress', 'Anonymized_InstitutionAddress');
+        this.anonymizeTag(dicomTagsDataset, 'PatientBirthDate', 'Anonymized_BirthDate');
         this.anonymizeTag(dicomTagsDataset, 'StudyDate', '00/00/0000');
-
-        console.log(dicomTagsDataset);
 
         dicomContent.dict = dcmjs.data.DicomMetaDictionary.denaturalizeDataset(dicomTagsDataset);
 

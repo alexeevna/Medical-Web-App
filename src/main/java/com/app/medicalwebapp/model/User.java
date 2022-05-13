@@ -54,26 +54,7 @@ public class User {
     @Column(name = "active")
     private Active active;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "contacts_users",
-//            joinColumns = @JoinColumn(name = "contact_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id")
-//    )
-//    private List<User> contactsList;
-
-//    @ManyToOne(targetEntity = Contact.class, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "cont")
-//    private Contact contacts;
-
-
-//
-//    @OneToMany
-//    @JoinTable(
-//            name = "inner_table",
-//            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")}
-//    )
-//    @Column(name = "contacts")
-//    private List<User> contacts;
+    @Column(name = "avatar")
+    private byte[] avatar;
 }
 
