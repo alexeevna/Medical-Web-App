@@ -1,7 +1,7 @@
 import React, {Component, useEffect, useState} from "react";
 import '../../styles/Search.css'
 import {ImageList, ImageListItem, Paper, TableCell, Typography, withStyles} from "@material-ui/core";
-import {Link} from '@material-ui/core';
+import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import AuthService from "../../services/auth.service";
 import AttachmentService from "../../services/attachment.service";
@@ -22,7 +22,7 @@ const useStyles = theme => ({
     txt: {
         fontWeight: 'bold',
         marginTop: 0,
-        marginBottom: 10
+        marginBottom: 10,
     },
     time: {
         color: '#888888',
@@ -31,6 +31,9 @@ const useStyles = theme => ({
         textAlign: "right"
         // marginBottom: 10
     },
+    link: {
+        color: "black",
+    }
 });
 
 function SenderMsg(props) {
@@ -47,6 +50,7 @@ function SenderMsg(props) {
     async function getFiles() {
         setFiles([])
         let preview = [];
+        // const start = new Date().getTime();
         if (msg.attachmentsBlobForImageClient && msg.attachmentsBlobForImageClient.length > 0) {
             for (let i = 0; i < msg.attachmentsBlobForImageClient.length; i++) {
                 if (msg.attachmentsBlobForImageClient[i].name.endsWith(".jpg") ||
@@ -79,18 +83,26 @@ function SenderMsg(props) {
                 preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(blob)})
             }
         }
+        // const end = new Date().getTime();
+        // console.log(`Работа на фронте: ${end - start}ms`);
         setFiles(preview)
     }
 
     return (
         <Grid>
             <Paper className={classes.msgMy}>
-                <Grid className={classes.txt}>{AuthService.getCurrentUser().initials}</Grid>
+                <Grid className={classes.txt}>
+                    <Link to={"/profile/" + msg.senderName} className={classes.link}>
+                        {AuthService.getCurrentUser().initials}
+                    </Link>
+
+                </Grid>
                 <Grid>
                     <Grid>{msg.content}</Grid>
+                    {files &&
                     <Grid>
-                        <ImageList  cols={3} rowHeight={200} gap={3}>
-                            {files && files.map((file, index) =>
+                        < ImageList cols={2} rowHeight={200} gap={3}>
+                            {files.map((file, index) =>
                                 <ImageListItem key={index}>
                                     <img
                                         src={file.image}
@@ -102,6 +114,7 @@ function SenderMsg(props) {
                             )}
                         </ImageList>
                     </Grid>
+                    }
                 </Grid>
                 <Grid
                     className={classes.time}>

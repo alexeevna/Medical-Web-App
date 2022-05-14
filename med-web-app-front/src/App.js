@@ -207,19 +207,8 @@ function App(props) {
             })
     }
 
-    console.log(allMessages)
-
     function onMessageReceived(response) {
         let data = JSON.parse(response.body)
-        // console.log(dataPair)
-        // let fileBase64 = null;
-        // if (dataPair.second.length > 0) {
-        //     fileBase64 = dataPair.second
-        // }
-        // dataPair.first = {...dataPair.first, dataBlob: fileBase64}
-        // let data = dataPair.first
-        // console.log(dataPair)
-        // data.localFiles = new Map(new Map(Object.entries(data.localFiles)))
         let presenceUserInContacts = false
         let presenceUsername
         for (let username of usersWithLastMsgReceived.keys()) {
@@ -235,8 +224,13 @@ function App(props) {
             setUsersWithLastMsgReceived(prev => prev.set(presenceUsername, userWithLastMessage))
         } else {
             UserService.getAllByUsername(data.senderName)
-                .then((response) => {
+                .then(async (response) => {
                     const user = response.data.shift();
+                    if (user.avatar) {
+                        const base64Response = await fetch(`data:application/json;base64,${user.avatar}`)
+                        const blob = await base64Response.blob()
+                        user.avatar = URL.createObjectURL(blob)
+                    }
                     let userWithLastMsg = {first: user, second: data}
                     setUsersWithLastMsgReceived(prev => (prev.set(user.username, userWithLastMsg)))
                 })

@@ -1,27 +1,22 @@
-import {Card, Divider, Input, InputBase, List, Paper, TextField, withStyles} from "@material-ui/core"
-import {Link} from "react-router-dom";
+import {Card, Divider, List, Paper, TextField, withStyles} from "@material-ui/core"
+import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react"
 import UserService from "../../services/user.service"
 import Grid from "@material-ui/core/Grid"
 import AuthService from "../../services/auth.service"
 import Button from "@material-ui/core/Button"
-import DoneOutlineIcon from "@material-ui/icons/DoneOutline"
 import ListItemButton from '@mui/material/ListItemButton';
 // import { Stomp } from '@stomp/stompjs'
 import UserCardMessage from "./user-card-msg.component"
 import ChatService from "../../services/chat.service"
-import axios from "axios";
 // import io from "socket.io-client";
 import RecipientMsg from "./recipient.msg.component"
 import SenderMsg from "./sender.msg.component"
-import UpdateStatusMsg from "./updateStatusMsg.component";
-import {useLocation, useParams} from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
-import {Box} from "@mui/material";
-import authHeader from "../../services/auth-header";
 import DicomAnonymizerService from "../../services/dicom-anonymizer.service";
+import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 
 
 const useStyles = theme => ({
@@ -181,27 +176,22 @@ function Chat(props) {
     const [selectedFiles, setSelectedFiles] = useState(null)
     const messagesEndRef = useRef(null)
     const fileInput = useRef(null)
-    // const socketRef = useRef();
     useEffect(() => {
-        // socketRef.current = io.connect('/');
-        // socketRef.current.on("your id", id => {
-        //     console.log(id)
-        //     setYourID(id);
-        // })
-        // socketRef.current.on("message", (message) => {
-        //     console.log("here");
-        // })
         getContacts();
     }, [])
 
     function updateContacts() {
         UserService.pushContacts(AuthService.getCurrentUser().username, selected)
-            .then((response) => {
-                console.log(response.data)
-                let userWithLastMsg = {first: response.data, second: null}
-                console.log(userWithLastMsg)
-                setUsersWithLastMsg(prev => prev.set(response.data.username, userWithLastMsg))
-                selectUser(response.data)
+            .then(async (response) => {
+                let user = response.data
+                if (user.avatar) {
+                    const base64Response = await fetch(`data:application/json;base64,${user.avatar}`)
+                    const blob = await base64Response.blob()
+                    user.avatar = URL.createObjectURL(blob)
+                }
+                let userWithLastMsg = {first: user, second: null}
+                setUsersWithLastMsg(prev => prev.set(user.username, userWithLastMsg))
+                selectUser(user)
             })
             .catch((e) => {
                 console.log(e)
@@ -220,8 +210,14 @@ function Chat(props) {
         UserService.getContacts(AuthService.getCurrentUser().username)
             .then((response) => {
                 const userWithLastMsgArray = response.data.contactWithLastMsg
-                userWithLastMsgArray.map(user => {
+                userWithLastMsgArray.map(async user => {
+                    if (user.first.avatar) {
+                        const base64Response = await fetch(`data:application/json;base64,${user.first.avatar}`)
+                        const blob = await base64Response.blob()
+                        user.first.avatar = URL.createObjectURL(blob)
+                    }
                     setUsersWithLastMsg(prev => prev.set(user.first.username, user))
+                    setRefresh({})
                 })
                 const user = userWithLastMsgArray.find(user => user.first.username === selected)
                 if (selected && !user) {
@@ -264,12 +260,9 @@ function Chat(props) {
             let pairFileNameBase64;
             if (selectedFiles) {
                 for (let i = 0; i < selectedFiles.length; i++) {
-                    console.log(selectedFiles)
                     if (selectedFiles[i].name.endsWith(".dcm")) {
                         const anonymizedDicomBlobArrayBuff = await DicomAnonymizerService.anonymizeInstance(selectedFiles[i]);
-                        console.log(anonymizedDicomBlobArrayBuff)
                         const blobDicom = new Blob([anonymizedDicomBlobArrayBuff])
-                        console.log(blobDicom)
                         let readerPromise = new Promise((resolve, reject) => {
                             let reader = new FileReader();
                             reader.onload = () => {
@@ -279,7 +272,6 @@ function Chat(props) {
                             reader.readAsDataURL(blobDicom);
                         })
                         const fileStringBase64 = await readerPromise;
-                        console.log(fileStringBase64)
                         pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
                     } else {
                         let readerPromise = new Promise((resolve, reject) => {
@@ -296,7 +288,6 @@ function Chat(props) {
                     fileNameAndStringBase64.push(pairFileNameBase64)
                 }
             }
-            console.log(fileNameAndStringBase64)
             const message = {
                 content: contentCorrect,
                 recipientId: selectedUser.id,
@@ -328,18 +319,11 @@ function Chat(props) {
         }
     }
 
-    console.log(allMessages)
-
-    // console.log(selectedFiles[0])
     function selectUser(user) {
         setSelectedUser(user)
-        const start = new Date().getTime();
         ChatService.getMessages(AuthService.getCurrentUser().username, user.username)
             .then((response) => {
                 if (response.data.length > 0) {
-                    const end = new Date().getTime();
-                    console.log(`Работа на бэке: ${end - start}ms`);
-                    console.log(response.data)
                     const valueMap = {unRead: 0, messages: response.data}
                     setAllMessages(prev => (prev.set(user.username, valueMap)))
                     setRefresh({})
@@ -423,8 +407,8 @@ function Chat(props) {
                     >
                         <Grid className={classes.flex} xs={12} item>
                             <Grid xs={2} item>
-                                <Avatar className={classes.avatar}>
-                                    2
+                                <Avatar className={classes.avatar} src={userAndLastMsg.first.avatar}>
+                                    <PhotoCameraOutlinedIcon/>
                                 </Avatar>
                             </Grid>
                             <Grid xs={10} item>
@@ -476,10 +460,8 @@ function Chat(props) {
         const dataMsg = allMessages.get(selectedUser.username)
         if (dataMsg && dataMsg.unRead > 0) {
             let unreadArr = dataMsg.messages.filter(msg => msg.statusMessage === "UNREAD" && msg.senderName === selectedUser.username && !processedUnreadMessages.includes(msg.id))
-            console.log(unreadArr)
             if (unreadArr.length > 0) {
                 unreadArr.map(msg => setProcessedUnreadMessages(prevState => (prevState.concat([msg.id]))))
-                console.log(unreadArr)
                 ChatService.updateStatusUnreadMessages(unreadArr).then()
             }
             minusUnRead(dataMsg.unRead)
@@ -528,15 +510,13 @@ function Chat(props) {
         if (files.length === 0) {
             files = null
         }
-        console.log(files)
         setSelectedFiles(files)
     }
 
-    console.log(allMessages)
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
-                <Card className={classes.paper}>
+                <Card className={classes.paper} >
                     <List className={classes.itemButton}>
 
                         {usersWithLastMsg && sortContacts()
@@ -551,6 +531,7 @@ function Chat(props) {
                         <Paper
 
                             className={classes.messageGrid}>
+
                             <Grid>
 
                                 {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].map((msg, index) => (

@@ -4,12 +4,13 @@ import ProfileService from "../services/profile.service";
 import Grid from '@material-ui/core/Grid';
 import '../styles/Profile.css'
 import Review from "./review.component"
-import {ButtonBase, Card, TextField, withStyles} from "@material-ui/core";
+import {ButtonBase, Card, Collapse, Paper, TextField, Typography, withStyles} from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
 import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 import {Link, useParams} from "react-router-dom";
 import UserService from "../services/user.service"
+import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 
 const useStyles = theme => ({
     txtField: {
@@ -53,10 +54,19 @@ const useStyles = theme => ({
         width: 150,
         height: 160,
     },
+    collapsed: {
+        position: "absolute",
+        bottom: 0,
+        width: 150,
+        // '& :hover': {
+        //     height: 1000,
+        // }
+    },
     btnbase: {
         marginBottom: theme.spacing(3),
         marginRight: theme.spacing(4),
         marginLeft: theme.spacing(4),
+        position: "relative"
     },
     button: {
         width: 200,
@@ -96,19 +106,32 @@ const useStyles = theme => ({
         padding: theme.spacing(1),
         color: "black",
         display: 'flex',
+    },
+    paperUploadAvatar: {
+        background: '#f4f4f4',
+        height: 30,
+        textAlign: "center",
+        paddingTop: 6,
+        '&:hover': {
+            backgroundColor: '#ffffff',
+            textDecoration: 'underline'
+        }
+    },
+    typography: {
+        fontWeight: 500,
+        fontSize: 13
     }
 });
 
 function Profile(props) {
     const {classes} = props
-    console.log(props)
     const [user, setUser] = useState(null)
     const {usernamePath} = useParams()
     const [username, setUsername] = useState(usernamePath)
     const [showReviews, setShowReviews] = useState(true)
     const fileInput = useRef(null)
     const [selectedFile, setSelectedFile] = useState(null)
-    console.log(usernamePath)
+    const [checked, setChecked] = useState(false)
 
     function selectFile() {
         if (user && user.username === AuthService.getCurrentUser().username) {
@@ -121,8 +144,7 @@ function Profile(props) {
         ProfileService.getProfile(username1).then(
             async response => {
                 const user = response.data;
-                console.log(user)
-                if (user && user.avatar) {
+                if (user.avatar) {
                     const base64Data = user.avatar
                     const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
                     const blob = await base64Response.blob()
@@ -158,16 +180,15 @@ function Profile(props) {
     }, [usernamePath])
 
     function uploadFiles(e) {
-            const MAX_SIZE_FILES = 52428800
-            if (e.target.files[0] > MAX_SIZE_FILES) {
-                alert("Размер <= 50МБ")
-            } else {
-                UserService.uploadAvatar(e.target.files[0]).then(r => console.log(r))
-                setSelectedFile(URL.createObjectURL(e.target.files[0]))
-            }
+        const MAX_SIZE_FILES = 52428800
+        if (e.target.files[0] > MAX_SIZE_FILES) {
+            alert("Размер <= 50МБ")
+        } else {
+            UserService.uploadAvatar(e.target.files[0])
+            setSelectedFile(URL.createObjectURL(e.target.files[0]))
+        }
     }
 
-    console.log(selectedFile)
     return (
         <div>
             {
@@ -178,14 +199,24 @@ function Profile(props) {
                             <Card className={classes.paper}>
                                 <Grid className={classes.gridInPaper}>
                                     <Grid className={classes.grid}>
-                                        <ButtonBase className={classes.btnbase} onClick={selectFile}
-                                                    onMouseOver={(e) => console.log("hello")}>
+                                        <ButtonBase className={classes.btnbase}
+                                                    onMouseOver={(e) => setChecked(true)}
+                                                    onMouseLeave={(e) => setChecked(false)}>
                                             <input type="file" style={{"display": "none"}} ref={fileInput}
                                                    accept="image/*"
                                                    onChange={(e) => uploadFiles(e)}/>
                                             <Avatar className={classes.avatar} variant="rounded" src={selectedFile}>
-                                                Photo
+                                                <PhotoCameraOutlinedIcon style={{fontSize: 60}}/>
+
                                             </Avatar>
+                                            {user && user.username === AuthService.getCurrentUser().username &&
+                                            <Collapse in={checked} className={classes.collapsed}>
+                                                <Paper className={classes.paperUploadAvatar} onClick={selectFile}>
+                                                    <Typography className={classes.typography}>
+                                                        Загрузить фотографию
+                                                    </Typography>
+                                                </Paper>
+                                            </Collapse>}
                                         </ButtonBase>
                                         <div>Дата регистрации:</div>
                                         <div>{new Date(user.registeredDate).toLocaleDateString()}</div>

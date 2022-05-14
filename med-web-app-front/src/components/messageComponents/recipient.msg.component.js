@@ -1,8 +1,9 @@
 import React, {Component, useEffect, useState} from "react";
 import '../../styles/Search.css'
 import {ImageList, ImageListItem, Paper, TableCell, withStyles} from "@material-ui/core";
-import {Link} from '@material-ui/core';
+import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
+import AuthService from "../../services/auth.service";
 
 const useStyles = theme => ({
 
@@ -28,6 +29,9 @@ const useStyles = theme => ({
         marginTop: theme.spacing(0.5),
         textAlign: "right"
     },
+    link: {
+        color: "black",
+    }
 });
 
 function RecipientMsg(props) {
@@ -84,12 +88,17 @@ function RecipientMsg(props) {
     return (
         <Grid>
             <Paper className={classes.msgNotMy}>
-                <Grid className={classes.txt}>{initialsSender}</Grid>
+                <Grid className={classes.txt}>
+                    <Link to={"/profile/" + msg.senderName} className={classes.link}>
+                        {initialsSender}
+                    </Link>
+                </Grid>
                 <Grid>
                     <Grid>{msg.content}</Grid>
+                    {files &&
                     <Grid>
-                        <ImageList cols={3} rowHeight={200} gap={3}>
-                            {files && files.map((file, index) =>
+                        <ImageList cols={2} rowHeight={200} gap={3}>
+                            {files.map((file, index) =>
                                 <ImageListItem key={index}>
                                     <img
                                         src={file.image}
@@ -101,6 +110,7 @@ function RecipientMsg(props) {
                             )}
                         </ImageList>
                     </Grid>
+                    }
                 </Grid>
                 <Grid
                     className={classes.time}>
