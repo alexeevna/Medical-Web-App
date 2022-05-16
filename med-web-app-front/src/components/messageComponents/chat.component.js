@@ -206,6 +206,21 @@ function Chat(props) {
         messagesEndRef.current?.scrollIntoView({behavior: "auto"})
     }
 
+    function deleteMsgClient(msg) {
+        let newMsgArray = allMessages.get(selectedUser.username).messages.filter(value => value.id !== msg.id)
+        const valueMap = {unRead: 0, messages: newMsgArray}
+        let lastMsg = null;
+        if (newMsgArray.length > 0) {
+            lastMsg = newMsgArray[newMsgArray.length - 1]
+        }
+        setAllMessages(prev => prev.set(selectedUser.username, valueMap))
+        setUsersWithLastMsg(prev => prev.set(selectedUser.username, {
+            first: selectedUser,
+            second: lastMsg
+        }))
+        setRefresh({})
+    }
+
     function getContacts() {
         UserService.getContacts(AuthService.getCurrentUser().username)
             .then((response) => {
@@ -216,6 +231,7 @@ function Chat(props) {
                         const blob = await base64Response.blob()
                         user.first.avatar = URL.createObjectURL(blob)
                     }
+                    console.log(user)
                     setUsersWithLastMsg(prev => prev.set(user.first.username, user))
                     setRefresh({})
                 })
@@ -320,6 +336,7 @@ function Chat(props) {
     }
 
     function selectUser(user) {
+        console.log(user)
         setSelectedUser(user)
         ChatService.getMessages(AuthService.getCurrentUser().username, user.username)
             .then((response) => {
@@ -333,7 +350,7 @@ function Chat(props) {
             .catch((e) => {
                 console.log(e)
             })
-
+        setRefresh({})
     }
 
     function selectFile() {
@@ -516,7 +533,7 @@ function Chat(props) {
     return (
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
-                <Card className={classes.paper} >
+                <Card className={classes.paper}>
                     <List className={classes.itemButton}>
 
                         {usersWithLastMsg && sortContacts()
@@ -538,7 +555,9 @@ function Chat(props) {
 
                                     ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
                                         (
-                                            <SenderMsg msg={msg} key={index} scrollToBottom={scrollToBottom}/>
+                                            <SenderMsg msg={msg} key={index} scrollToBottom={scrollToBottom}
+                                                       deleteMsgClient={deleteMsgClient} selectUser={selectUser}
+                                                       selectedUser={selectedUser} setRefresh={setRefresh}/>
                                         )) || (((msg.senderName === selectedUser.username) &&
                                             (
                                                 <RecipientMsg msg={msg} key={index}

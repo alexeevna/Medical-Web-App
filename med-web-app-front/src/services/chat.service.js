@@ -46,6 +46,10 @@ class ChatService {
         return params;
     }
 
+    deleteMsg(message) {
+        return axios.post(API_URL + 'deleteMsg', {message}, {headers: authHeader()})
+    }
+
 }
 
 export default new ChatService();

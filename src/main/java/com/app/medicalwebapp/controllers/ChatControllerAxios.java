@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.controllers;
 
+import com.app.medicalwebapp.controllers.requestbody.ChatMessageDeleteRequest;
 import com.app.medicalwebapp.controllers.requestbody.MessagesRequest;
 import com.app.medicalwebapp.model.mesages.ChatMessage;
 import com.app.medicalwebapp.services.ChatMessageService;
@@ -52,6 +53,20 @@ public class ChatControllerAxios {
     ) {
         try {
             chatMessageService.updateUnreadMessages(request.getMessages());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/deleteMsg")
+    public ResponseEntity<?> deleteMessages(
+            @Valid @RequestBody ChatMessageDeleteRequest request
+    ) {
+        try {
+            System.out.println(request.getMessage());
+            chatMessageService.deleteMessage(request.getMessage());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();

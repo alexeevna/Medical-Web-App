@@ -207,7 +207,6 @@ function Profile(props) {
                                                    onChange={(e) => uploadFiles(e)}/>
                                             <Avatar className={classes.avatar} variant="rounded" src={selectedFile}>
                                                 <PhotoCameraOutlinedIcon style={{fontSize: 60}}/>
-
                                             </Avatar>
                                             {user && user.username === AuthService.getCurrentUser().username &&
                                             <Collapse in={checked} className={classes.collapsed}>

@@ -83,5 +83,9 @@ public class ChatMessageService {
             chatMessageRepository.save(message);
         }
     }
+
+    public void deleteMessage(ChatMessage message) {
+        chatMessageRepository.delete(message);
+    }
 }
 
