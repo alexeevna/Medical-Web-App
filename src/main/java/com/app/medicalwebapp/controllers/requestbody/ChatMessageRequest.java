@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.springframework.data.util.Pair;
 
 import javax.persistence.Column;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,8 @@ public class ChatMessageRequest {
     private String content;
 
     private  List<ChatFileRequest> localFiles;
+
+    private LocalDateTime sendDate;
 
 //    List<Pair<String, String>> attachments;
 

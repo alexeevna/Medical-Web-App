@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.controllers;
 
+import com.app.medicalwebapp.controllers.requestbody.ChatMessageDeleteByTimeAndChatIdRequest;
 import com.app.medicalwebapp.controllers.requestbody.ChatMessageDeleteRequest;
 import com.app.medicalwebapp.controllers.requestbody.MessagesRequest;
 import com.app.medicalwebapp.model.mesages.ChatMessage;
@@ -65,8 +66,18 @@ public class ChatControllerAxios {
             @Valid @RequestBody ChatMessageDeleteRequest request
     ) {
         try {
-            System.out.println(request.getMessage());
             chatMessageService.deleteMessage(request.getMessage());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("deleteMsgByTimeAndChatId")
+    public ResponseEntity<?> deleteMsgByTimeAndChatId(@Valid @RequestBody ChatMessageDeleteByTimeAndChatIdRequest request) {
+        try {
+            chatMessageService.deleteMsgByTimeAndChatId(request.getTime(), request.getSenderName(), request.getRecipientName());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();

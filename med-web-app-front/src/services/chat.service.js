@@ -50,6 +50,15 @@ class ChatService {
         return axios.post(API_URL + 'deleteMsg', {message}, {headers: authHeader()})
     }
 
+    deleteMsgByTimeAndChatId(time, senderName, recipientName) {
+        return axios.post(API_URL + 'deleteMsgByTimeAndChatId', {
+            time,
+            senderName,
+            recipientName
+        }, {headers: authHeader()})
+    }
+
+
 }
 
 export default new ChatService();

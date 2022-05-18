@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import '../../styles/Search.css'
 import {
     Collapse,
@@ -7,18 +7,15 @@ import {
     ImageList,
     ImageListItem,
     Paper,
-    TableCell,
-    Typography,
     withStyles
 } from "@material-ui/core";
 import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import AuthService from "../../services/auth.service";
-import AttachmentService from "../../services/attachment.service";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ChatService from "../../services/chat.service"
-import {Select} from "@mui/material";
 import Button from "@material-ui/core/Button";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const useStyles = theme => ({
 
@@ -50,7 +47,7 @@ const useStyles = theme => ({
     },
     collapsed: {
         marginTop: -3,
-        marginLeft: 0,
+        marginLeft: 3,
         color: '#888888',
         float: "right",
         '&:hover': {
@@ -62,7 +59,15 @@ const useStyles = theme => ({
             cursor: "pointer",
             textDecoration: 'underline'
         },
-    }
+    },
+    button: {
+        backgroundColor: '#f50057',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
+    },
 });
 
 function SenderMsg(props) {
@@ -70,19 +75,14 @@ function SenderMsg(props) {
     const {msg} = props
     const {scrollToBottom} = props
     const {deleteMsgClient} = props
-    const {selectUser} = props
-    const {selectedUser} = props
-    const {setRefresh} = props
     const [files, setFiles] = useState([])
     const [checked, setChecked] = useState(false)
     const [showPaper, setShowPaper] = useState(false)
     const [paperX, setPaperX] = useState(false)
     const [paperY, setPaperY] = useState(false)
-    const [refresh2, setRefresh2] = useState({})
     const [openDialog, setOpenDialog] = useState(false)
     const KeyboardArrowDownIconRef = useRef();
     useEffect(async () => {
-        // scrollToBottom()
         await getFiles()
         scrollToBottom()
     }, [msg]);
@@ -90,7 +90,6 @@ function SenderMsg(props) {
     async function getFiles() {
         setFiles([])
         let preview = [];
-        // const start = new Date().getTime();
         if (msg.attachmentsBlobForImageClient && msg.attachmentsBlobForImageClient.length > 0) {
             for (let i = 0; i < msg.attachmentsBlobForImageClient.length; i++) {
                 if (msg.attachmentsBlobForImageClient[i].name.endsWith(".jpg") ||
@@ -123,38 +122,27 @@ function SenderMsg(props) {
                 preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(blob)})
             }
         }
-        // const end = new Date().getTime();
-        // console.log(`Работа на фронте: ${end - start}ms`);
         setFiles(preview)
     }
 
     function agreeToDelete() {
-        console.log(msg)
         if (msg.id) {
             ChatService.deleteMsg(msg)
-            setShowPaper(false)
-            deleteMsgClient(msg)
         } else {
-            selectUser(selectedUser)
-            console.log(msg)
-            // alert("точно удалить?")
-            // setRefresh2({})
-            // deleteMsg()
-            // console.log(msg)
-            // await ChatService.deleteMsg(msg)
-            // await setShowPaper(false)
-            // await deleteMsgClient(msg)
+            ChatService.deleteMsgByTimeAndChatId(msg.sendDate, msg.senderName, msg.recipientName)
         }
+        deleteMsgClient(msg)
         setOpenDialog(false)
+        setChecked(false)
     }
 
     function disagreeToDelete() {
-        console.log("dis")
+        setChecked(false)
         setOpenDialog(false)
     }
 
     function deleteMsg() {
-        setShowPaper(false)
+        // setShowPaper(false)
         setOpenDialog(true)
     }
 
@@ -168,8 +156,7 @@ function SenderMsg(props) {
             setShowPaper(false)
         }
     }
-    console.log(msg.sendDate)
-    console.log((new Date(msg.sendDate)).toString())
+
     return (
         <Grid>
 
@@ -184,31 +171,40 @@ function SenderMsg(props) {
                         </Grid>
                         <Grid>
                             <Collapse in={checked}>
-                                <KeyboardArrowDownIcon onClick={(e => handleClick(e))} ref={KeyboardArrowDownIconRef}
-                                                       className={classes.collapsed}/>
+                                {/*<KeyboardArrowDownIcon onClick={(e => handleClick(e))} ref={KeyboardArrowDownIconRef}*/}
+                                {/*                       className={classes.collapsed}/>*/}
+                                <DeleteIcon onClick={(e => deleteMsg(e))} ref={KeyboardArrowDownIconRef}
+                                            className={classes.collapsed}/>
                             </Collapse>
-                            {showPaper &&
-                            <Paper className={classes.paperDelete} style={{
-                                position: "absolute",
-                                left: paperX,
-                                top: paperY,
-                                backgroundColor: '#eeeeee',
-                                padding: 1.5
-                            }}
-                                   onClick={deleteMsg}
-                            > Удалить сообщение у
-                                всех </Paper>}
+                            {/*{showPaper &&*/}
+                            {/*<Paper className={classes.paperDelete} style={{*/}
+                            {/*    position: "absolute",*/}
+                            {/*    left: paperX,*/}
+                            {/*    top: paperY,*/}
+                            {/*    backgroundColor: '#eeeeee',*/}
+                            {/*    padding: 1.5*/}
+                            {/*}}*/}
+                            {/*       onClick={deleteMsg}*/}
+                            {/*> Удалить сообщение у*/}
+                            {/*    всех </Paper>}*/}
                             <Dialog
                                 open={openDialog}
                                 onClose={disagreeToDelete}
                             >
                                 <DialogContent>
-                                    <DialogContentText>
+                                    <DialogContentText style={{fontSize: 20, color: "black"}}>
                                         Вы уверены, что хотите удалить сообщение?
+                                        <br/>
+                                        Сообщение также удалиться и у собеседника.
                                     </DialogContentText>
                                     <DialogActions>
-                                        <Button onClick={disagreeToDelete}>Нет</Button>
-                                        <Button onClick={agreeToDelete}>
+                                        <Button
+                                            className={classes.button}
+                                            onClick={disagreeToDelete}>
+                                            Нет
+                                        </Button>
+                                        <Button className={classes.button}
+                                                onClick={agreeToDelete}>
                                             Да
                                         </Button>
                                     </DialogActions>

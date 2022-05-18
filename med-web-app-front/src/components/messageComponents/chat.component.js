@@ -207,7 +207,12 @@ function Chat(props) {
     }
 
     function deleteMsgClient(msg) {
-        let newMsgArray = allMessages.get(selectedUser.username).messages.filter(value => value.id !== msg.id)
+        let newMsgArray;
+        if (msg.id) {
+            newMsgArray = allMessages.get(selectedUser.username).messages.filter(value => value.id !== msg.id)
+        } else {
+            newMsgArray = allMessages.get(selectedUser.username).messages.filter(value => value.sendDate !== msg.sendDate)
+        }
         const valueMap = {unRead: 0, messages: newMsgArray}
         let lastMsg = null;
         if (newMsgArray.length > 0) {
@@ -231,7 +236,6 @@ function Chat(props) {
                         const blob = await base64Response.blob()
                         user.first.avatar = URL.createObjectURL(blob)
                     }
-                    console.log(user)
                     setUsersWithLastMsg(prev => prev.set(user.first.username, user))
                     setRefresh({})
                 })
@@ -304,6 +308,8 @@ function Chat(props) {
                     fileNameAndStringBase64.push(pairFileNameBase64)
                 }
             }
+            const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+            const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
             const message = {
                 content: contentCorrect,
                 recipientId: selectedUser.id,
@@ -313,7 +319,7 @@ function Chat(props) {
                 // attachments: fileNameAndStringBase64,
                 attachmentsBlobForImageClient: selectedFiles,
                 localFiles: fileNameAndStringBase64,
-                sendDate: new Date()
+                sendDate: localISOTime
             }
             if (allMessages.get(selectedUser.username)) {
                 let msg = allMessages.get(selectedUser.username).messages
@@ -336,7 +342,6 @@ function Chat(props) {
     }
 
     function selectUser(user) {
-        console.log(user)
         setSelectedUser(user)
         ChatService.getMessages(AuthService.getCurrentUser().username, user.username)
             .then((response) => {
@@ -556,8 +561,7 @@ function Chat(props) {
                                     ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
                                         (
                                             <SenderMsg msg={msg} key={index} scrollToBottom={scrollToBottom}
-                                                       deleteMsgClient={deleteMsgClient} selectUser={selectUser}
-                                                       selectedUser={selectedUser} setRefresh={setRefresh}/>
+                                                       deleteMsgClient={deleteMsgClient}/>
                                         )) || (((msg.senderName === selectedUser.username) &&
                                             (
                                                 <RecipientMsg msg={msg} key={index}

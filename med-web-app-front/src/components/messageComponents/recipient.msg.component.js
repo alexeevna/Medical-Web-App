@@ -114,11 +114,16 @@ function RecipientMsg(props) {
                 </Grid>
                 <Grid
                     className={classes.time}>
-
                     {
-                        new Date(msg.sendDate).getHours() + ":"
-                        + ((new Date(msg.sendDate).getMinutes() < 10 && "0" + new Date(msg.sendDate).getMinutes())
-                            || (new Date(msg.sendDate).getMinutes() > 10 && new Date(msg.sendDate).getMinutes())
+                        (((new Date(msg.sendDate).getHours() < 10 && "0" + new Date(msg.sendDate).getHours())
+                                || (new Date(msg.sendDate).getHours() >= 10 && new Date(msg.sendDate).getHours())) + ":"
+                            + ((new Date(msg.sendDate).getMinutes() < 10 && "0" + new Date(msg.sendDate).getMinutes())
+                                || (new Date(msg.sendDate).getMinutes() > 10 && new Date(msg.sendDate).getMinutes())
+                            )) + "    " + (
+                            ((new Date(msg.sendDate).getDate() < 10 && "0" + new Date(msg.sendDate).getDate()) || (new Date(msg.sendDate).getDate() >= 10 && new Date(msg.sendDate).getDate()))
+                            + "."
+                            + (((new Date(msg.sendDate).getMonth() + 1) < 10 && "0" + (new Date(msg.sendDate).getMonth() + 1)) || (((new Date(msg.sendDate).getMonth() + 1) >= 10 && (new Date(msg.sendDate).getMonth() + 1))))
+                            + "." + new Date(msg.sendDate).getFullYear()
                         )
                     }
                 </Grid>

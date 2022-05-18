@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.services;
 
+import com.app.medicalwebapp.controllers.requestbody.ChatMessageDeleteByTimeAndChatIdRequest;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
 import com.app.medicalwebapp.model.mesages.ChatMessage;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,5 +89,17 @@ public class ChatMessageService {
     public void deleteMessage(ChatMessage message) {
         chatMessageRepository.delete(message);
     }
+
+    public void deleteMsgByTimeAndChatId(LocalDateTime time, String senderUsername, String recipientUsername) {
+        String chatId;
+        if (senderUsername.compareTo(recipientUsername) < 0) {
+            chatId = (senderUsername + recipientUsername);
+        } else {
+            chatId = (recipientUsername + senderUsername);
+        }
+        ChatMessage messageToDelete = chatMessageRepository.findBySendDateAndChatId(time, chatId);
+        chatMessageRepository.delete(messageToDelete);
+    }
+
 }
 

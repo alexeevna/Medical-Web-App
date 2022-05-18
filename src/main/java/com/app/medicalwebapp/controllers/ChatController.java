@@ -52,6 +52,8 @@ public class ChatController {
     public void sendMessage(@DestinationVariable("recipient") String recipient, @RequestParam ChatMessageRequest msg) {
         try {
             List<FileObject> files = new ArrayList<>();
+//            System.out.println(msg.getSendDate());
+//            System.out.println(LocalDateTime.now());
 //            System.out.println(msg.getLocalFiles().get(0));
 //            List<String> filesBase64 = new ArrayList<>();
             List<ChatFile> localFiles = new ArrayList<>();
@@ -89,7 +91,7 @@ public class ChatController {
             chatMessage.setSenderName(msg.getSenderName());
             chatMessage.setContent(msg.getContent());
             chatMessage.setStatusMessage(StatusMessage.UNREAD);
-            chatMessage.setSendDate(LocalDateTime.now());
+            chatMessage.setSendDate(msg.getSendDate());
             chatMessage.setAttachments(files);
             chatMessage.setLocalFiles(localFiles);
 //            System.out.println(chatMessage);
