@@ -1,26 +1,32 @@
 import {Card, Divider, List, Paper, TextField, withStyles} from "@material-ui/core"
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react"
 import UserService from "../../services/user.service"
 import Grid from "@material-ui/core/Grid"
 import AuthService from "../../services/auth.service"
 import Button from "@material-ui/core/Button"
-import DoneOutlineIcon from "@material-ui/icons/DoneOutline"
 import ListItemButton from '@mui/material/ListItemButton';
 // import { Stomp } from '@stomp/stompjs'
 import UserCardMessage from "./user-card-msg.component"
 import ChatService from "../../services/chat.service"
+// import io from "socket.io-client";
 import RecipientMsg from "./recipient.msg.component"
 import SenderMsg from "./sender.msg.component"
-import UpdateStatusMsg from "./updateStatusMsg.component";
-import {useLocation, useParams} from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import SendIcon from '@mui/icons-material/Send';
+import DicomAnonymizerService from "../../services/dicom-anonymizer.service";
+import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 
 
 const useStyles = theme => ({
     root: {
-        // width: 635,
-        marginBottom: theme.spacing(1.5),
+        width: 510,
+        // position: 'relative',
+        // marginTop: theme.spacing(1.5),
+        // marginBottom: theme.spacing(1.5),
+        marginLeft: 6,
+        marginRight: 6,
         "& .MuiFormLabel-root": {
             margin: 0,
             color: "black"
@@ -60,7 +66,7 @@ const useStyles = theme => ({
     },
     messageGrid: {
         width: 650,
-        height: 440,
+        height: 507,
         overflowY: "auto",
         // overflowX: "visible",
         marginBottom: theme.spacing(1.5),
@@ -130,10 +136,21 @@ const useStyles = theme => ({
         // position: 'auto',
     },
     lastMsgTimeContent: {
-        color: '#888888'
+        color: '#888888',
+        textAlign: "right"
+    },
+    lastMsgTextContent: {
+        color: '#888888',
     },
     gridFullWidth: {
         width: '100%'
+    },
+    // input: {
+    //     width: '94%'
+    // },
+    iconInput: {
+        width: "100%",
+        height: 56,
     }
 })
 
@@ -149,26 +166,32 @@ function Chat(props) {
     const {allMessages} = props
     const {setAllMessages} = props
     const {selected} = useParams()
+    const [yourID, setYourID] = useState();
     const [processedUnreadMessages, setProcessedUnreadMessages] = useState([])
     const [content, setContent] = useState("")
     const [contentPresence, setContentPresence] = useState(false)
     const [contentCorrect, setContentCorrect] = useState("")
     const [selectedUser, setSelectedUser] = useState(null)
     const [refresh, setRefresh] = useState({})
+    const [selectedFiles, setSelectedFiles] = useState(null)
     const messagesEndRef = useRef(null)
-
+    const fileInput = useRef(null)
     useEffect(() => {
         getContacts();
     }, [])
 
     function updateContacts() {
         UserService.pushContacts(AuthService.getCurrentUser().username, selected)
-            .then((response) => {
-                console.log(response.data)
-                let userWithLastMsg = {first: response.data, second: null}
-                console.log(userWithLastMsg)
-                setUsersWithLastMsg(prev => prev.set(response.data.username, userWithLastMsg))
-                selectUser(response.data)
+            .then(async (response) => {
+                let user = response.data
+                if (user.avatar) {
+                    const base64Response = await fetch(`data:application/json;base64,${user.avatar}`)
+                    const blob = await base64Response.blob()
+                    user.avatar = URL.createObjectURL(blob)
+                }
+                let userWithLastMsg = {first: user, second: null}
+                setUsersWithLastMsg(prev => prev.set(user.username, userWithLastMsg))
+                selectUser(user)
             })
             .catch((e) => {
                 console.log(e)
@@ -183,12 +206,38 @@ function Chat(props) {
         messagesEndRef.current?.scrollIntoView({behavior: "auto"})
     }
 
+    function deleteMsgClient(msg) {
+        let newMsgArray;
+        if (msg.id) {
+            newMsgArray = allMessages.get(selectedUser.username).messages.filter(value => value.id !== msg.id)
+        } else {
+            newMsgArray = allMessages.get(selectedUser.username).messages.filter(value => value.sendDate !== msg.sendDate)
+        }
+        const valueMap = {unRead: 0, messages: newMsgArray}
+        let lastMsg = null;
+        if (newMsgArray.length > 0) {
+            lastMsg = newMsgArray[newMsgArray.length - 1]
+        }
+        setAllMessages(prev => prev.set(selectedUser.username, valueMap))
+        setUsersWithLastMsg(prev => prev.set(selectedUser.username, {
+            first: selectedUser,
+            second: lastMsg
+        }))
+        setRefresh({})
+    }
+
     function getContacts() {
         UserService.getContacts(AuthService.getCurrentUser().username)
             .then((response) => {
                 const userWithLastMsgArray = response.data.contactWithLastMsg
-                userWithLastMsgArray.map(user => {
+                userWithLastMsgArray.map(async user => {
+                    if (user.first.avatar) {
+                        const base64Response = await fetch(`data:application/json;base64,${user.first.avatar}`)
+                        const blob = await base64Response.blob()
+                        user.first.avatar = URL.createObjectURL(blob)
+                    }
                     setUsersWithLastMsg(prev => prev.set(user.first.username, user))
+                    setRefresh({})
                 })
                 const user = userWithLastMsgArray.find(user => user.first.username === selected)
                 if (selected && !user) {
@@ -219,15 +268,58 @@ function Chat(props) {
         }
     }
 
-    function sendMessage() {
+    function checkKey(key) {
+        if (key.key === "Enter" && key.shiftKey === false && selectedUser && contentPresence) {
+            sendMessage()
+        }
+    }
+
+    async function sendMessage() {
         if (stompClient) {
-            var message = {
+            let fileNameAndStringBase64 = []
+            let pairFileNameBase64;
+            if (selectedFiles) {
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    if (selectedFiles[i].name.endsWith(".dcm")) {
+                        const anonymizedDicomBlobArrayBuff = await DicomAnonymizerService.anonymizeInstance(selectedFiles[i]);
+                        const blobDicom = new Blob([anonymizedDicomBlobArrayBuff])
+                        let readerPromise = new Promise((resolve, reject) => {
+                            let reader = new FileReader();
+                            reader.onload = () => {
+                                resolve(reader.result);
+                            };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blobDicom);
+                        })
+                        const fileStringBase64 = await readerPromise;
+                        pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
+                    } else {
+                        let readerPromise = new Promise((resolve, reject) => {
+                            let reader = new FileReader();
+                            reader.onload = () => {
+                                resolve(reader.result);
+                            };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(selectedFiles[i]);
+                        })
+                        const fileStringBase64 = await readerPromise;
+                        pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
+                    }
+                    fileNameAndStringBase64.push(pairFileNameBase64)
+                }
+            }
+            const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+            const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+            const message = {
                 content: contentCorrect,
                 recipientId: selectedUser.id,
                 recipientName: selectedUser.username,
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
-                sendDate: new Date()
+                // attachments: fileNameAndStringBase64,
+                attachmentsBlobForImageClient: selectedFiles,
+                localFiles: fileNameAndStringBase64,
+                sendDate: localISOTime
             }
             if (allMessages.get(selectedUser.username)) {
                 let msg = allMessages.get(selectedUser.username).messages
@@ -242,6 +334,7 @@ function Chat(props) {
             }
             setUsersWithLastMsg(prev => prev.set(selectedUser.username, {first: selectedUser, second: message}))
             stompClient.send("/app/send/" + selectedUser.username, {}, JSON.stringify(message))
+            setSelectedFiles(null)
             setContent("")
             setContentCorrect("")
             setContentPresence(false)
@@ -262,11 +355,55 @@ function Chat(props) {
             .catch((e) => {
                 console.log(e)
             })
+        setRefresh({})
+    }
+
+    function selectFile() {
+        fileInput.current.click()
+    }
+
+    function getDayOfWeek(yesterday1, messageTime, days) {
+        yesterday1.setDate(yesterday1.getDate() - 1)
+        if (yesterday1.getDate() === messageTime.getDate()) {
+            return days [messageTime.getDay()]
+        } else {
+            return false
+        }
+    }
+
+    function processTimeSend(userAndLastMsg) {
+        let today = new Date()
+        let messageTime = new Date(userAndLastMsg.second.sendDate)
+        if (today.toDateString() === messageTime.toDateString()) {
+            return (((messageTime.getHours() < 10 && "0" + messageTime.getHours()) || messageTime.getHours() >= 10 && messageTime.getHours()) + ":"
+                + ((messageTime.getMinutes() < 10 && "0" + messageTime.getMinutes())
+                    || (messageTime.getMinutes() >= 10 && messageTime.getMinutes())
+                ))
+        } else if (today.getFullYear() === messageTime.getFullYear()) {
+            let yesterday1 = new Date(today)
+            yesterday1.setDate(yesterday1.getDate() - 1)
+            if (yesterday1.getDate() === messageTime.getDate()) {
+                return "Вчера"
+            }
+            const days = ["ВC", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"]
+            for (let i = 0; i < 5; i++) {
+                const dayOfWeek = getDayOfWeek(yesterday1, messageTime, days)
+                if (dayOfWeek) {
+                    return dayOfWeek
+                }
+            }
+        }
+        return (
+            ((messageTime.getDate() < 10 && "0" + messageTime.getDate()) || (messageTime.getDate() >= 10 && messageTime.getDate()))
+            + "."
+            + (((messageTime.getMonth() + 1) < 10 && "0" + (messageTime.getMonth() + 1)) || (((messageTime.getMonth() + 1) >= 10 && (messageTime.getMonth() + 1))))
+            + "." + messageTime.getFullYear()
+        )
+
     }
 
     function sortContacts() {
         let sortedContacts = [...usersWithLastMsg.values()]
-        console.log(sortedContacts)
         sortedContacts.sort(function (a, b) {
             if (a.second !== null && b.second !== null) {
                 const aTime = new Date(a.second.sendDate)
@@ -292,32 +429,36 @@ function Chat(props) {
                     >
                         <Grid className={classes.flex} xs={12} item>
                             <Grid xs={2} item>
-                                <Avatar className={classes.avatar}>
-                                    2
+                                <Avatar className={classes.avatar} src={userAndLastMsg.first.avatar}>
+                                    <PhotoCameraOutlinedIcon/>
                                 </Avatar>
                             </Grid>
                             <Grid xs={10} item>
                                 <Grid className={classes.gridFullWidth}>
                                     <Grid className={classes.flex} xs={12} item>
-                                        <Grid xs={10} item>
+                                        <Grid xs={9} item>
                                             <UserCardMessage user={userAndLastMsg.first}
                                             />
                                         </Grid>
-                                        <Grid xs={2} item>
+                                        <Grid xs={3} item>
                                             <Grid className={classes.lastMsgTimeContent}>
                                                 {
-                                                    userAndLastMsg.second && userAndLastMsg.second.sendDate && new Date(userAndLastMsg.second.sendDate).getHours() + ":"
-                                                    + ((new Date(userAndLastMsg.second.sendDate).getMinutes() < 10 && "0" + new Date(userAndLastMsg.second.sendDate).getMinutes())
-                                                        || (new Date(userAndLastMsg.second.sendDate).getMinutes() > 10 && new Date(userAndLastMsg.second.sendDate).getMinutes())
-                                                    )
+                                                    userAndLastMsg.second && userAndLastMsg.second.sendDate && processTimeSend(userAndLastMsg)
                                                 }
+                                                {/*{*/}
+                                                {/*    userAndLastMsg.second && userAndLastMsg.second.sendDate && new Date(userAndLastMsg.second.sendDate).getHours() + ":"*/}
+                                                {/*    + ((new Date(userAndLastMsg.second.sendDate).getMinutes() < 10 && "0" + new Date(userAndLastMsg.second.sendDate).getMinutes())*/}
+                                                {/*        || (new Date(userAndLastMsg.second.sendDate).getMinutes() > 10 && new Date(userAndLastMsg.second.sendDate).getMinutes())*/}
+                                                {/*    )*/}
+                                                {/*}*/}
+                                                {/*{processTimeSend(userAndLastMsg)}*/}
                                             </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>
                                 <Grid className={classes.flex} xs={12} item>
                                     <Grid xs={10} item
-                                          className={classes.lastMsgTimeContent}>{(userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...") ||
+                                          className={classes.lastMsgTextContent}>{(userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...") ||
                                     (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length < 25 && userAndLastMsg.second.content)}
                                     </Grid>
                                     {allMessages.get(userAndLastMsg.first.username) && (allMessages.get(userAndLastMsg.first.username).unRead > 0)
@@ -339,10 +480,8 @@ function Chat(props) {
     function updateStatusMsg() {
         //Сюда заходить очень часто во время отображения сообщений, надо бы оптимизировать
         const dataMsg = allMessages.get(selectedUser.username)
-        scrollToBottom()
         if (dataMsg && dataMsg.unRead > 0) {
-            const unreadArr = dataMsg.messages.filter(msg => msg.statusMessage === "UNREAD" && msg.senderName === selectedUser.username && !processedUnreadMessages.includes(msg.id))
-            console.log(unreadArr)
+            let unreadArr = dataMsg.messages.filter(msg => msg.statusMessage === "UNREAD" && msg.senderName === selectedUser.username && !processedUnreadMessages.includes(msg.id))
             if (unreadArr.length > 0) {
                 unreadArr.map(msg => setProcessedUnreadMessages(prevState => (prevState.concat([msg.id]))))
                 ChatService.updateStatusUnreadMessages(unreadArr).then()
@@ -351,6 +490,49 @@ function Chat(props) {
             dataMsg.unRead = 0
             setAllMessages(prev => (prev.set(selectedUser.username, dataMsg)))
         }
+    }
+
+    function createFilesArray() {
+        let filesArray = []
+        for (let i = 0; i < selectedFiles.length; i++) {
+            filesArray.push(selectedFiles[i])
+        }
+        return filesArray
+    }
+
+    function disableButton() {
+        if (selectedUser) {
+            return !(contentPresence || selectedFiles);
+
+        }
+        return true
+    }
+
+    function uploadFiles(e) {
+        const MAX_NUM_FILES = 6
+        const MAX_SIZE_FILES = 52428800
+        let err_files = false
+        let files = Array.from(e.target.files)
+        if (files.length > MAX_NUM_FILES) {
+            files.splice(MAX_NUM_FILES)
+            err_files = true
+        }
+        let removedCount = 0
+        const length = files.length
+        for (let i = 0; i < length; i++) {
+            if (files[i - removedCount].size > MAX_SIZE_FILES) {
+                files.splice(i - removedCount, 1)
+                removedCount++
+                err_files = true
+            }
+        }
+        if (err_files) {
+            alert("Кол-во <= 6, размер <= 50МБ")
+        }
+        if (files.length === 0) {
+            files = null
+        }
+        setSelectedFiles(files)
     }
 
     return (
@@ -371,18 +553,22 @@ function Chat(props) {
                         <Paper
 
                             className={classes.messageGrid}>
+
                             <Grid>
 
                                 {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].map((msg, index) => (
 
                                     ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
                                         (
-                                            <SenderMsg msg={msg} key={index} scrollToBottom={scrollToBottom}/>
+                                            <SenderMsg msg={msg} key={index} scrollToBottom={scrollToBottom}
+                                                       deleteMsgClient={deleteMsgClient}/>
                                         )) || (((msg.senderName === selectedUser.username) &&
                                             (
                                                 <RecipientMsg msg={msg} key={index}
                                                               initialsSender={selectedUser.initials}
-                                                              updateStatusMsg={updateStatusMsg}/>
+                                                              updateStatusMsg={updateStatusMsg}
+                                                              scrollToBottom={scrollToBottom}
+                                                />
                                             ))
                                     ))
 
@@ -391,29 +577,54 @@ function Chat(props) {
                             </Grid>
                             <div ref={messagesEndRef}/>
                         </Paper>
-                        <TextField
-                            className={classes.root}
-                            multiline
-                            minRows={2}
-                            maxRows={6}
-                            variant="outlined"
-                            fullWidth
-                            id="content"
-                            label="Напишите сообщение..."
-                            name="content"
-                            autoComplete="off"
-                            value={content}
-                            onChange={onChangeMessageContent}
-                        />
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            onClick={sendMessage}
-                            disabled={(!contentPresence) || (!selectedUser)}
-                        >
-                            <DoneOutlineIcon/>
-                        </Button>
+
+                        <Grid container>
+                            <Grid>
+                                <input type="file" style={{"display": "none"}} ref={fileInput} multiple
+                                       onChange={(e) => uploadFiles(e)}/>
+                                <Button className={classes.iconInput}
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={selectFile}
+                                        disabled={(!selectedUser)}
+                                >
+                                    <AttachFileIcon>
+                                    </AttachFileIcon>
+                                </Button>
+                            </Grid>
+                            <Grid>
+                                <TextField
+                                    className={classes.root}
+                                    multiline
+                                    minRows={1}
+                                    maxRows={6}
+                                    variant="outlined"
+
+                                    id="content"
+                                    label="Напишите сообщение..."
+                                    name="content"
+                                    autoComplete="off"
+                                    value={content}
+                                    onChange={(content) => onChangeMessageContent(content)}
+                                    onKeyPress={(key) => checkKey(key)}
+                                />
+                            </Grid>
+                            <Grid>
+                                <Button
+                                    className={classes.iconInput}
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={sendMessage}
+                                    disabled={disableButton()}
+                                >
+                                    <SendIcon/>
+                                </Button>
+                            </Grid>
+                            <Grid>
+                                {selectedFiles && createFilesArray().map((file) => (file.name))}
+                            </Grid>
+                        </Grid>
+
                     </Grid>
                 </Card>
             </Grid>
