@@ -65,6 +65,7 @@ class RecordThreadComponent extends Component {
     componentDidMount() {
         RecordService.getRecord(this.state.recordId)
             .then(response => {
+                console.log(response)
                     this.setState({record: response.data});
                 }
             )

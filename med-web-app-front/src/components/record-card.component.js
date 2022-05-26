@@ -83,6 +83,7 @@ class RecordCardNew extends Component {
         this.isPreview = this.props.isPreview;
         this.isReply = this.props.isReply;
         this.creationTime = this.formatTime(this.record.creationTime);
+        console.log(props.record)
     }
 
     convertTZ(date, tzString) {
@@ -121,6 +122,7 @@ class RecordCardNew extends Component {
                     this.record.attachments[i].initialName.endsWith(".png") ||
                     this.record.attachments[i].initialName.endsWith(".dcm")) {
                     AttachmentService.getPreviewNew(this.record.attachments[i].id).then(response => {
+                        console.log(response)
                         preview.push({id: this.record.attachments[i].id, image: URL.createObjectURL(response.data)});
                         this.setState({filePreviews: preview});
                     }).catch(error => {
@@ -141,6 +143,7 @@ class RecordCardNew extends Component {
 
     render() {
         const {classes} = this.props;
+        console.log(this.state.filePreviews)
         return (
             <Paper className={classes.paper} variant="outlined" >
                 <Grid container item xs={12} sm direction={"column"} className={classes.mainGrid}>

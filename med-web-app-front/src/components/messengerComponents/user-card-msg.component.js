@@ -21,8 +21,9 @@ const useStyles = theme => ({
 function UserCardMessage(props) {
     const {classes} = props
     const {user} = props
+    const nameAndSurname = user.initials.split(" ")
     return (
-        <Grid item className={classes.gridText}>{user.initials + " "}</Grid>
+        <Grid item className={classes.gridText}>{nameAndSurname[0] + " " + nameAndSurname[1] + " "}</Grid>
     );
 }
 

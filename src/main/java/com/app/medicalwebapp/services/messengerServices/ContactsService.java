@@ -1,13 +1,10 @@
-package com.app.medicalwebapp.services;
+package com.app.medicalwebapp.services.messengerServices;
 
-import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.mesages.Contact;
-import com.app.medicalwebapp.repositories.ContactsRepository;
-import com.app.medicalwebapp.repositories.UserRepository;
+import com.app.medicalwebapp.model.messengerModels.Contact;
+import com.app.medicalwebapp.repositories.messengerRepositories.ContactsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

@@ -22,7 +22,7 @@ class AttachmentService {
         } else {
             formData.append("file", file);
         }
-
+        console.log(file)
         const user = JSON.parse(localStorage.getItem('user'));
         let token = '';
         if (user && user.token) {

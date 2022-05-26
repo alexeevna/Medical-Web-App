@@ -3,6 +3,7 @@ import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import Button from "@material-ui/core/Button";
 import {Divider, Grid, Paper, Typography, withStyles} from "@material-ui/core";
+import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     button: {
@@ -122,12 +123,17 @@ class ViewAttachmentsComponent extends Component {
                     <Grid item xs={4}>
                         <Paper className={classes.paper2}>
                             <Grid className={classes.grid}>
-                                <Button variant="contained" href={"/profile/" + AuthService.getCurrentUser().username} className={classes.button}>
-                                    Профиль
-                                </Button>
-                                <Button variant="contained" href="/files/upload" className={classes.button}>
-                                    Загрузить файл
-                                </Button>
+
+                                <Link to={"/profile/" + AuthService.getCurrentUser().username} style={{textDecoration: 'none'}}>
+                                    <Button className={classes.button}>
+                                        Профиль
+                                    </Button>
+                                </Link>
+                                <Link to={"/files/upload"} style={{textDecoration: 'none'}}>
+                                    <Button className={classes.button}>
+                                        Загрузить файл
+                                    </Button>
+                                </Link>
                             </Grid>
                         </Paper>
                     </Grid>

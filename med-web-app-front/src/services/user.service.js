@@ -17,6 +17,22 @@ class UserService {
             {headers: authHeader(), params: parameters});
     }
 
+    uploadAvatar(file) {
+        let formData = new FormData();
+
+        formData.append("file", file);
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        let token = '';
+        if (user && user.token) {
+            token = user.token;
+            console.log("hey hey")
+        }
+        return axios.post(API_URL + "uploadAvatar", formData, {
+            headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token},
+        });
+    }
+
     createRequestParamsForGetContacts(currentUserUsername) {
         let params = {};
 

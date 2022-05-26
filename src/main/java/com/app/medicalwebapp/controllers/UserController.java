@@ -1,13 +1,15 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.controllers.requestbody.ContactsResponse;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ContactsResponse;
+import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.controllers.requestbody.PushContactsRequest;
 import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.mesages.ChatMessage;
-import com.app.medicalwebapp.model.mesages.Contact;
-import com.app.medicalwebapp.repositories.ChatMessageRepository;
-import com.app.medicalwebapp.repositories.ContactsRepository;
-import com.app.medicalwebapp.services.ContactsService;
+import com.app.medicalwebapp.model.messengerModels.ChatMessage;
+import com.app.medicalwebapp.model.messengerModels.Contact;
+import com.app.medicalwebapp.repositories.messengerRepositories.ChatMessageRepository;
+import com.app.medicalwebapp.repositories.messengerRepositories.ContactsRepository;
+import com.app.medicalwebapp.security.UserDetailsImpl;
+import com.app.medicalwebapp.services.messengerServices.ContactsService;
 import com.app.medicalwebapp.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -58,6 +62,17 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/uploadAvatar")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            userService.uploadUserAvatar(file.getBytes(), getAuthenticatedUser().getId());
+            return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + file.getOriginalFilename()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при загрузке файлa"));
         }
     }
 
@@ -131,7 +146,6 @@ public class UserController {
     public ResponseEntity<?> getContacts(@RequestParam String currentUserUsername) {
         try {
             Optional<Contact> contactOptional = contactsService.getByContactsOwner(currentUserUsername);
-            System.out.println("ya tut" + contactOptional);
             List<User> contactsList = new ArrayList<>();
 //            Map<User, ChatMessage> contactWithLastMsg = new HashMap<>();
             ContactsResponse contactWithLastMsg = new ContactsResponse();
@@ -168,7 +182,6 @@ public class UserController {
                 }
                 contactWithLastMsg.setContactWithLastMsg(contacts);
             }
-            System.out.println(contactWithLastMsg.getContactWithLastMsg());
             return ResponseEntity.ok().body(contactWithLastMsg);
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,6 +231,10 @@ public class UserController {
         contact.setContactsList(userList);
         contactsRepository.save(contact);
         return user;
+    }
+
+    private UserDetailsImpl getAuthenticatedUser() {
+        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }
