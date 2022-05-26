@@ -1,39 +1,23 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.controllers.requestbody.ChatFileRequest;
-import com.app.medicalwebapp.controllers.requestbody.ChatMessageRequest;
-import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ChatFileRequest;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageRequest;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
-import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.mesages.ChatFile;
-import com.app.medicalwebapp.model.mesages.ChatMessage;
-import com.app.medicalwebapp.model.mesages.StatusMessage;
-import com.app.medicalwebapp.repositories.ChatFileRepository;
-import com.app.medicalwebapp.security.UserDetailsImpl;
-import com.app.medicalwebapp.services.ChatMessageService;
+import com.app.medicalwebapp.model.messengerModels.ChatFile;
+import com.app.medicalwebapp.model.messengerModels.ChatMessage;
+import com.app.medicalwebapp.model.messengerModels.StatusMessage;
+import com.app.medicalwebapp.repositories.messengerRepositories.ChatFileRepository;
+import com.app.medicalwebapp.services.messengerServices.ChatMessageService;
 import com.app.medicalwebapp.services.FileService;
 import com.app.medicalwebapp.utils.FileFormatResolver;
-import org.openjdk.jol.info.ClassLayout;
-import org.openjdk.jol.vm.VM;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 public class ChatController {

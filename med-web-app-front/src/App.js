@@ -45,7 +45,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import MessageIcon from '@material-ui/icons/Message'
 import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
-import Chat from "./components/messageComponents/chat.component"
+import Chat from "./components/messengerComponents/chat.component"
 import SockJS from "sockjs-client"
 import {over} from "stompjs"
 import UserService from "./services/user.service"
@@ -233,6 +233,7 @@ function App(props) {
                     }
                     let userWithLastMsg = {first: user, second: data}
                     setUsersWithLastMsgReceived(prev => (prev.set(user.username, userWithLastMsg)))
+                    setRefresh({})
                 })
                 .catch((e) => {
                     console.log(e);

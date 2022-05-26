@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.controllers.requestbody;
+package com.app.medicalwebapp.controllers.requestbody.messenger;
 
 import lombok.Getter;
 

@@ -97,7 +97,7 @@ function RecipientMsg(props) {
                     <Grid>{msg.content}</Grid>
                     {files &&
                     <Grid>
-                        <ImageList cols={2} rowHeight={200} gap={3}>
+                        <ImageList cols={1} rowHeight={200} gap={3}>
                             {files.map((file, index) =>
                                 <ImageListItem key={index}>
                                     <img

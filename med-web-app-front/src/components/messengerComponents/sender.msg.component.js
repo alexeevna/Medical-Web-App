@@ -195,7 +195,6 @@ function SenderMsg(props) {
                                     <DialogContentText style={{fontSize: 20, color: "black"}}>
                                         Вы уверены, что хотите удалить сообщение?
                                         <br/>
-                                        Сообщение также удалиться и у собеседника.
                                     </DialogContentText>
                                     <DialogActions>
                                         <Button
@@ -216,7 +215,7 @@ function SenderMsg(props) {
                         <Grid>{msg.content}</Grid>
                         {files &&
                         <Grid>
-                            < ImageList cols={2} rowHeight={200} gap={3}>
+                            < ImageList cols={1} rowHeight={200} gap={3}>
                                 {files.map((file, index) =>
                                     <ImageListItem key={index}>
                                         <img

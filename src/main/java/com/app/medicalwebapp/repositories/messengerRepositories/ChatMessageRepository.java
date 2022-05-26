@@ -1,7 +1,7 @@
-package com.app.medicalwebapp.repositories;
+package com.app.medicalwebapp.repositories.messengerRepositories;
 
-import com.app.medicalwebapp.model.mesages.ChatMessage;
-import com.app.medicalwebapp.model.mesages.StatusMessage;
+import com.app.medicalwebapp.model.messengerModels.ChatMessage;
+import com.app.medicalwebapp.model.messengerModels.StatusMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

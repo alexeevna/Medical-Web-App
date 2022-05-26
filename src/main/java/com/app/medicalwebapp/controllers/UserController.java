@@ -1,15 +1,15 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.controllers.requestbody.ContactsResponse;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ContactsResponse;
 import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.controllers.requestbody.PushContactsRequest;
 import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.mesages.ChatMessage;
-import com.app.medicalwebapp.model.mesages.Contact;
-import com.app.medicalwebapp.repositories.ChatMessageRepository;
-import com.app.medicalwebapp.repositories.ContactsRepository;
+import com.app.medicalwebapp.model.messengerModels.ChatMessage;
+import com.app.medicalwebapp.model.messengerModels.Contact;
+import com.app.medicalwebapp.repositories.messengerRepositories.ChatMessageRepository;
+import com.app.medicalwebapp.repositories.messengerRepositories.ContactsRepository;
 import com.app.medicalwebapp.security.UserDetailsImpl;
-import com.app.medicalwebapp.services.ContactsService;
+import com.app.medicalwebapp.services.messengerServices.ContactsService;
 import com.app.medicalwebapp.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

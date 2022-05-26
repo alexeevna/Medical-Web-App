@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.controllers.requestbody;
+package com.app.medicalwebapp.controllers.requestbody.messenger;
 
 import com.app.medicalwebapp.model.FileObjectFormat;
 import lombok.Getter;

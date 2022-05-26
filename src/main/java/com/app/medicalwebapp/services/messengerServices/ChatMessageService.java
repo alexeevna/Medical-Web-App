@@ -1,20 +1,16 @@
-package com.app.medicalwebapp.services;
+package com.app.medicalwebapp.services.messengerServices;
 
-import com.app.medicalwebapp.controllers.requestbody.ChatMessageDeleteByTimeAndChatIdRequest;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
-import com.app.medicalwebapp.model.mesages.ChatMessage;
-import com.app.medicalwebapp.model.mesages.StatusMessage;
-import com.app.medicalwebapp.repositories.ChatMessageRepository;
+import com.app.medicalwebapp.model.messengerModels.ChatMessage;
+import com.app.medicalwebapp.model.messengerModels.StatusMessage;
+import com.app.medicalwebapp.repositories.messengerRepositories.ChatMessageRepository;
+import com.app.medicalwebapp.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.sql.rowset.serial.SerialBlob;
-import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

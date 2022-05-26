@@ -1,14 +1,9 @@
-package com.app.medicalwebapp.controllers.requestbody;
+package com.app.medicalwebapp.controllers.requestbody.messenger;
 
-import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.mesages.ChatMessage;
 import lombok.Getter;
-import org.springframework.data.util.Pair;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 public class ChatMessageRequest {
