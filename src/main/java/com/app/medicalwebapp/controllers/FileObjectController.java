@@ -38,12 +38,12 @@ public class FileObjectController {
     @Autowired
     FileService fileService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/upload/{UID}")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String UID) {
         try {
             log.info("Got request to upload file: {} from user: {}", file.getOriginalFilename(), getAuthenticatedUser().getUsername());
 
-            fileService.saveFile(file.getOriginalFilename(), file.getBytes(), getAuthenticatedUser().getId());
+            fileService.saveFile(file.getOriginalFilename(), file.getBytes(), getAuthenticatedUser().getId(), UID);
 
             return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + file.getOriginalFilename()));
         } catch (Exception e) {

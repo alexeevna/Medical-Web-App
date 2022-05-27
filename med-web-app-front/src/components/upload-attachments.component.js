@@ -143,7 +143,9 @@ class UploadAttachmentsComponent extends Component {
         let isDicom = file.name.includes(".dcm");
         if (isDicom) {
             try {
-                var anonymizedDicomBlob = await DicomAnonymizerService.anonymizeInstance(file);
+                var dicomContAndUID = await DicomAnonymizerService.anonymizeInstance(file);
+                var anonymizedDicomBlob = dicomContAndUID.dicom;
+                var UID = dicomContAndUID.UID;
             } catch (error) {
                 console.log(error)
                 _progressInfos[idx].percentage = 0;
@@ -160,7 +162,7 @@ class UploadAttachmentsComponent extends Component {
 
         let toSend = isDicom ? anonymizedDicomBlob : file;
 
-        AttachmentService.uploadAttachment(toSend, file.name, isDicom,
+        AttachmentService.uploadAttachment(toSend, file.name, isDicom, UID,
             (event) => {
                 _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
                 this.setState({

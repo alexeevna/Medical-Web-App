@@ -167,6 +167,9 @@ services:
       - "8042:8042"
     networks:
       - app_net
+    command: /run/secrets/
+    secrets:
+      - orthanc.json
 
   proxy:
     image: nginx:1.15-alpine
@@ -200,6 +203,10 @@ services:
       - sftp
     networks:
       - app_net
+
+secrets:
+  orthanc.json:
+    file: orthanc.json
 
 networks:
   app_net:

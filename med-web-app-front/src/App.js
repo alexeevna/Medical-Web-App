@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from "react"
+import React, {useEffect, useState} from "react"
 import {Switch, Route, Link, Redirect} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
@@ -333,12 +333,12 @@ function App(props) {
             path: '/home'
         },
         {
-            text: 'Анализ ИИ',
+            text: 'Анализ снимков',
             icon: <BallotIcon color="secondary"/>,
             path: '/pipelines/create'
         },
         {
-            text: 'Посты',
+            text: 'Форум',
             icon: <ForumIcon color="secondary"/>,
             path: '/records/view'
         },

@@ -237,11 +237,11 @@ class PipelinesComponent extends Component {
                                 <Button variant="contained" href="/pipelines/results" className={classes.buttons}>
                                     Запущенные конвейеры
                                 </Button>
-                                <Button variant="contained" href="http://localhost:3000/local" className={classes.buttons}>
-                                    Посмотреть файл в OHIF
+                                <Button variant="contained" target="_blank" href="http://localhost:3000/local" className={classes.buttons}>
+                                    Открыть DICOM-файл
                                 </Button>
-                                <Button variant="contained" href="http://localhost:3000" className={classes.buttons}>
-                                    Открыть OHIF
+                                <Button variant="contained" target="_blank" href="http://localhost:3000" className={classes.buttons}>
+                                    Мои файлы в OHIF
                                 </Button>
                                 {this.state.currentUser !== null && this.state.currentUser.username === "alexandra" &&
                                 (<Button href={"/pipelines/save"} className={classes.buttons}>
