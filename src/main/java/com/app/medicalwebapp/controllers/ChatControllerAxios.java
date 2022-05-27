@@ -1,16 +1,13 @@
 package com.app.medicalwebapp.controllers;
 
 import com.app.medicalwebapp.controllers.requestbody.MessagesRequest;
-import com.app.medicalwebapp.model.mesages.ChatMessage;
 import com.app.medicalwebapp.services.ChatMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 604800)
 @RestController

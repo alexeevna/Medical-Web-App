@@ -1,10 +1,9 @@
-import React, {Component, useEffect, useState} from "react"
+import React, {useEffect, useState} from "react"
 import {Switch, Route, Link} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
 import Home from "./components/home.component"
-import {useBeforeunload} from 'react-beforeunload';
 import HomePatient from "./components/home-patient.component"
 import HomeDoctor from "./components/home-doctor.component"
 import Profile from "./components/profile.component"
@@ -44,7 +43,6 @@ import BallotIcon from '@material-ui/icons/Ballot'
 import ForumIcon from '@material-ui/icons/Forum'
 import SearchIcon from '@material-ui/icons/Search'
 import MessageIcon from '@material-ui/icons/Message'
-import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
 import Chat from "./components/messageComponents/chat.component"
 import SockJS from "sockjs-client"
@@ -60,7 +58,7 @@ const useStyles = theme => ({
     },
     drawerPaper: {
         whiteSpace: 'nowrap',
-        width: drawerWidth,
+        width: theme.spacing(32),
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -73,11 +71,12 @@ const useStyles = theme => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        maxWidth: 60,
+        // maxWidth: 60,
         width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9),
-        },
+        // [theme.breakpoints.up('sm')]: {
+        //     width: theme.spacing(9),
+        // },
+        height: "100%",
     },
     leftIndent: {
         width: 60,
@@ -148,15 +147,15 @@ const useStyles = theme => ({
         //marginLeft: '100px'
     },
 })
-var stompClient = null
+let stompClient = null;
 
 function App(props) {
     const {classes} = props
     const [numberOfUnRead, setNumberOfUnRead] = useState(0)
-    const [showModeratorBoard, setShowModeratorBoard] = useState(false)
-    const [showAdminBoard, setShowAdminBoard] = useState(false)
+    // const [showModeratorBoard, setShowModeratorBoard] = useState(false)
+    // const [showAdminBoard, setShowAdminBoard] = useState(false)
     const [currentUser, setCurrentUser] = useState(undefined)
-    const [open, setOpen] = useState(true)
+    const [open, setOpen] = useState(false)
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
     const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState(new Map())
@@ -272,6 +271,10 @@ function App(props) {
         setOpen(false)
     }
 
+    function handleDrawerChange() {
+        setOpen(!open)
+    }
+
     function logOut() {
         AuthService.logout(AuthService.getCurrentUser().username)
         setCurrentUser(null)
@@ -350,14 +353,14 @@ function App(props) {
         <div className={classes.root}>
             <CssBaseline/>
 
-            <AppBar position="fixed" className={clsx(classes.appBar, open && classes.appBarShift)}>
+            <AppBar position="fixed" className={clsx(classes.appBar, false && classes.appBarShift)}>
                 <Toolbar className={classes.toolbar}>
                     <IconButton
                         edge="start"
                         color="inherit"
                         aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                        onClick={handleDrawerChange}
+                        className={clsx(classes.menuButton, false && classes.menuButtonHidden)}
                     >
                         <MenuIcon/>
                     </IconButton>

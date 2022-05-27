@@ -166,12 +166,11 @@ class UploadAttachmentsComponent extends Component {
                     _progressInfos,
                 });
             })
-            .then((response) => {
+            .then(() => {
                 this.setState((prev) => {
                     let nextMessage = [...prev.message, "Успешно загружен файл: " + file.name];
                     return {message: nextMessage};
                 });
-
                 return AttachmentService.getAttachmentsInfoForUser(_currentUser.username);
             })
             .then((files) => {
@@ -180,7 +179,10 @@ class UploadAttachmentsComponent extends Component {
             .catch(() => {
                 _progressInfos[idx].percentage = 0;
                 this.setState((prev) => {
-                    let nextMessage = [...prev.message, "Не удалось загрузить файл: " + file.name];
+                    let message: String;
+                    if (file.size > 0) message = "Не удалось загрузить файл: " + file.name + ". Превышен максимальный размер 5 МБ"
+                    else message = "Не удалось загрузить файл: " + file.name;
+                    let nextMessage = [...prev.message, message];
                     return {
                         progressInfos: _progressInfos,
                         message: nextMessage

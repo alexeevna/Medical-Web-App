@@ -1,6 +1,6 @@
 package com.app.medicalwebapp.controllers.requestbody;
 
-import com.app.medicalwebapp.model.mesages.ChatMessage;
+import com.app.medicalwebapp.model.messages.ChatMessage;
 import lombok.Getter;
 
 import java.util.List;

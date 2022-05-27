@@ -32,10 +32,10 @@ const useStyles = theme => ({
         "& .MuiTypography-root": {
             color: "black",
         },
-        margin: theme.spacing(1.5,0,0,1),
+        margin: theme.spacing(1.5, 0, 0, 1),
     },
     ggrid: {
-        margin: theme.spacing(0,0,0,1),
+        margin: theme.spacing(0, 0, 0, 1),
         display: 'flex',
     },
     gridContent: {
@@ -45,7 +45,7 @@ const useStyles = theme => ({
         padding: theme.spacing(2),
         margin: 'auto',
         // maxWidth: 700,
-        borderColor:"#e9e9e9",
+        borderColor: "#e9e9e9",
         borderRadius: 10,
         minWidth: 800,
     },
@@ -108,7 +108,7 @@ class RecordCardNew extends Component {
     displayRecordThread() {
         this.props.history.push({
             pathname: '/records/thread/' + this.record.id,
-            state: { recordId: this.record.id }
+            state: {recordId: this.record.id}
         });
         window.location.reload();
     }
@@ -142,7 +142,7 @@ class RecordCardNew extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Paper className={classes.paper} variant="outlined" >
+            <Paper className={classes.paper} variant="outlined">
                 <Grid container item xs={12} sm direction={"column"} className={classes.mainGrid}>
                     <Grid container item className={classes.ggrid} xs direction={"row"} spacing={1}>
                         <Grid className={classes.gridCreatorName}>
@@ -168,7 +168,7 @@ class RecordCardNew extends Component {
                                     {this.record.title}
                                 </Link>
                             </Typography>
-                            ): (
+                        ) : (
                             <Typography variant="h6">{/*gutterBottom*/}
                                 {this.record.title}
                             </Typography>)

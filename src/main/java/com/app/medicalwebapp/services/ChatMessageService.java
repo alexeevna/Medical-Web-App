@@ -1,11 +1,10 @@
 package com.app.medicalwebapp.services;
 
-import com.app.medicalwebapp.model.mesages.ChatMessage;
-import com.app.medicalwebapp.model.mesages.StatusMessage;
+import com.app.medicalwebapp.model.messages.ChatMessage;
+import com.app.medicalwebapp.model.messages.StatusMessage;
 import com.app.medicalwebapp.repositories.ChatMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;

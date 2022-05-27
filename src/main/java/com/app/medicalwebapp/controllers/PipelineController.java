@@ -3,16 +3,12 @@ package com.app.medicalwebapp.controllers;
 import com.app.medicalwebapp.controllers.requestbody.PipelineCreationRequest;
 import com.app.medicalwebapp.model.Pipeline;
 import com.app.medicalwebapp.repositories.PipelineRepository;
+import com.app.medicalwebapp.security.AuthorizedWithUsername;
 import com.app.medicalwebapp.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +36,14 @@ public class PipelineController {
         pipeline.setIsPublic(true);
         pipeline.setDescription(request.getDescription());
         pipelineRepository.save(pipeline);
+    }
+
+
+    @DeleteMapping("{pipelineJobId}")
+    @AuthorizedWithUsername
+    public ResponseEntity<?> deletePipelineJob(@PathVariable Long pipelineId) {
+        pipelineRepository.deleteById(pipelineId);
+        return ResponseEntity.ok().build();
     }
 
     private Long getAuthenticatedUserId() {

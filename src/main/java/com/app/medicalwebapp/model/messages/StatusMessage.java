@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.model.mesages;
+package com.app.medicalwebapp.model.messages;
 
 public enum StatusMessage {
     READ,

@@ -170,8 +170,8 @@ class PipelinesComponent extends Component {
                     <Grid item xs />
                     <Grid item xs={6}>
                         <Paper className={classes.paper}>
-                            <Typography component="h1" className={classes.title} variant="h4">
-                                Запустить конвейер
+                            <Typography className={classes.title} variant="h5">
+                                Автоматический анализ снимка
                             </Typography>
                             <Divider/>
 
@@ -180,7 +180,7 @@ class PipelinesComponent extends Component {
                             >
                                 <FormControl className={classes.formControl}>
                                     <Typography variant="h6" className={classes.content} color="inherit" noWrap>
-                                        Тип конвейера
+                                        Проанализировать снимок на
                                     </Typography>
                                     <Select className="col-9 col-offset-4"
                                             onChange={this.onPipelineDropdownSelected}
@@ -190,25 +190,26 @@ class PipelinesComponent extends Component {
                                 </FormControl>
                                 <FormControl className={classes.formControl}>
                                     <Typography variant="h6" className={classes.content} color="inherit" noWrap>
-                                        Изображение
+                                        Выберите файл
                                     </Typography>
                                     <Select className="col-9 col-offset-4"
                                             onChange={this.onFileDropdownSelected}
                                             options={files}
                                     />
                                 </FormControl>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={selectedFile == null || selectedPipeline == null || submitted}
+                                    className={classes.button}
+                                >
+                                    Запустить
+                                </Button>
                             </form>
 
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                disabled={selectedFile == null || selectedPipeline == null || submitted}
-                                className={classes.button}
-                            >
-                                Запустить
-                            </Button>
+
 
                             {this.state.submitted && (
                                 <div className="form-group">
@@ -235,7 +236,7 @@ class PipelinesComponent extends Component {
                                     Загрузить файл
                                 </Button>
                                 <Button variant="contained" href="/pipelines/results" className={classes.buttons}>
-                                    Запущенные конвейеры
+                                    Результаты
                                 </Button>
                                 <Button variant="contained" href="http://localhost:3000/local" className={classes.buttons}>
                                     Посмотреть файл в OHIF
@@ -243,7 +244,7 @@ class PipelinesComponent extends Component {
                                 <Button variant="contained" href="http://localhost:3000" className={classes.buttons}>
                                     Открыть OHIF
                                 </Button>
-                                {this.state.currentUser !== null && this.state.currentUser.username === "alexandra" &&
+                                {this.state.currentUser !== null && this.state.currentUser.username === "admin" &&
                                 (<Button href={"/pipelines/save"} className={classes.buttons}>
                                     Сохранить конфигурацию
                                 </Button>)

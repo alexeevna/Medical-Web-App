@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.model.mesages;
+package com.app.medicalwebapp.model.messages;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 

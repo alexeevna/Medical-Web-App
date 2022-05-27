@@ -1,13 +1,11 @@
-package com.app.medicalwebapp.model.mesages;
+package com.app.medicalwebapp.model.messages;
 
 import com.app.medicalwebapp.model.User;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "contacts")
