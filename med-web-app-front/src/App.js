@@ -1,5 +1,5 @@
 import React, {Component, useEffect, useState} from "react"
-import {Switch, Route, Link} from "react-router-dom"
+import {Switch, Route, Link, Redirect} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
@@ -45,16 +45,13 @@ import SearchIcon from '@material-ui/icons/Search'
 import MessageIcon from '@material-ui/icons/Message'
 import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
-import Chat from "./components/messageComponents/chat.component"
+import Chat from "./components/messengerComponents/chat.component"
 import SockJS from "sockjs-client"
 import {over} from "stompjs"
 import UserService from "./services/user.service"
 import ChatService from "./services/chat.service"
+import AttachmentService from "./services/attachment.service";
 
-// export const statusMsg = {
-//     READ: 1,
-//     UNREAD: 2
-// }
 const drawerWidth = 240
 
 const useStyles = theme => ({
@@ -158,38 +155,19 @@ function App(props) {
     const [numberOfUnRead, setNumberOfUnRead] = useState(0)
     const [showModeratorBoard, setShowModeratorBoard] = useState(false)
     const [showAdminBoard, setShowAdminBoard] = useState(false)
-    const [currentUser, setCurrentUser] = useState(undefined)
+    const [currentUser, setCurrentUser] = useState(null)
     const [open, setOpen] = useState(true)
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
-    // const [unreadMessages, setUnreadMessages] = useState(new Map())
-    // const unreadMessages = new Map()
-
-    const [users, setUsers] = useState([])
-    // constructor(props) {
-    //     super(props)
-    //     this.logOut = this.logOut.bind(this)
-    //     //this.displayPageContent = this.displayPageContent.bind(this)
-    //
-    //     this.state = {
-    //         showModeratorBoard: false,
-    //         showAdminBoard: false,
-    //         currentUser: undefined,
-    //         open: true,
-    //
-    //     }
-    // }
+    const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState(new Map())
+    // const [filePreviews, setFilePreviews] = useState([])
 
     useEffect(() => {
         const user = AuthService.getCurrentUser()
-
         if (user) {
             AuthService.checkTokenIsExpired(user.token)
-                .then(response => {
+                .then(() => {
                     setCurrentUser(user)
-                    // this.setState({
-                    //     currentUser: user
-                    // })
                 })
                 .catch(error => {
                         logOut()
@@ -198,41 +176,30 @@ function App(props) {
             connectToChat()
             getUnreadMessages()
         }
+        return () => {
+            stompClient.unsubscribe()
+        }
     }, [])
 
     function getUnreadMessages() {
-        console.log("get unread")
         ChatService.getUnreadMessages(AuthService.getCurrentUser().id)
             .then((response) => {
                 if (response.data.length > 0) {
-                    // let unreadMsgMap = new Map()
                     for (let index = 0; index < response.data.length; index++) {
                         if (allMessages.get(response.data[index].senderName)) {
                             let list = allMessages.get(response.data[index].senderName).messages
                             list.push(response.data[index])
                             const unRead = allMessages.get(response.data[index].senderName).unRead
                             const valueMap = {unRead: unRead + 1, messages: list}
-                            allMessages.set(response.data[index].senderName, valueMap)
                             setAllMessages(prev => (prev.set(response.data[index].senderName, valueMap)))
-                            // unreadMessages.set(response.data[index].senderName, valueMap)
-                            // setUnreadMessages(prev => (prev.set(response.data[index].senderName, valueMap)))
                         } else {
                             let list = []
                             list.push(response.data[index])
                             const valueMap = {unRead: 1, messages: list}
-                            allMessages.set(response.data[index].senderName, valueMap)
                             setAllMessages(prev => (prev.set(response.data[index].senderName, valueMap)))
-                            // unreadMessages.set(response.data[index].senderName, valueMap)
-                            // setUnreadMessages(prev => (prev.set(response.data[index].senderName, valueMap)))
                         }
                     }
                     setNumberOfUnRead(response.data.length)
-                    // console.log(unreadMessages)
-
-                    // let unreadMsgMap2 = new Map(unreadMsgMap)
-
-                    // setUnreadMessages(unreadMsgMap2)
-                    // setRefresh({})
                 }
             })
             .catch((e) => {
@@ -240,55 +207,53 @@ function App(props) {
             })
     }
 
-    function getUnRead(unRead) {
-        if (unRead) {
-            return unRead + 1
-        } else {
-            return 1
-        }
-    }
-
     function onMessageReceived(response) {
-        // console.log(unreadMessages)
-        // console.log(allMessages)
-        const data = JSON.parse(response.body)
-        console.log(data)
+        let data = JSON.parse(response.body)
+        let presenceUserInContacts = false
+        let presenceUsername
+        for (let username of usersWithLastMsgReceived.keys()) {
+            if (username === data.senderName) {
+                presenceUserInContacts = true
+                presenceUsername = username
+                break
+            }
+        }
+        if (presenceUserInContacts) {
+            const userWithLastMessage = usersWithLastMsgReceived.get(presenceUsername)
+            userWithLastMessage.second = data
+            setUsersWithLastMsgReceived(prev => prev.set(presenceUsername, userWithLastMessage))
+        } else {
+            UserService.getAllByUsername(data.senderName)
+                .then(async (response) => {
+                    const user = response.data.shift();
+                    if (user.avatar) {
+                        const base64Response = await fetch(`data:application/json;base64,${user.avatar}`)
+                        const blob = await base64Response.blob()
+                        user.avatar = URL.createObjectURL(blob)
+                    }
+                    let userWithLastMsg = {first: user, second: data}
+                    setUsersWithLastMsgReceived(prev => (prev.set(user.username, userWithLastMsg)))
+                    setRefresh({})
+                })
+                .catch((e) => {
+                    console.log(e);
+                })
+        }
         if (allMessages.get(data.senderName)) {
-            // const need = {...data, status: statusMsg.UNREAD}
             let list = allMessages.get(data.senderName).messages
             const unRead = allMessages.get(data.senderName).unRead
             list.push(data)
             const valueMap = {unRead: unRead + 1, messages: list}
             setAllMessages(prev => (prev.set(data.senderName, valueMap)))
-            // setUnreadMessages(prev => (prev.set(data.senderName, valueMap)))
             setNumberOfUnRead(prev => (prev + 1))
-            // setRefresh({})
         } else {
             let list = []
-            // const need = {...data, status: statusMsg.UNREAD}
-            console.log("НЕ ЗАХОДИТЬ")
             list.push(data)
-            console.log(list)
             const valueMap = {unRead: 1, messages: list}
             setAllMessages(prev => (prev.set(data.senderName, valueMap)))
-            // unreadMessages.set(data.senderName, valueMap)
-            // setUnreadMessages(prev => (prev.set(data.senderName, valueMap)))
             setNumberOfUnRead(prev => (prev + 1))
             setRefresh({})
         }
-    }
-
-    function getUsers() {
-        const {searchString} = ""
-        UserService.getAllByUsername(searchString)
-            .then((response) => {
-                const users = response.data
-                setUsers(users)
-                // setRefresh({})
-            })
-            .catch((e) => {
-                console.log(e)
-            })
     }
 
     function connectToChat() {
@@ -307,34 +272,11 @@ function App(props) {
 
     function handleDrawerOpen() {
         setOpen(true)
-        // this.setState({
-        //     open: true
-        // })
     }
 
     function handleDrawerClose() {
         setOpen(false)
-        // this.setState({
-        //     open: false
-        // })
     }
-
-    // componentDidMount() {
-    //     const user = AuthService.getCurrentUser()
-    //
-    //     if (user) {
-    //         AuthService.checkTokenIsExpired(user.token)
-    //             .then(response => {
-    //                 this.setState({
-    //                     currentUser: user
-    //                 })
-    //             })
-    //             .catch(error => {
-    //                     this.logOut()
-    //                 }
-    //             )
-    //     }
-    // }
 
     function logOut() {
         AuthService.logout(AuthService.getCurrentUser().username)
@@ -356,6 +298,15 @@ function App(props) {
             return "/profile/" + currentUser.username
         else
             return null
+    }
+
+    function checkCurrentUser(component) {
+        const currentUser = AuthService.getCurrentUser()
+        if (currentUser) {
+            return component
+        } else {
+            return <Redirect to="/login"/>
+        }
     }
 
     function minusUnRead(num) {
@@ -408,20 +359,8 @@ function App(props) {
                 (numberOfUnRead !== 0 && numberOfUnRead >= 999 && "999+")}
             </Paper>,
         },
-        // {
-        //     text: 'Сообщения',
-        //     icon: <MessageIcon color="secondary"/>,
-        //     path: '/msg/:selectedUser',
-        //     numberOfUnRead: numberOfUnRead,
-        //     numberMsg: <Paper
-        //         className={classes.noticeMsg}>{
-        //         (numberOfUnRead !== 0 && numberOfUnRead < 999 && numberOfUnRead)
-        //         ||
-        //         (numberOfUnRead !== 0 && numberOfUnRead >= 999 && "999+")}
-        //     </Paper>,
-        // },
     ]
-    console.log(allMessages)
+
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -553,22 +492,43 @@ function App(props) {
                             <Route exact path="/home/doctor" component={HomeDoctor}/>
                             <Route exact path="/login" component={Login}/>
                             <Route exact path={["/msg", "/msg/:selected"]}>
-                                <Chat stompClient={stompClient} messages={allMessages}
-                                      number={numberOfUnRead} minusUnRead={minusUnRead}
-                                />
+                                {((AuthService.getCurrentUser())) ?
+                                    (<Chat stompClient={stompClient} allMessages={allMessages}
+                                           setAllMessages={setAllMessages}
+                                           number={numberOfUnRead} minusUnRead={minusUnRead}
+                                           usersWithLastMsg={usersWithLastMsgReceived}
+                                           setUsersWithLastMsg={setUsersWithLastMsgReceived}
+                                    />) : (<Redirect to="/login"/>)}
                             </Route>
                             <Route exact path="/register" component={Register}/>
-                            <Route exact path="/search" component={Search}/>
-                            <Route exact path="/profile/:username" component={Profile}/>
-                            <Route exact path="/pipelines/create" component={PipelinesComponent}/>
-                            <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
-                            <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
-                            <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
-                            <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
+                            <Route exact path="/search">
+                                {AuthService.getCurrentUser() ? <Search/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path={["/profile/:usernamePath"]}>
+                                {AuthService.getCurrentUser() ? <Profile/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/create" component={PipelinesComponent}>
+                                {AuthService.getCurrentUser() ? <PipelinesComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/results" component={PipelineResultsComponent}>
+                                {AuthService.getCurrentUser() ? <PipelineResultsComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}>
+                                {AuthService.getCurrentUser() ? <SavePipelineConfigComponent/> :
+                                    <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/files/view" component={ViewAttachmentsComponent}>
+                                {AuthService.getCurrentUser() ? <ViewAttachmentsComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/files/upload" component={UploadAttachmentsComponent}>
+                                {AuthService.getCurrentUser() ? <UploadAttachmentsComponent/> : <Redirect to="/login"/>}
+                            </Route>
                             <Route exact path="/records/view" component={ViewRecordsComponent}/>
                             <Route exact path="/records/create" component={CreateRecordComponent}/>
                             <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
-                            <Route exact path="/topics/create" component={TopicComponent}/>
+                            <Route exact path="/topics/create" component={TopicComponent}>
+                                {AuthService.getCurrentUser() ? <TopicComponent/> : <Redirect to="/login"/>}
+                            </Route>
                             <Route component={NotExist}/>
                         </Switch>
                     </div>

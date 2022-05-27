@@ -10,25 +10,20 @@ const useStyles = theme => ({
             fontSize: 17
         },
     },
-    grid: {
+    gridText: {
         color: "black",
-        fontSize: 17,
-        marginBottom: 10,
-        marginTop: 10,
-        marginLeft: 10
-    }
+        fontSize: 15,
+        fontWeight: 450,
+        alignItems: "left"
+    },
 });
 
 function UserCardMessage(props) {
     const {classes} = props
     const {user} = props
+    const nameAndSurname = user.initials.split(" ")
     return (
-
-
-            <Grid className={classes.grid}>
-                {user.initials + " "}
-            </Grid>
-
+        <Grid item className={classes.gridText}>{nameAndSurname[0] + " " + nameAndSurname[1] + " "}</Grid>
     );
 }
 

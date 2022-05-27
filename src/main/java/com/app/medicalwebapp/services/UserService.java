@@ -32,6 +32,15 @@ public class UserService {
         return userRepository.findByUsernameAndRole(username, role);
     }
 
+    public void uploadUserAvatar(byte[] bytes, long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setAvatar(bytes);
+            userRepository.save(user);
+        }
+    }
+
     public Optional<User> getByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -55,4 +64,5 @@ public class UserService {
     public User save(User user) {
         return userRepository.save(user);
     }
+
 }

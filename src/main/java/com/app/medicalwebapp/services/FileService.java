@@ -27,7 +27,7 @@ public class FileService {
 
     public FileObject saveFile(String originalName, byte[] fileContent, Long ownerId) throws Exception {
         FileSaverStrategy fileSaver = saverStrategyResolver.getFileSaver(originalName, fileContent);
-        FileObjectFormat format = FileFormatResolver.resolveFormat(originalName, fileContent);
+        FileObjectFormat format = FileFormatResolver.resolveFormat(originalName);
         return fileSaver.save(ownerId, originalName, format, fileContent);
     }
 
