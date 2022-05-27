@@ -50,7 +50,8 @@ public class ChatController {
                     String fileBase64 = file.getFileContent().split(",")[1];
                     byte[] decodedFileByte = decoder.decode(fileBase64);
                     if (fileFormat == FileObjectFormat.DICOM) {
-                        files.add(fileService.saveFile(file.getFileName(), decodedFileByte, msg.getSenderId()));
+                        files.add(fileService.saveFile(file.getFileName(), decodedFileByte, msg.getSenderId(), ""));
+                        //TODO вытащить UID из файла
                     } else {
                         ChatFile localFile = new ChatFile();
                         localFile.setFileName(file.getFileName());

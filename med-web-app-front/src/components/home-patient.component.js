@@ -56,8 +56,11 @@ class HomePatient extends Component {
                 </div>
 
                 <Paper className={classes.paper}>
-                    <Typography variant="h7">
-                        Я пациент
+                    <Typography variant="subtitle1">
+                        Получить «второе мнение» на Medical web app можно двумя способами:<br />
+                        — выбрать врача в разделе «Поиск» и отправить ему личное сообщение<br />
+                        — воспользоваться автоматическим анализом медицинских снимков, который Вы можете найти в разделе «Анализ снимков»<br />
+                        — опубликовать пост в разделе «Форум»
                     </Typography>
                 </Paper>
             </Container>
