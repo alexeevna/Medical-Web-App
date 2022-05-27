@@ -1,7 +1,7 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeleteByTimeAndChatIdRequest;
-import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeleteRequest;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeletionTimeChatIdRequest;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeletionRequest;
 import com.app.medicalwebapp.controllers.requestbody.messenger.MessagesRequest;
 import com.app.medicalwebapp.services.messengerServices.ChatMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 @CrossOrigin(origins = "*", maxAge = 604800)
 @RestController
@@ -61,7 +60,7 @@ public class ChatControllerAxios {
 
     @PostMapping("/delete")
     public ResponseEntity<?> deleteMessages(
-            @Valid @RequestBody ChatMessageDeleteRequest request
+            @Valid @RequestBody ChatMessageDeletionRequest request
     ) {
         try {
             chatMessageService.deleteMessage(request.getMessage());
@@ -73,7 +72,7 @@ public class ChatControllerAxios {
     }
 
     @PostMapping("/delete/by/time/chatid")
-    public ResponseEntity<?> deleteMsgByTimeAndChatId(@Valid @RequestBody ChatMessageDeleteByTimeAndChatIdRequest request) {
+    public ResponseEntity<?> deleteMsgByTimeAndChatId(@Valid @RequestBody ChatMessageDeletionTimeChatIdRequest request) {
         try {
             chatMessageService.deleteMsgByTimeAndChatId(request.getTime(), request.getSenderName(), request.getRecipientName());
             return ResponseEntity.ok().build();

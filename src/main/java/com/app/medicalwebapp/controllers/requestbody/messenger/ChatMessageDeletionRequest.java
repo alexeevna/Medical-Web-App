@@ -4,6 +4,6 @@ import com.app.medicalwebapp.model.messengerModels.ChatMessage;
 import lombok.Getter;
 
 @Getter
-public class ChatMessageDeleteRequest {
+public class ChatMessageDeletionRequest {
     private ChatMessage message;
 }
