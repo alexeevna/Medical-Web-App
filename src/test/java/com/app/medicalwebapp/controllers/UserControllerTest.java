@@ -25,7 +25,7 @@ class UserControllerTest {
 
     @Test
     void getAllByUsernameWithoutUsername() throws Exception {
-        this.mockMvc.perform(get("/api/search/allByUsername"))
+        this.mockMvc.perform(get("/api/search/all/username"))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
@@ -35,7 +35,7 @@ class UserControllerTest {
 
     @Test
     void getOneByUsernameWithUsername() throws Exception {
-        this.mockMvc.perform(get("/api/search/allByUsername").param("username", "daniel"))
+        this.mockMvc.perform(get("/api/search/all/username").param("username", "daniel"))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
@@ -45,7 +45,7 @@ class UserControllerTest {
 
     @Test
     void getAllByUsernameAndRoleWithoutUsername() throws Exception {
-        this.mockMvc.perform(get("/api/search/byUsername").param("role", "Врач"))
+        this.mockMvc.perform(get("/api/search/username").param("role", "Врач"))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
@@ -55,7 +55,7 @@ class UserControllerTest {
 
     @Test
     void getOneByUsernameAndRoleWithUsername() throws Exception {
-        this.mockMvc.perform(get("/api/search/byUsername").param("username", "daniel")
+        this.mockMvc.perform(get("/api/search/username").param("username", "daniel")
                         .param("role", "Пользователь"))
                 .andDo(print())
                 .andExpect(authenticated())
@@ -66,7 +66,7 @@ class UserControllerTest {
 
     @Test
     void getAllByInitials() throws Exception {
-        this.mockMvc.perform(get("/api/search/allByInitials").param("initials", "Шехаде Даниэль"))
+        this.mockMvc.perform(get("/api/search/all/initials").param("initials", "Шехаде Даниэль"))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
@@ -76,7 +76,7 @@ class UserControllerTest {
 
     @Test
     void getAllByInitialsAndRole() throws Exception {
-        this.mockMvc.perform(get("/api/search/byInitials").param("initials", "Шехаде Даниэль")
+        this.mockMvc.perform(get("/api/search/initials").param("initials", "Шехаде Даниэль")
                         .param("role", "Пользователь"))
                 .andDo(print())
                 .andExpect(authenticated())

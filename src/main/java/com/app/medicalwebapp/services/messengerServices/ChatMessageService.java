@@ -97,5 +97,8 @@ public class ChatMessageService {
         chatMessageRepository.delete(messageToDelete);
     }
 
+    public Optional<ChatMessage> findFirstByChatIdOrderBySendDateDesc(String chatId) {
+        return chatMessageRepository.findFirstByChatIdOrderBySendDateDesc(chatId);
+    }
 }
 
