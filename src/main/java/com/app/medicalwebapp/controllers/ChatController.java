@@ -8,6 +8,7 @@ import com.app.medicalwebapp.model.messengerModels.ChatFile;
 import com.app.medicalwebapp.model.messengerModels.ChatMessage;
 import com.app.medicalwebapp.model.messengerModels.StatusMessage;
 import com.app.medicalwebapp.repositories.messengerRepositories.ChatFileRepository;
+import com.app.medicalwebapp.services.messengerServices.ChatFileService;
 import com.app.medicalwebapp.services.messengerServices.ChatMessageService;
 import com.app.medicalwebapp.services.FileService;
 import com.app.medicalwebapp.utils.FileFormatResolver;
@@ -28,7 +29,7 @@ public class ChatController {
     private ChatMessageService chatMessageService;
 
     @Autowired
-    ChatFileRepository chatFileRepository;
+    ChatFileService chatFileService;
     @Autowired
     FileService fileService;
 
@@ -36,13 +37,7 @@ public class ChatController {
     public void sendMessage(@DestinationVariable("recipient") String recipient, @RequestParam ChatMessageRequest msg) {
         try {
             List<FileObject> files = new ArrayList<>();
-//            System.out.println(msg.getSendDate());
-//            System.out.println(LocalDateTime.now());
-//            System.out.println(msg.getLocalFiles().get(0));
-//            List<String> filesBase64 = new ArrayList<>();
             List<ChatFile> localFiles = new ArrayList<>();
-//            Map<String, String> localFiles = new HashMap<>();
-//            List<byte[]> filesDataBlob = new ArrayList<>();
             if (msg.getLocalFiles() != null) {
                 for (ChatFileRequest file : msg.getLocalFiles()) {
                     FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(file.getFileName());
@@ -56,7 +51,7 @@ public class ChatController {
                         localFile.setFileName(file.getFileName());
                         localFile.setFileContent(decodedFileByte);
                         localFile.setFormat(fileFormat);
-                        var fl = chatFileRepository.save(localFile);
+                        var fl = chatFileService.save(localFile);
                         localFiles.add(fl);
                     }
                 }
@@ -78,31 +73,10 @@ public class ChatController {
             chatMessage.setSendDate(msg.getSendDate());
             chatMessage.setAttachments(files);
             chatMessage.setLocalFiles(localFiles);
-//            System.out.println(chatMessage);
             chatMessageService.save(chatMessage);
             simpMessagingTemplate.convertAndSendToUser(recipient, "/private", chatMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-//    @MessageMapping("/sendFile/{recipient}")
-//    public void sendMessageImg(@DestinationVariable("recipient") String recipient, @RequestParam ChatMessageRequest fileStringBase64) {
-//        Base64.Decoder decoder = Base64.getDecoder();
-//        byte[] decodedFileByte = decoder.decode(fileStringBase64.getContentFile().split(",")[1]);
-//        try {
-//            fileService.saveFile("DAN4IK.png", decodedFileByte, getAuthenticatedUser().getId());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-////        System.out.println(buff);
-////        System.out.println(buff.length);
-//        System.out.println("hello");
-//        simpMessagingTemplate.convertAndSendToUser(recipient, "/private", fileStringBase64);
-////        simpMessagingTemplate.convertAndSendToUser(recipient, "/private", chatMessage);
-//    }
-//
-//    private UserDetailsImpl getAuthenticatedUser() {
-//        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    }
 }

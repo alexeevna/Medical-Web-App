@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.services.messengerServices;
 
+import com.app.medicalwebapp.model.messengerModels.ChatFile;
 import com.app.medicalwebapp.model.messengerModels.Contact;
 import com.app.medicalwebapp.repositories.messengerRepositories.ContactsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,5 +22,9 @@ public class ContactsService {
             e.printStackTrace();
         }
         return contact;
+    }
+
+    public Contact save(Contact contact) {
+        return contactsRepository.save(contact);
     }
 }
