@@ -1,13 +1,14 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.controllers.requestbody.ContactsResponse;
-import com.app.medicalwebapp.controllers.requestbody.PushContactsRequest;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ContactsResponse;
+import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ContactsRequest;
 import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.messages.ChatMessage;
-import com.app.medicalwebapp.model.messages.Contact;
-import com.app.medicalwebapp.repositories.ChatMessageRepository;
-import com.app.medicalwebapp.repositories.ContactsRepository;
-import com.app.medicalwebapp.services.ContactsService;
+import com.app.medicalwebapp.model.messengerModels.ChatMessage;
+import com.app.medicalwebapp.model.messengerModels.Contact;
+import com.app.medicalwebapp.security.UserDetailsImpl;
+import com.app.medicalwebapp.services.messengerServices.ChatMessageService;
+import com.app.medicalwebapp.services.messengerServices.ContactsService;
 import com.app.medicalwebapp.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -29,15 +32,12 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    ContactsRepository contactsRepository;
-
-    @Autowired
     ContactsService contactsService;
 
     @Autowired
-    private ChatMessageRepository chatMessageRepository;
+    private ChatMessageService chatMessageService;
 
-    @GetMapping("/allByUsername")
+    @GetMapping("/all/username")
     public ResponseEntity<?> getAllByUsername(
             @RequestParam(name = "username", required = false, defaultValue = "empty") String username
     ) {
@@ -61,7 +61,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/byUsername")
+    @PostMapping("/avatar")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            userService.uploadUserAvatar(file.getBytes(), getAuthenticatedUser().getId());
+            return ResponseEntity.ok().body(new MessageResponse("Успешно загружены файлы: " + file.getOriginalFilename()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при загрузке файлa"));
+        }
+    }
+
+    @GetMapping("/username")
     public ResponseEntity<?> getByUsername(
             @RequestParam(name = "username", required = false, defaultValue = "empty") String username,
             @RequestParam String role
@@ -86,7 +97,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/allByInitials")
+    @GetMapping("/all/initials")
     public ResponseEntity<?> getAllByInitials(
             @RequestParam(name = "initials", required = false, defaultValue = "empty") String initials
     ) {
@@ -106,7 +117,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/byInitials")
+    @GetMapping("/initials")
     public ResponseEntity<?> getByInitials(
             @RequestParam(name = "initials", required = false, defaultValue = "empty") String initials,
             @RequestParam String role
@@ -127,16 +138,14 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getContacts")
+    @GetMapping("/contacts")
     public ResponseEntity<?> getContacts(@RequestParam String currentUserUsername) {
         try {
+            System.out.println("get");
             Optional<Contact> contactOptional = contactsService.getByContactsOwner(currentUserUsername);
-            System.out.println("ya tut" + contactOptional);
-            List<User> contactsList = new ArrayList<>();
-//            Map<User, ChatMessage> contactWithLastMsg = new HashMap<>();
+            List<User> contactsList;
             ContactsResponse contactWithLastMsg = new ContactsResponse();
             contactWithLastMsg.setContactWithLastMsg(new ArrayList<>());
-//            contactWithLastMsg.setLastMessages(new ArrayList<>());
             var contacts = contactWithLastMsg.getContactWithLastMsg();
             if (contactOptional.isPresent()) {
                 contactsList = contactOptional.get().getContactsList();
@@ -147,7 +156,7 @@ public class UserController {
                     } else {
                         chatId = (currentUserUsername + user.getUsername());
                     }
-                    Optional<ChatMessage> lastMessage = chatMessageRepository.findFirstByChatIdOrderBySendDateDesc(chatId);
+                    Optional<ChatMessage> lastMessage = chatMessageService.findFirstByChatIdOrderBySendDateDesc(chatId);
 
                     if (lastMessage.isPresent()) {
 //                        var contactList = contactWithLastMsg.getContacts();
@@ -168,7 +177,6 @@ public class UserController {
                 }
                 contactWithLastMsg.setContactWithLastMsg(contacts);
             }
-            System.out.println(contactWithLastMsg.getContactWithLastMsg());
             return ResponseEntity.ok().body(contactWithLastMsg);
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,11 +184,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/pushContacts")
+    @PostMapping("/contacts")
     public ResponseEntity<?> pushContacts(
-            @RequestBody PushContactsRequest request
+            @RequestBody ContactsRequest request
     ) {
         try {
+            System.out.println("push");
             User user = push(request.getCurrentUserUsername(), request.getSelectedUserUsername());
             if (push(request.getSelectedUserUsername(), request.getCurrentUserUsername()) == null) {
                 return ResponseEntity.badRequest().body("Пользователя с данным логином не существует");
@@ -216,8 +225,12 @@ public class UserController {
         List<User> userList = contact.getContactsList();
         userList.add(user);
         contact.setContactsList(userList);
-        contactsRepository.save(contact);
+        contactsService.save(contact);
         return user;
+    }
+
+    private UserDetailsImpl getAuthenticatedUser() {
+        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

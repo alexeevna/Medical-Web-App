@@ -8,7 +8,7 @@ class ChatService {
     getMessages(senderUsername, recipientUsername) {
         let parameters = this.createRequestParamsForGetMsg(senderUsername, recipientUsername);
 
-        return axios.get(API_URL + 'allMessages',
+        return axios.get(API_URL + 'all/messages',
             {headers: authHeader(), params: parameters});
     }
 
@@ -21,9 +21,9 @@ class ChatService {
     }
 
     getUnreadMessages(recipientId) {
-        let parameters = this.createRequestParamsForGetUnreadMsg(recipientId);
+        const parameters = this.createRequestParamsForGetUnreadMsg(recipientId);
 
-        return axios.get(API_URL + 'unreadMessages',
+        return axios.get(API_URL + 'unread/messages',
             {headers: authHeader(), params: parameters});
     }
 
@@ -35,7 +35,7 @@ class ChatService {
     }
 
     updateStatusUnreadMessages(messages) {
-        return axios.post(API_URL + 'updateMessages', {messages},
+        return axios.post(API_URL + 'update/messages', {messages},
             {headers: authHeader()});
     }
 
@@ -46,6 +46,28 @@ class ChatService {
         return params;
     }
 
+    deleteMsg(message) {
+        return axios.post(API_URL + 'delete', {message}, {headers: authHeader()})
+    }
+
+    deleteMsgByTimeAndChatId(time, senderName, recipientName) {
+        return axios.post(API_URL + 'delete/by/time/chatid', {
+            time,
+            senderName,
+            recipientName
+        }, {headers: authHeader()})
+    }
+
+    // createRequestParamsForDeleteMsgByTimeAndChatId(time, senderName, recipientName) {
+    //     let params = {};
+    //
+    //     if (time && senderName && recipientName) {
+    //         params["time"] = time;
+    //         params["senderName"] = senderName;
+    //         params["recipientName"] = recipientName;
+    //     }
+    //     return params;
+    // }
 }
 
 export default new ChatService();

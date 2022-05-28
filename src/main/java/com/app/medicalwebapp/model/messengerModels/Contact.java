@@ -1,4 +1,4 @@
-package com.app.medicalwebapp.model.messages;
+package com.app.medicalwebapp.model.messengerModels;
 
 import com.app.medicalwebapp.model.User;
 import lombok.Data;

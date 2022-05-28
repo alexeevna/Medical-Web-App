@@ -19,7 +19,7 @@ public class FileSaverStrategyResolver {
     FileSaverStrategy sftpSaverStrategy;
 
     public FileSaverStrategy getFileSaver(String fileName, byte[] content) {
-        FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(fileName, content);
+        FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(fileName);
         FileSaverStrategy fileSaver = strategies.stream()
                                             .filter(strategy -> strategy.supportsFormat(fileFormat))
                                             .findFirst()

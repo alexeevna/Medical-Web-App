@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import {Switch, Route, Link} from "react-router-dom"
+import {Switch, Route, Link, Redirect} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
@@ -43,12 +43,14 @@ import BallotIcon from '@material-ui/icons/Ballot'
 import ForumIcon from '@material-ui/icons/Forum'
 import SearchIcon from '@material-ui/icons/Search'
 import MessageIcon from '@material-ui/icons/Message'
+import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
-import Chat from "./components/messageComponents/chat.component"
+import Chat from "./components/messengerComponents/chat.component"
 import SockJS from "sockjs-client"
 import {over} from "stompjs"
 import UserService from "./services/user.service"
 import ChatService from "./services/chat.service"
+import AttachmentService from "./services/attachment.service";
 
 const drawerWidth = 240
 
@@ -154,15 +156,14 @@ function App(props) {
     const [numberOfUnRead, setNumberOfUnRead] = useState(0)
     // const [showModeratorBoard, setShowModeratorBoard] = useState(false)
     // const [showAdminBoard, setShowAdminBoard] = useState(false)
-    const [currentUser, setCurrentUser] = useState(undefined)
-    const [open, setOpen] = useState(false)
+    const [currentUser, setCurrentUser] = useState(null)
+    const [open, setOpen] = useState(true)
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
     const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState(new Map())
 
     useEffect(() => {
         const user = AuthService.getCurrentUser()
-        console.log("useEffectApp")
         if (user) {
             AuthService.checkTokenIsExpired(user.token)
                 .then(() => {
@@ -207,7 +208,7 @@ function App(props) {
     }
 
     function onMessageReceived(response) {
-        const data = JSON.parse(response.body)
+        let data = JSON.parse(response.body)
         let presenceUserInContacts = false
         let presenceUsername
         for (let username of usersWithLastMsgReceived.keys()) {
@@ -223,10 +224,16 @@ function App(props) {
             setUsersWithLastMsgReceived(prev => prev.set(presenceUsername, userWithLastMessage))
         } else {
             UserService.getAllByUsername(data.senderName)
-                .then((response) => {
+                .then(async (response) => {
                     const user = response.data.shift();
+                    if (user.avatar) {
+                        const base64Response = await fetch(`data:application/json;base64,${user.avatar}`)
+                        const blob = await base64Response.blob()
+                        user.avatar = URL.createObjectURL(blob)
+                    }
                     let userWithLastMsg = {first: user, second: data}
                     setUsersWithLastMsgReceived(prev => (prev.set(user.username, userWithLastMsg)))
+                    setRefresh({})
                 })
                 .catch((e) => {
                     console.log(e);
@@ -297,6 +304,15 @@ function App(props) {
             return null
     }
 
+    function checkCurrentUser(component) {
+        const currentUser = AuthService.getCurrentUser()
+        if (currentUser) {
+            return component
+        } else {
+            return <Redirect to="/login"/>
+        }
+    }
+
     function minusUnRead(num) {
         setNumberOfUnRead(prev => (prev - num))
     }
@@ -321,12 +337,12 @@ function App(props) {
             path: '/home'
         },
         {
-            text: 'Анализ ИИ',
+            text: 'Анализ снимков',
             icon: <BallotIcon color="secondary"/>,
             path: '/pipelines/create'
         },
         {
-            text: 'Посты',
+            text: 'Форум',
             icon: <ForumIcon color="secondary"/>,
             path: '/records/view'
         },
@@ -480,25 +496,43 @@ function App(props) {
                             <Route exact path="/home/doctor" component={HomeDoctor}/>
                             <Route exact path="/login" component={Login}/>
                             <Route exact path={["/msg", "/msg/:selected"]}>
-                                <Chat stompClient={stompClient} allMessages={allMessages}
-                                      setAllMessages = {setAllMessages}
-                                      number={numberOfUnRead} minusUnRead={minusUnRead}
-                                      usersWithLastMsg={usersWithLastMsgReceived}
-                                      setUsersWithLastMsg={setUsersWithLastMsgReceived}
-                                />
+                                {((AuthService.getCurrentUser())) ?
+                                    (<Chat stompClient={stompClient} allMessages={allMessages}
+                                           setAllMessages={setAllMessages}
+                                           number={numberOfUnRead} minusUnRead={minusUnRead}
+                                           usersWithLastMsg={usersWithLastMsgReceived}
+                                           setUsersWithLastMsg={setUsersWithLastMsgReceived}
+                                    />) : (<Redirect to="/login"/>)}
                             </Route>
                             <Route exact path="/register" component={Register}/>
-                            <Route exact path="/search" component={Search}/>
-                            <Route exact path="/profile/:username" component={Profile}/>
-                            <Route exact path="/pipelines/create" component={PipelinesComponent}/>
-                            <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
-                            <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}/>
-                            <Route exact path="/files/view" component={ViewAttachmentsComponent}/>
-                            <Route exact path="/files/upload" component={UploadAttachmentsComponent}/>
+                            <Route exact path="/search">
+                                {AuthService.getCurrentUser() ? <Search/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path={["/profile/:usernamePath"]}>
+                                {AuthService.getCurrentUser() ? <Profile/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/create" component={PipelinesComponent}>
+                                {AuthService.getCurrentUser() ? <PipelinesComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/results" component={PipelineResultsComponent}>
+                                {AuthService.getCurrentUser() ? <PipelineResultsComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/pipelines/save" component={SavePipelineConfigComponent}>
+                                {AuthService.getCurrentUser() ? <SavePipelineConfigComponent/> :
+                                    <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/files/view" component={ViewAttachmentsComponent}>
+                                {AuthService.getCurrentUser() ? <ViewAttachmentsComponent/> : <Redirect to="/login"/>}
+                            </Route>
+                            <Route exact path="/files/upload" component={UploadAttachmentsComponent}>
+                                {AuthService.getCurrentUser() ? <UploadAttachmentsComponent/> : <Redirect to="/login"/>}
+                            </Route>
                             <Route exact path="/records/view" component={ViewRecordsComponent}/>
                             <Route exact path="/records/create" component={CreateRecordComponent}/>
                             <Route path="/records/thread/:recordId" component={RecordThreadComponent}/>
-                            <Route exact path="/topics/create" component={TopicComponent}/>
+                            <Route exact path="/topics/create" component={TopicComponent}>
+                                {AuthService.getCurrentUser() ? <TopicComponent/> : <Redirect to="/login"/>}
+                            </Route>
                             <Route component={NotExist}/>
                         </Switch>
                     </div>

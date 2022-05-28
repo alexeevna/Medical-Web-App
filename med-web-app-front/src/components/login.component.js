@@ -118,6 +118,7 @@ class Login extends Component {
                                 required
                                 fullWidth
                                 name="password"
+                                autoComplete="on"
                                 label="Пароль"
                                 type="password"
                                 id="password"

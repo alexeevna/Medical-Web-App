@@ -6,15 +6,26 @@ const API_URL = process.env.REACT_APP_API_URL + '/api/search/';
 
 class UserService {
 
-    constructor(props) {
-        this.createRequestParamsForGetUsername = this.createRequestParamsForGetUsername.bind(this);
-        this.createRequestParamsForGetInitials = this.createRequestParamsForGetInitials.bind(this);
-    }
-
     getContacts(currentUserUsername) {
         let parameters = this.createRequestParamsForGetContacts(currentUserUsername);
-        return axios.get(API_URL + 'getContacts',
+        return axios.get(API_URL + 'contacts',
             {headers: authHeader(), params: parameters});
+    }
+
+    uploadAvatar(file) {
+        let formData = new FormData();
+
+        formData.append("file", file);
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        let token = '';
+        if (user && user.token) {
+            token = user.token;
+            console.log("hey hey")
+        }
+        return axios.post(API_URL + "avatar", formData, {
+            headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token},
+        });
     }
 
     createRequestParamsForGetContacts(currentUserUsername) {
@@ -26,14 +37,14 @@ class UserService {
 
 
     pushContacts(currentUserUsername, selectedUserUsername) {
-        return axios.post(API_URL + 'pushContacts', {currentUserUsername, selectedUserUsername},
+        return axios.post(API_URL + 'contacts', {currentUserUsername, selectedUserUsername},
             {headers: authHeader()});
     }
 
     getAllByUsername(username) {
         let parameters = this.createRequestParamsForGetUsername(username);
 
-        return axios.get(API_URL + 'allByUsername',
+        return axios.get(API_URL + 'all/username',
             {headers: authHeader(), params: parameters});
     }
 
@@ -47,7 +58,7 @@ class UserService {
     getByUsername(username, role) {
         let parameters = this.createRequestParamsForGetUsernameAndRole(username, role);
 
-        return axios.get(API_URL + 'byUsername',
+        return axios.get(API_URL + 'username',
             {headers: authHeader(), params: parameters});
     }
 
@@ -62,7 +73,7 @@ class UserService {
     getAllByInitials(initials) {
         let parameters = this.createRequestParamsForGetInitials(initials);
 
-        return axios.get(API_URL + 'allByInitials',
+        return axios.get(API_URL + 'all/initials',
             {headers: authHeader(), params: parameters});
     }
 
@@ -76,7 +87,7 @@ class UserService {
     getByInitials(initials, role) {
         let parameters = this.createRequestParamsForGetInitialsAndRole(initials, role);
 
-        return axios.get(API_URL + 'byInitials',
+        return axios.get(API_URL + 'initials',
             {headers: authHeader(), params: parameters});
     }
 
