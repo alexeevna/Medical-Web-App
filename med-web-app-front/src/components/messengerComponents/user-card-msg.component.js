@@ -1,7 +1,6 @@
-import React, {Component} from "react";
+import React from "react";
 import '../../styles/Search.css'
-import {Divider, Grid, Paper, TableCell, withStyles} from "@material-ui/core";
-import {Link} from '@material-ui/core';
+import {Grid, withStyles} from "@material-ui/core";
 
 const useStyles = theme => ({
     root: {

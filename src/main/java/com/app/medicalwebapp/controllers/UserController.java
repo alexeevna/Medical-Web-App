@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
-@CrossOrigin(origins = "*", maxAge = 604800)
+@CrossOrigin(origins = "http://localhost:8082", maxAge = 604800)
 @RestController
 @RequestMapping("/api/search")
 public class UserController {
@@ -42,6 +42,7 @@ public class UserController {
             @RequestParam(name = "username", required = false, defaultValue = "empty") String username
     ) {
         try {
+            System.out.println("Hello");
             if (username.equals("empty")) {
                 List<User> responseBody;
                 responseBody = userService.getAll();
