@@ -27,6 +27,7 @@ public class ChatMessageService {
 
     @Autowired
     private ChatFileService chatFileService;
+
     @Autowired
     private FileService fileService;
 
