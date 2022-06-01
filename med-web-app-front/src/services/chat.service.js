@@ -57,17 +57,6 @@ class ChatService {
             recipientName
         }, {headers: authHeader()})
     }
-
-    // createRequestParamsForDeleteMsgByTimeAndChatId(time, senderName, recipientName) {
-    //     let params = {};
-    //
-    //     if (time && senderName && recipientName) {
-    //         params["time"] = time;
-    //         params["senderName"] = senderName;
-    //         params["recipientName"] = recipientName;
-    //     }
-    //     return params;
-    // }
 }
 
 export default new ChatService();

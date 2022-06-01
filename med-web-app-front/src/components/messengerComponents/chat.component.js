@@ -6,10 +6,8 @@ import Grid from "@material-ui/core/Grid"
 import AuthService from "../../services/auth.service"
 import Button from "@material-ui/core/Button"
 import ListItemButton from '@mui/material/ListItemButton';
-// import { Stomp } from '@stomp/stompjs'
 import UserCardMessage from "./user-card-msg.component"
 import ChatService from "../../services/chat.service"
-// import io from "socket.io-client";
 import RecipientMsg from "./recipient.msg.component"
 import SenderMsg from "./sender.msg.component"
 import Avatar from "@material-ui/core/Avatar";
@@ -22,9 +20,6 @@ import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 const useStyles = theme => ({
     root: {
         width: 510,
-        // position: 'relative',
-        // marginTop: theme.spacing(1.5),
-        // marginBottom: theme.spacing(1.5),
         marginLeft: 6,
         marginRight: 6,
         "& .MuiFormLabel-root": {
@@ -36,13 +31,8 @@ const useStyles = theme => ({
         marginTop: theme.spacing(3),
         marginRight: theme.spacing(2),
         marginLeft: theme.spacing(-7),
-        // width:200,
-        // padding: theme.spacing(3),
-        // marginLeft: theme.spacing(1),
-        // padding: theme.spacing(1),
         color: "black",
         overflowY: "auto",
-        // display: 'flex',
         height: 623,
     },
     paper2: {
@@ -61,14 +51,12 @@ const useStyles = theme => ({
         width: 220,
         '&:active': {
             backgroundColor: '#bdff59',
-            // color: '#fff',
         }
     },
     messageGrid: {
         width: 650,
         height: 507,
         overflowY: "auto",
-        // overflowX: "visible",
         marginBottom: theme.spacing(1.5),
     },
     msgMy: {
@@ -98,7 +86,6 @@ const useStyles = theme => ({
         marginBottom: 10
     },
     noticeMsg: {
-        // marginLeft: theme.spacing(15),
         backgroundColor: '#FF0040',
         textAlign: 'center',
         color: 'white',
@@ -106,19 +93,10 @@ const useStyles = theme => ({
     },
     itemButton: {
         padding: 0,
-        // '& .MuiListItemButton-root.Mui-selected': {
-        //     backgroundColor: '#FF0040',
-        // },
-        // '& .MuiListItemButton-root.css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root': {
-        //     "&:hover": {
-        //         backgroundColor: 'primary',
-        //     },
-        // },
     },
     usersGrid: {
         height: 440,
         overflowY: "auto",
-        // overflowX: "visible",
         marginBottom: theme.spacing(1.5),
     },
     active: {
@@ -132,8 +110,6 @@ const useStyles = theme => ({
     },
     flex: {
         display: 'flex',
-        // alignItems: 'stretch',
-        // position: 'auto',
     },
     lastMsgTimeContent: {
         color: '#888888',
@@ -145,17 +121,11 @@ const useStyles = theme => ({
     gridFullWidth: {
         width: '100%'
     },
-    // input: {
-    //     width: '94%'
-    // },
     iconInput: {
         width: "100%",
         height: 56,
     }
 })
-
-var stompClient = null
-const API_URL = process.env.REACT_APP_API_URL
 
 function Chat(props) {
     const {classes} = props
@@ -166,7 +136,6 @@ function Chat(props) {
     const {allMessages} = props
     const {setAllMessages} = props
     const {selected} = useParams()
-    const [yourID, setYourID] = useState();
     const [processedUnreadMessages, setProcessedUnreadMessages] = useState([])
     const [content, setContent] = useState("")
     const [contentPresence, setContentPresence] = useState(false)
@@ -316,7 +285,6 @@ function Chat(props) {
                 recipientName: selectedUser.username,
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
-                // attachments: fileNameAndStringBase64,
                 attachmentsBlobForImageClient: selectedFiles,
                 localFiles: fileNameAndStringBase64,
                 sendDate: localISOTime
@@ -445,13 +413,6 @@ function Chat(props) {
                                                 {
                                                     userAndLastMsg.second && userAndLastMsg.second.sendDate && processTimeSend(userAndLastMsg)
                                                 }
-                                                {/*{*/}
-                                                {/*    userAndLastMsg.second && userAndLastMsg.second.sendDate && new Date(userAndLastMsg.second.sendDate).getHours() + ":"*/}
-                                                {/*    + ((new Date(userAndLastMsg.second.sendDate).getMinutes() < 10 && "0" + new Date(userAndLastMsg.second.sendDate).getMinutes())*/}
-                                                {/*        || (new Date(userAndLastMsg.second.sendDate).getMinutes() > 10 && new Date(userAndLastMsg.second.sendDate).getMinutes())*/}
-                                                {/*    )*/}
-                                                {/*}*/}
-                                                {/*{processTimeSend(userAndLastMsg)}*/}
                                             </Grid>
                                         </Grid>
                                     </Grid>

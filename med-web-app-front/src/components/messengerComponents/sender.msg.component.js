@@ -39,7 +39,6 @@ const useStyles = theme => ({
         fontSize: 12,
         marginTop: theme.spacing(0.5),
         textAlign: "right"
-        // marginBottom: 10
     },
     link: {
         color: "black",
@@ -141,7 +140,6 @@ function SenderMsg(props) {
     }
 
     function deleteMsg() {
-        // setShowPaper(false)
         setOpenDialog(true)
     }
 
@@ -175,17 +173,6 @@ function SenderMsg(props) {
                                 <DeleteIcon onClick={(e => deleteMsg(e))} ref={KeyboardArrowDownIconRef}
                                             className={classes.collapsed}/>
                             </Collapse>
-                            {/*{showPaper &&*/}
-                            {/*<Paper className={classes.paperDelete} style={{*/}
-                            {/*    position: "absolute",*/}
-                            {/*    left: paperX,*/}
-                            {/*    top: paperY,*/}
-                            {/*    backgroundColor: '#eeeeee',*/}
-                            {/*    padding: 1.5*/}
-                            {/*}}*/}
-                            {/*       onClick={deleteMsg}*/}
-                            {/*> Удалить сообщение у*/}
-                            {/*    всех </Paper>}*/}
                             <Dialog
                                 open={openDialog}
                                 onClose={disagreeToDelete}
