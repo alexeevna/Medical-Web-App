@@ -1,16 +1,21 @@
 package com.app.medicalwebapp.services.messengerServices;
 
+import com.app.medicalwebapp.controllers.requestbody.messenger.ChatFileRequest;
+import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageRequest;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
+import com.app.medicalwebapp.model.messengerModels.ChatFile;
 import com.app.medicalwebapp.model.messengerModels.ChatMessage;
 import com.app.medicalwebapp.model.messengerModels.StatusMessage;
 import com.app.medicalwebapp.repositories.messengerRepositories.ChatMessageRepository;
 import com.app.medicalwebapp.services.FileService;
+import com.app.medicalwebapp.utils.FileFormatResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,16 +26,50 @@ public class ChatMessageService {
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
-    FileService fileService;
+    private ChatFileService chatFileService;
 
-    public ChatMessage save(ChatMessage chatMessage) {
-        chatMessageRepository.save(chatMessage);
-        return chatMessage;
-    }
+    @Autowired
+    private FileService fileService;
 
-    public long countNewMessages(Long senderId, Long recipientId) {
-        return chatMessageRepository.countBySenderIdAndRecipientId(
-                senderId, recipientId);
+    public ChatMessage save(ChatMessageRequest msg) throws Exception {
+        List<FileObject> files = new ArrayList<>();
+        List<ChatFile> localFiles = new ArrayList<>();
+        if (msg.getLocalFiles() != null) {
+            for (ChatFileRequest file : msg.getLocalFiles()) {
+                FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(file.getFileName());
+                Base64.Decoder decoder = Base64.getDecoder();
+                String fileBase64 = file.getFileContent().split(",")[1];
+                byte[] decodedFileByte = decoder.decode(fileBase64);
+                if (fileFormat == FileObjectFormat.DICOM) {
+                    files.add(fileService.saveFile(file.getFileName(), decodedFileByte, msg.getSenderId()));
+                } else {
+                    ChatFile localFile = new ChatFile();
+                    localFile.setFileName(file.getFileName());
+                    localFile.setFileContent(decodedFileByte);
+                    localFile.setFormat(fileFormat);
+                    var fl = chatFileService.save(localFile);
+                    localFiles.add(fl);
+                }
+            }
+        }
+        String chatId;
+        if (msg.getSenderName().compareTo(msg.getRecipientName()) < 0) {
+            chatId = (msg.getSenderName() + msg.getRecipientName());
+        } else {
+            chatId = (msg.getRecipientName() + msg.getSenderName());
+        }
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setChatId(chatId);
+        chatMessage.setRecipientId(msg.getRecipientId());
+        chatMessage.setSenderId(msg.getSenderId());
+        chatMessage.setRecipientName(msg.getRecipientName());
+        chatMessage.setSenderName(msg.getSenderName());
+        chatMessage.setContent(msg.getContent());
+        chatMessage.setStatusMessage(StatusMessage.UNREAD);
+        chatMessage.setSendDate(msg.getSendDate());
+        chatMessage.setAttachments(files);
+        chatMessage.setLocalFiles(localFiles);
+        return chatMessageRepository.save(chatMessage);
     }
 
     public List<ChatMessage> findMessages(String senderUsername, String recipientUsername) throws Exception {

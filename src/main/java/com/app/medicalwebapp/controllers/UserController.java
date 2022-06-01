@@ -42,6 +42,7 @@ public class UserController {
             @RequestParam(name = "username", required = false, defaultValue = "empty") String username
     ) {
         try {
+            System.out.println("Hello");
             if (username.equals("empty")) {
                 List<User> responseBody;
                 responseBody = userService.getAll();
@@ -141,7 +142,6 @@ public class UserController {
     @GetMapping("/contacts")
     public ResponseEntity<?> getContacts(@RequestParam String currentUserUsername) {
         try {
-            System.out.println("get");
             Optional<Contact> contactOptional = contactsService.getByContactsOwner(currentUserUsername);
             List<User> contactsList;
             ContactsResponse contactWithLastMsg = new ContactsResponse();
@@ -159,20 +159,9 @@ public class UserController {
                     Optional<ChatMessage> lastMessage = chatMessageService.findFirstByChatIdOrderBySendDateDesc(chatId);
 
                     if (lastMessage.isPresent()) {
-//                        var contactList = contactWithLastMsg.getContacts();
-//                        contactList.add(user);
-//                        var lastMsg = contactWithLastMsg.getLastMessages();
-//                        lastMsg.add(lastMessage.get());
-
                         contacts.add(Pair.of(user, lastMessage.get()));
-                        //                        contactWithLastMsg.setContacts(contactList);
-//                        contactWithLastMsg.setLastMessages(lastMsg);
                     } else {
                         contacts.add(Pair.of(user, new ChatMessage()));
-//                        contacts.put(user, new ChatMessage());
-                        //                        var contactList = contactWithLastMsg.getContacts();
-//                        contactList.add(user);
-//                        contactWithLastMsg.setContacts(contactList);
                     }
                 }
                 contactWithLastMsg.setContactWithLastMsg(contacts);
@@ -189,7 +178,6 @@ public class UserController {
             @RequestBody ContactsRequest request
     ) {
         try {
-            System.out.println("push");
             User user = push(request.getCurrentUserUsername(), request.getSelectedUserUsername());
             if (push(request.getSelectedUserUsername(), request.getCurrentUserUsername()) == null) {
                 return ResponseEntity.badRequest().body("Пользователя с данным логином не существует");
@@ -211,7 +199,6 @@ public class UserController {
             contact = contactsOptional.get();
         } else {
             contact = new Contact();
-//            contact.setId((long) Math.random() * (10000L - 1L));
             contact.setContactsOwner(currentUserUsername);
             contact.setContactsList(new ArrayList<>());
         }
