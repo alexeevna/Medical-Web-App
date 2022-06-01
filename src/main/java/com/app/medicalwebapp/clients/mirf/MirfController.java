@@ -56,7 +56,7 @@ public class MirfController {
             byte[] resultFileInBytes = MirfZipUtils.unzipResultArchive(zipInBytes);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("-dd-MM-yyyy-HH-mm-ss");
             String startedTime = formatter.format(relatedPipelineJob.getStartedTime());
-            FileObject outputFile = fileService.saveFile("pipeline-result" + startedTime + ".pdf", resultFileInBytes, relatedPipelineJob.getCreator().getId());
+            FileObject outputFile = fileService.saveFile("pipeline-result" + startedTime + ".pdf", resultFileInBytes, relatedPipelineJob.getCreator().getId(), "");
             relatedPipelineJob.setOutputFile(outputFile);
             relatedPipelineJob.setEndTime(LocalDateTime.now());
             relatedPipelineJob.setExecutionStatus(PipelineJobStatus.COMPLETED_OK);

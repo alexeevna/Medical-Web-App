@@ -5,6 +5,7 @@ import DicomAnonymizerService from "../services/dicom-anonymizer.service"
 import Button from "@material-ui/core/Button";
 import {Card, withStyles} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     paper: {
@@ -142,7 +143,9 @@ class UploadAttachmentsComponent extends Component {
         let isDicom = file.name.includes(".dcm");
         if (isDicom) {
             try {
-                var anonymizedDicomBlob = await DicomAnonymizerService.anonymizeInstance(file);
+                var dicomContAndUID = await DicomAnonymizerService.anonymizeInstance(file);
+                var anonymizedDicomBlob = dicomContAndUID.dicom;
+                var UID = dicomContAndUID.UID;
             } catch (error) {
                 console.log(error)
                 _progressInfos[idx].percentage = 0;
@@ -159,19 +162,18 @@ class UploadAttachmentsComponent extends Component {
 
         let toSend = isDicom ? anonymizedDicomBlob : file;
 
-        AttachmentService.uploadAttachment(toSend, file.name, isDicom,
+        AttachmentService.uploadAttachment(toSend, file.name, isDicom, UID,
             (event) => {
                 _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
                 this.setState({
                     _progressInfos,
                 });
             })
-            .then((response) => {
+            .then(() => {
                 this.setState((prev) => {
                     let nextMessage = [...prev.message, "Успешно загружен файл: " + file.name];
                     return {message: nextMessage};
                 });
-
                 return AttachmentService.getAttachmentsInfoForUser(_currentUser.username);
             })
             .then((files) => {
@@ -180,7 +182,10 @@ class UploadAttachmentsComponent extends Component {
             .catch(() => {
                 _progressInfos[idx].percentage = 0;
                 this.setState((prev) => {
-                    let nextMessage = [...prev.message, "Не удалось загрузить файл: " + file.name];
+                    let message: String;
+                    if (file.size > 0) message = "Не удалось загрузить файл: " + file.name + ". Превышен максимальный размер 5 МБ"
+                    else message = "Не удалось загрузить файл: " + file.name;
+                    let nextMessage = [...prev.message, message];
                     return {
                         progressInfos: _progressInfos,
                         message: nextMessage
@@ -191,6 +196,7 @@ class UploadAttachmentsComponent extends Component {
 
     render() {
         const {selectedFiles, progressInfos, message} = this.state;
+        console.log(selectedFiles)
         const {classes} = this.props;
         return (
 
@@ -257,15 +263,16 @@ class UploadAttachmentsComponent extends Component {
                         <Grid xs={4} item>
                             <Card className={classes.paper2}>
                                 <Grid className={classes.grid}>
-                                    <Button
-                                        variant="contained"
-                                        href={"/profile/" + AuthService.getCurrentUser().username}
-                                        className={classes.button}>
-                                        Профиль
-                                    </Button>
-                                    <Button variant="contained" href="/files/view" className={classes.button} >
-                                        Мои файлы
-                                    </Button>
+                                    <Link to={"/profile/" + AuthService.getCurrentUser().username} style={{textDecoration: 'none'}}>
+                                        <Button className={classes.button}>
+                                            Профиль
+                                        </Button>
+                                    </Link>
+                                    <Link to={"/files/view"} style={{textDecoration: 'none'}}>
+                                        <Button className={classes.button}>
+                                            Мои файлы
+                                        </Button>
+                                    </Link>
                                 </Grid>
                             </Card>
                         </Grid>

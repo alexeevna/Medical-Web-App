@@ -106,7 +106,7 @@ class Login extends Component {
                                 id="login"
                                 label="Логин"
                                 name="login"
-                                autoComplete="login"
+                                autoComplete="on"
                                 autoFocus
                                 value={this.state.username}
                                 onChange={this.onChangeUsername}
@@ -118,10 +118,10 @@ class Login extends Component {
                                 required
                                 fullWidth
                                 name="password"
+                                autoComplete="on"
                                 label="Пароль"
                                 type="password"
                                 id="password"
-                                autoComplete="current-password"
                                 value={this.state.password}
                                 onChange={this.onChangePassword}
                             />

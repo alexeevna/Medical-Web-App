@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.controllers;
 
+import com.app.medicalwebapp.model.Active;
 import com.app.medicalwebapp.model.User;
 import com.app.medicalwebapp.repositories.UserRepository;
 import com.app.medicalwebapp.security.UserDetailsImpl;
@@ -25,6 +26,7 @@ import javax.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 604800)
@@ -60,13 +62,21 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+        Optional<User> user = userRepository.findByUsernameAndRoleNotLike(signInRequest.getUsername(), "Модератор");
+        if (user.isPresent()) {
+            User user2 = user.get();
+            user2.setActive(Active.ONLINE);
+            userRepository.save(user2);
+        }
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 roles,
                 userDetails.getRate(),
                 userDetails.getStatus(),
-                userDetails.getRegisteredDate()));
+                userDetails.getRegisteredDate(),
+                userDetails.getInitials())
+        );
     }
 
     @PostMapping("/signup")
@@ -86,18 +96,28 @@ public class AuthController {
         user.setPatronymic(signUpRequest.getPatronymic());
         user.setRole(signUpRequest.getChosenRole());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
+        user.setActive(Active.OFFLINE);
 //        user.setRealName(signUpRequest.getRealName());
 //        user.setMobilePhone(signUpRequest.getMobilePhone());
         user.setStatus(0);
         user.setRate(0);
         user.setRegisteredDate(LocalDateTime.now());
-
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("Пользователь был успешно зарегистрирован"));
     }
 
-    @GetMapping("checktoken")
+    @GetMapping("/logout")
+    public void logOut(@RequestParam String username) {
+        Optional<User> user = userRepository.findByUsernameAndRoleNotLike(username, "Модератор");
+        if (user.isPresent()) {
+            User user2 = user.get();
+            user2.setActive(Active.OFFLINE);
+            userRepository.save(user2);
+        }
+    }
+
+    @GetMapping("/checktoken")
     public ResponseEntity<?> checkTokenExpiration(@RequestParam String token) {
         if (jwtHelper.validateJwtToken(token)) {
             return ResponseEntity.ok("JWT token is valid");

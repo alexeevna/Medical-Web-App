@@ -33,3 +33,4 @@ build/
 ### VS Code ###
 .vscode/
 
+/med-web-app-front/package-lock.json

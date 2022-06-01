@@ -13,22 +13,24 @@ class AttachmentService {
         return axios.get(API_URL + 'test/' + username, { headers: authHeader() });
     }
 
-    uploadAttachment(file, fileName, isDicom, onUploadProgress) {
+    uploadAttachment(file, fileName, isDicom, UID, onUploadProgress) {
         console.log("Got file to upload");
+        console.log(UID);
         let formData = new FormData();
 
         if (isDicom) {
             formData.append("file", new Blob([file]), fileName);
         } else {
             formData.append("file", file);
+            UID = "";
         }
-
+        console.log(file)
         const user = JSON.parse(localStorage.getItem('user'));
         let token = '';
         if (user && user.token) {
             token = user.token;
         }
-        return axios.post(API_URL + "upload", formData, {
+        return axios.post(API_URL + "upload/" + UID, formData, {
             headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token},
             onUploadProgress,
         });

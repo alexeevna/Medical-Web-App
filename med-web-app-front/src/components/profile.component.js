@@ -1,12 +1,15 @@
-import React, {Component} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import AuthService from "../services/auth.service";
 import ProfileService from "../services/profile.service";
 import Grid from '@material-ui/core/Grid';
 import '../styles/Profile.css'
 import Review from "./review.component"
-import {ButtonBase, Card, TextField, withStyles} from "@material-ui/core";
+import {ButtonBase, Card, Collapse, Paper, TextField, Typography, withStyles} from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
+import {Link, useParams} from "react-router-dom";
+import UserService from "../services/user.service"
+import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 
 const useStyles = theme => ({
     txtField: {
@@ -47,15 +50,36 @@ const useStyles = theme => ({
         minWidth: 1000,
     },
     avatar: {
-        width: 130,
-        height: 130,
+        width: 150,
+        height: 160,
+    },
+    collapsed: {
+        position: "absolute",
+        bottom: 0,
+        width: 150,
+        // '& :hover': {
+        //     height: 1000,
+        // }
+    },
+    btnbase: {
         marginBottom: theme.spacing(3),
         marginRight: theme.spacing(4),
         marginLeft: theme.spacing(4),
+        position: "relative"
     },
     button: {
         width: 200,
         margin: theme.spacing(1),
+        backgroundColor: '#f50057',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
+    },
+    write: {
+        width: 300,
+        marginTop: theme.spacing(3),
         backgroundColor: '#f50057',
         color: '#fff',
         '&:hover': {
@@ -81,141 +105,188 @@ const useStyles = theme => ({
         padding: theme.spacing(1),
         color: "black",
         display: 'flex',
+    },
+    paperUploadAvatar: {
+        background: '#f4f4f4',
+        height: 30,
+        textAlign: "center",
+        paddingTop: 6,
+        '&:hover': {
+            backgroundColor: '#ffffff',
+            textDecoration: 'underline'
+        }
+    },
+    typography: {
+        fontWeight: 500,
+        fontSize: 13
     }
 });
 
-class Profile extends Component {
-    constructor(props) {
-        super(props);
+function Profile(props) {
+    const {classes} = props
+    const [user, setUser] = useState(null)
+    const {usernamePath} = useParams()
+    const [username, setUsername] = useState(usernamePath)
+    const [showReviews, setShowReviews] = useState(true)
+    const fileInput = useRef(null)
+    const [selectedFile, setSelectedFile] = useState(null)
+    const [checked, setChecked] = useState(false)
 
-        this.getUser = this.getUser.bind(this);
-        this.getUsername = this.getUsername.bind(this);
-
-        this.state = {
-            user: null,
-            username: this.props.match.params.username,
-            showReviews: true,
-        };
+    function selectFile() {
+        if (user && user.username === AuthService.getCurrentUser().username) {
+            fileInput.current.click()
+        }
     }
 
-    getUser(username1) {
+
+    function getUser(username1) {
         ProfileService.getProfile(username1).then(
-            response => {
+            async response => {
                 const user = response.data;
-                this.refreshList();
-                this.setState({
-                    user: user,
-                });
+                if (user.avatar) {
+                    const base64Data = user.avatar
+                    const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
+                    const blob = await base64Response.blob()
+                    setSelectedFile(URL.createObjectURL(blob))
+                }
+                refreshList();
+                setUser(user)
             })
             .catch((e) => {
                 console.log(e);
             });
     }
 
-    refreshList() {
-        this.setState({
-            user: null,
-        });
+    function refreshList() {
+        setUser(null)
+        // this.setState({
+        //     user: null,
+        // });
     }
 
-    getUsername(prevState, props) {
-        return {
-            username: props.match.params.username,
-        };
-    }
+    // function getUsername(prevState, props) {
+    //     setUsername(usernamePath)
+    //     return usernamePath
+    // }
 
-    setNewUsername() {
-        this.setState(this.getUsername);
-    }
+    // function setNewUsername() {
+    //     setUsername(getUsername);
+    // }
 
-    componentDidMount() {
-        this.setNewUsername();
-        this.getUser(this.props.match.params.username);
-    }
+    useEffect(() => {
+        setUsername(usernamePath)
+        getUser(usernamePath);
+    }, [usernamePath])
 
-    render() {
-        if (this.props.match.params.username !== this.state.username) {
-            this.setNewUsername();
-            this.getUser(this.props.match.params.username);
+    function uploadFiles(e) {
+        const MAX_SIZE_FILES = 52428800
+        if (e.target.files[0] > MAX_SIZE_FILES) {
+            alert("Размер <= 50МБ")
+        } else {
+            UserService.uploadAvatar(e.target.files[0])
+            setSelectedFile(URL.createObjectURL(e.target.files[0]))
         }
-        const {user} = this.state;
-        const {showReviews} = this.state;
-        const {classes} = this.props;
-        return (
-            <div>
-                {
-                    user &&
-                    <Grid>
-                        <Grid xs={12} item className={classes.mainGrid}>
-                            <Grid xs={8} item>
-                                <Card className={classes.paper}>
-                                    <Grid className={classes.gridInPaper}>
-                                        <Grid className={classes.grid}>
-                                            <ButtonBase>
-                                                <Avatar className={classes.avatar}>
-                                                    Photo
-                                                </Avatar>
-                                            </ButtonBase>
-                                            <div>Дата регистрации:</div>
-                                            <div>{new Date(user.registeredDate).toLocaleDateString()}</div>
-                                        </Grid>
-                                        <Grid className={classes.gridData}>
-                                            <TextField
-                                                multiline
-                                                className={classes.txtField}
-                                                id="standard-read-only-input"
-                                                maxRows={4}
-                                                defaultValue={user.initials}
-                                                InputProps={{
-                                                    readOnly: true,
-                                                }}
-                                            />
-                                            <TextField
-                                                multiline
-                                                className={classes.txtFieldUsername}
-                                                id="standard-read-only-input"
-                                                maxRows={4}
-                                                defaultValue={user.username}
-                                                InputProps={{
-                                                    readOnly: true,
-                                                }}
-                                            />
-                                            <TextField
-                                                className={classes.txtFieldRole}
-                                                id="standard-read-only-input"
-                                                defaultValue={user.role}
-                                                InputProps={{
-                                                    readOnly: true,
-                                                }}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Card>
-                            </Grid>
-                            {user && user.username === AuthService.getCurrentUser().username &&
-                            <Grid xs={4} item>
-                                <Card className={classes.paper2}>
+    }
+
+    return (
+        <div>
+            {
+                user &&
+                <Grid>
+                    <Grid xs={12} item className={classes.mainGrid}>
+                        <Grid xs={8} item>
+                            <Card className={classes.paper}>
+                                <Grid className={classes.gridInPaper}>
                                     <Grid className={classes.grid}>
-                                        <Button variant="contained" href="/files/view" className={classes.button}>
+                                        <ButtonBase className={classes.btnbase}
+                                                    onMouseOver={() => setChecked(true)}
+                                                    onMouseLeave={() => setChecked(false)}>
+                                            <input type="file" style={{"display": "none"}} ref={fileInput}
+                                                   accept="image/*"
+                                                   onChange={(e) => uploadFiles(e)}/>
+                                            <Avatar className={classes.avatar} variant="rounded" src={selectedFile}>
+                                                <PhotoCameraOutlinedIcon style={{fontSize: 60}}/>
+                                            </Avatar>
+                                            {user && user.username === AuthService.getCurrentUser().username &&
+                                            <Collapse in={checked} className={classes.collapsed}>
+                                                <Paper className={classes.paperUploadAvatar} onClick={selectFile}>
+                                                    <Typography className={classes.typography}>
+                                                        Загрузить фотографию
+                                                    </Typography>
+                                                </Paper>
+                                            </Collapse>}
+                                        </ButtonBase>
+                                        <div>Дата регистрации:</div>
+                                        <div>{new Date(user.registeredDate).toLocaleDateString()}</div>
+                                    </Grid>
+                                    <Grid className={classes.gridData}>
+                                        <TextField
+                                            multiline
+                                            className={classes.txtField}
+                                            id="standard-read-only-input"
+                                            maxRows={4}
+                                            defaultValue={user.initials}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                        />
+                                        <TextField
+                                            multiline
+                                            className={classes.txtFieldUsername}
+                                            id="standard-read-only-input"
+                                            maxRows={4}
+                                            defaultValue={user.username}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                        />
+                                        <TextField
+                                            className={classes.txtFieldRole}
+                                            id="standard-read-only-input"
+                                            defaultValue={user.role}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                        />
+                                        {user && user.username !== AuthService.getCurrentUser().username &&
+                                        <Link to={"/msg/" + user.username} style={{textDecoration: 'none'}}>
+                                            <Button className={classes.write}>
+                                                Написать
+                                            </Button>
+                                        </Link>
+                                        }
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                        </Grid>
+                        {user && user.username === AuthService.getCurrentUser().username &&
+                        <Grid xs={4} item>
+                            <Card className={classes.paper2}>
+                                <Grid className={classes.grid}>
+                                    <Link to={"/files/view"} style={{textDecoration: 'none'}}>
+                                        <Button className={classes.button}>
                                             Мои файлы
                                         </Button>
-                                        <Button variant="contained" href="/files/upload" className={classes.button}>
+                                    </Link>
+                                    <Link to={"/files/upload"} style={{textDecoration: 'none'}}>
+                                        <Button className={classes.button}>
                                             Загрузить файл
                                         </Button>
-                                    </Grid>
-                                </Card>
-                            </Grid>
-                            }
+                                    </Link>
+                                </Grid>
+                            </Card>
                         </Grid>
-
-                        {showReviews && (
-                            <Review targetId={user.id}/>
-                        )}
+                        }
                     </Grid>
-                }
-            </div>
-        );
-    }
+
+                    {showReviews && (
+                        <Review targetId={user.id}/>
+                    )}
+                </Grid>
+            }
+        </div>
+    );
+
 
 }
 

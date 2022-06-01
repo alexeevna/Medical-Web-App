@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import AttachmentService from "../services/attachment.service";
 import '../styles/Record.css'
-import {Grid, Link, Paper, withStyles} from "@material-ui/core";
+import {Button, Grid, Link, Paper, Tooltip, withStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {purple} from "@material-ui/core/colors";
 
@@ -32,10 +32,10 @@ const useStyles = theme => ({
         "& .MuiTypography-root": {
             color: "black",
         },
-        margin: theme.spacing(1.5,0,0,1),
+        margin: theme.spacing(1.5, 0, 0, 1),
     },
     ggrid: {
-        margin: theme.spacing(0,0,0,1),
+        margin: theme.spacing(0, 0, 0, 1),
         display: 'flex',
     },
     gridContent: {
@@ -44,10 +44,10 @@ const useStyles = theme => ({
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
-        maxWidth: 700,
-        borderColor:"#e9e9e9",
+        // maxWidth: 700,
+        borderColor: "#e9e9e9",
         borderRadius: 10,
-        minWidth: 700,
+        minWidth: 400,
     },
     mainGrid: {
         margin: 0,
@@ -61,6 +61,16 @@ const useStyles = theme => ({
     },
     titleStyle: {
         size: 15,
+    },
+    buttons: {
+        width: 300,
+        margin: theme.spacing(1),
+        backgroundColor: '#f50057',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#ff5983',
+            color: '#fff',
+        }
     },
 })
 
@@ -77,6 +87,7 @@ class RecordCardNew extends Component {
         this.state = {
             currentUser: AuthService.getCurrentUser(),
             filePreviews: [],
+            dicoms: [],
         };
 
         this.record = this.props.record;
@@ -108,21 +119,28 @@ class RecordCardNew extends Component {
     displayRecordThread() {
         this.props.history.push({
             pathname: '/records/thread/' + this.record.id,
-            state: { recordId: this.record.id }
+            state: {recordId: this.record.id}
         });
         window.location.reload();
     }
 
     componentDidMount() {
         let preview = [];
+        let dicom = [];
         if (this.record.attachments !== undefined && this.record.attachments !== null) {
             for (let i = 0; i < this.record.attachments.length; i++) {
                 if (this.record.attachments[i].initialName.endsWith(".jpg") ||
                     this.record.attachments[i].initialName.endsWith(".png") ||
                     this.record.attachments[i].initialName.endsWith(".dcm")) {
                     AttachmentService.getPreviewNew(this.record.attachments[i].id).then(response => {
+                        console.log(response.data)
+                        dicom.push(response.data)
+                        // this.getPathToDicom(dicom[0])
                         preview.push({id: this.record.attachments[i].id, image: URL.createObjectURL(response.data)});
-                        this.setState({filePreviews: preview});
+                        console.log(preview)
+                        this.setState({filePreviews: preview, dicoms: dicom}
+                        )
+                        ;
                     }).catch(error => {
                         console.log(error);
                     })
@@ -142,7 +160,7 @@ class RecordCardNew extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Paper className={classes.paper} variant="outlined" >
+            <Paper className={classes.paper} variant="outlined">
                 <Grid container item xs={12} sm direction={"column"} className={classes.mainGrid}>
                     <Grid container item className={classes.ggrid} xs direction={"row"} spacing={1}>
                         <Grid className={classes.gridCreatorName}>
@@ -168,7 +186,7 @@ class RecordCardNew extends Component {
                                     {this.record.title}
                                 </Link>
                             </Typography>
-                            ): (
+                        ) : (
                             <Typography variant="h6">{/*gutterBottom*/}
                                 {this.record.title}
                             </Typography>)
@@ -190,9 +208,17 @@ class RecordCardNew extends Component {
                     </Grid>
 
 
+                    {/*<div id={containerId} />*/}
 
-                    {!this.isPreview && this.state.filePreviews.map(el => (
-                        <img key={el.id} alt="" className="col-sm-12 top-buffer-10" src={el.image}/>
+                    {!this.isPreview && this.state.filePreviews.map((el, index) => (
+                        <Tooltip title="Открыть в DICOM Viewer">
+                            <a href={"http://localhost:3000/viewer/" + this.record.attachments[index].uid} target="_blank">
+                                <Button><img className="col-sm-8 top-buffer-10" key={el.id} alt="" src={el.image}>
+                                </img>
+                                </Button>
+
+                            </a>
+                        </Tooltip>
                     ))}
 
                     {!this.isPreview && this.record.attachments.map(el => (
@@ -215,7 +241,6 @@ class RecordCardNew extends Component {
                     <div className="col-sm-2 fa fa-comments"
                          style={{"float": "right"}}> {this.record.numberOfReplies}</div>
                     }
-
 
 
                 </Grid>

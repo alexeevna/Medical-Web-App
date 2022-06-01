@@ -16,6 +16,9 @@ class DicomAnonymizerService {
         let dicomContent = dcmjs.data.DicomMessage.readFile(arrayBuffer)
         let dicomTagsDataset = dcmjs.data.DicomMetaDictionary.naturalizeDataset(dicomContent.dict)
 
+        console.log(dicomTagsDataset.StudyInstanceUID);
+
+        dicomTagsDataset = {...dicomTagsDataset, PatientName: "hello"}
         this.anonymizeTag(dicomTagsDataset, 'PatientID', 'Anonymized_PatientID');
         this.anonymizeTag(dicomTagsDataset, 'PatientName', 'Anonymized_PatientName');
         this.anonymizeTag(dicomTagsDataset, 'PatientBirthName', 'Anonymized_PatientBirthName');
@@ -28,13 +31,11 @@ class DicomAnonymizerService {
         this.anonymizeTag(dicomTagsDataset, 'PerformingPhysicianName', 'Anonymized_PerformingPhysicianName');
         this.anonymizeTag(dicomTagsDataset, 'InstitutionName', 'Anonymized_InstitutionName');
         this.anonymizeTag(dicomTagsDataset, 'InstitutionAddress', 'Anonymized_InstitutionAddress');
+        this.anonymizeTag(dicomTagsDataset, 'PatientBirthDate', 'Anonymized_BirthDate');
         this.anonymizeTag(dicomTagsDataset, 'StudyDate', '00/00/0000');
 
-        console.log(dicomTagsDataset);
-
         dicomContent.dict = dcmjs.data.DicomMetaDictionary.denaturalizeDataset(dicomTagsDataset);
-
-        return dicomContent.write();
+        return {dicom: dicomContent.write(), UID: dicomTagsDataset.StudyInstanceUID};
     }
 
     anonymizeTag(tagsDataset, tagToAnonymize, replaceValue) {
