@@ -41,7 +41,7 @@ public class ChatMessageService {
                 String fileBase64 = file.getFileContent().split(",")[1];
                 byte[] decodedFileByte = decoder.decode(fileBase64);
                 if (fileFormat == FileObjectFormat.DICOM) {
-                    files.add(fileService.saveFile(file.getFileName(), decodedFileByte, msg.getSenderId()));
+                    files.add(fileService.saveFile(file.getFileName(), decodedFileByte, msg.getSenderId(), msg.getUid()));
                 } else {
                     ChatFile localFile = new ChatFile();
                     localFile.setFileName(file.getFileName());
@@ -100,6 +100,7 @@ public class ChatMessageService {
                         FileObject fileObject = message.getAttachments().get(j);
                         byte[] fileContent = fileService.previewFile(fileObject);
                         message.getDataFilesDicom().add(fileContent);
+                        message.getUidFilesDicom().add(message.getAttachments().get(j).getUID());
                     }
                 }
             }

@@ -6,7 +6,7 @@ import {
     DialogContent, DialogContentText,
     ImageList,
     ImageListItem,
-    Paper,
+    Paper, Tooltip,
     withStyles
 } from "@material-ui/core";
 import {Link} from "react-router-dom";
@@ -116,8 +116,7 @@ function SenderMsg(props) {
                 const base64Data = msg.dataFilesDicom[i]
                 const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
                 const blob = await base64Response.blob()
-                console.log(blob)
-                preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(blob)})
+                preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(blob), uid: msg.uidFilesDicom[i]})
             }
         }
         setFiles(preview)
@@ -204,12 +203,28 @@ function SenderMsg(props) {
                             < ImageList cols={1} rowHeight={200} gap={3}>
                                 {files.map((file, index) =>
                                     <ImageListItem key={index}>
-                                        <img
-                                            src={file.image}
-                                            srcSet={file.image}
-                                            alt={file.id}
-                                            loading="lazy"
-                                        />
+                                        {file.uid ?
+                                            <Tooltip title="Открыть в DICOM Viewer">
+                                                <a href={"http://localhost:3000/viewer/" + file.uid}
+                                                   target="_blank">
+                                                    <Button>
+                                                        <img
+                                                            src={file.image}
+                                                            srcSet={file.image}
+                                                            alt={file.id}
+                                                            loading="lazy"
+                                                        />
+                                                    </Button>
+                                                </a>
+                                            </Tooltip> :
+                                            <img
+                                                src={file.image}
+                                                srcSet={file.image}
+                                                alt={file.id}
+                                                loading="lazy"
+                                            />
+                                        }
+
                                     </ImageListItem>
                                 )}
                             </ImageList>

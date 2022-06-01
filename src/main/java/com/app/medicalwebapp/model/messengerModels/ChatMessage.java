@@ -64,22 +64,9 @@ public class ChatMessage {
     )
     private List<ChatFile> localFiles;
 
-//    @ElementCollection
-//    @Column(name = "localFilesName")
-//    List<String> localFilesName;
-//
-//    @ElementCollection
-//    @Column(name = "localFilesContent")
-//    List<String> localFilesContent;
-
-//    @ElementCollection
-//    @Column(columnDefinition = "TEXT", length = 1000000000)
-//    @CollectionTable(name = "localFiles")
-//    private Map<String, String> localFiles;
-
-    //    @ElementCollection
-//    private List<String> localFiles;
-//
     @ElementCollection
     private List<byte[]> dataFilesDicom;
+
+    @ElementCollection
+    private List<String> uidFilesDicom;
 }
