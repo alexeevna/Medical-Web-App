@@ -21,7 +21,7 @@ public class Pipeline {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "json_config")
+    @Column(name = "json_config", length = 15000)
     @JsonIgnore
     private String jsonConfig;
 

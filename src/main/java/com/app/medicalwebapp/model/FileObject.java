@@ -45,6 +45,9 @@ public class FileObject {
     @Column(name = "size")
     private Integer size;
 
+    @Column(name = "study_instance_uid")
+    private String UID;
+
     @Transient
     private String downloadLink;
 }

@@ -9,5 +9,5 @@ public interface FileSaverStrategy {
 
     boolean supportsFormat(FileObjectFormat fileFormat);
 
-    FileObject save(Long ownerId, String initialName, FileObjectFormat format, byte[] fileToSave) throws Exception;
+    FileObject save(Long ownerId, String initialName, FileObjectFormat format, byte[] fileToSave, String UID) throws Exception;
 }

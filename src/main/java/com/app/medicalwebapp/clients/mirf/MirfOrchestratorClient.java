@@ -89,6 +89,7 @@ public class MirfOrchestratorClient {
             HttpEntity entity = response.getEntity();
             if (response.getStatusLine().getStatusCode() == 200 && entity != null) {
                 String sessionId = EntityUtils.toString(entity);
+                System.out.println(sessionId);
                 return sessionId;
             } else {
                 throw new Exception("Mirf service unavailable");

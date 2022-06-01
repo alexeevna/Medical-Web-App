@@ -12,6 +12,10 @@ class PipelineService {
     savePipeline(jsonConfiguration, description) {
         return axios.post(API_URL + 'save', {jsonConfiguration, description},{ headers: authHeader() });
     }
+
+    deletePipeline(pipelineId) {
+        return axios.delete(API_URL + pipelineId,{ headers: authHeader() });
+    }
 }
 
 export default new PipelineService();

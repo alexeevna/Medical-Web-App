@@ -1,9 +1,8 @@
-import React, {Component, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import '../../styles/Search.css'
-import {ImageList, ImageListItem, Paper, TableCell, withStyles} from "@material-ui/core";
+import {ImageList, ImageListItem, Paper, withStyles} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
-import AuthService from "../../services/auth.service";
 
 const useStyles = theme => ({
 

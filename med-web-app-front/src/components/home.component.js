@@ -2,7 +2,6 @@ import React, {Component} from "react";
 
 import TestService from "../services/test.service";
 import {Grid, Paper, Typography, withStyles} from "@material-ui/core";
-import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
@@ -69,6 +68,17 @@ class Home extends Component {
                 <div className={classes.div}>
 */}
                 <Paper className={classes.paper}>
+                    <Typography variant="subtitle1" >
+                        Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
+                        <br /> <br />
+                        В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и ПЭТ: <br />
+                        – подтверждение необходимости хирургического вмешательства<br />
+                        – подтверждение онкологического или редкого заболевания<br />
+                        – проверка эффективности назначенной терапии<br />
+                        – сомнения пациента относительно корректности поставленного диагноза<br />
+                        – консультация специалиста узкого профиля <br /> <br />
+                    </Typography>
+
                     <Grid
                         container
                         justifyContent="center">

@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import AuthService from "../services/auth.service";
 import ProfileService from "../services/profile.service";
 import Grid from '@material-ui/core/Grid';
@@ -7,7 +7,6 @@ import Review from "./review.component"
 import {ButtonBase, Card, Collapse, Paper, TextField, Typography, withStyles} from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
-import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 import {Link, useParams} from "react-router-dom";
 import UserService from "../services/user.service"
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
@@ -200,8 +199,8 @@ function Profile(props) {
                                 <Grid className={classes.gridInPaper}>
                                     <Grid className={classes.grid}>
                                         <ButtonBase className={classes.btnbase}
-                                                    onMouseOver={(e) => setChecked(true)}
-                                                    onMouseLeave={(e) => setChecked(false)}>
+                                                    onMouseOver={() => setChecked(true)}
+                                                    onMouseLeave={() => setChecked(false)}>
                                             <input type="file" style={{"display": "none"}} ref={fileInput}
                                                    accept="image/*"
                                                    onChange={(e) => uploadFiles(e)}/>

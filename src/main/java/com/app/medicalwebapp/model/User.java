@@ -1,6 +1,5 @@
 package com.app.medicalwebapp.model;
 
-//import com.app.medicalwebapp.model.mesages.Contact;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
