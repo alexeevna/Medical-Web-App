@@ -23,4 +23,6 @@ public class ChatMessageRequest {
 
     private LocalDateTime sendDate;
 
+    private String uid;
+
 }

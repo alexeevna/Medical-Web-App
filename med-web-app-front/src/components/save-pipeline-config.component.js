@@ -5,11 +5,6 @@ import CheckButton from "react-validation/build/button";
 
 import PipelineService from "../services/pipeline.service";
 import {Link} from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import {Dialog, DialogActions, DialogTitle, Typography} from "@material-ui/core";
-import {IconButton} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AuthService from "../services/auth.service";
 
 export default class SavePipelineConfigComponent extends Component {
     constructor(props) {
@@ -17,9 +12,9 @@ export default class SavePipelineConfigComponent extends Component {
         this.handleSaveRecord = this.handleSaveRecord.bind(this);
         this.onChangeDescription = this.onChangeDescription.bind(this);
         this.onChangeConfiguration = this.onChangeConfiguration.bind(this);
-        this.delete = this.delete.bind(this);
-        this.handleClickOpen = this.handleClickOpen.bind(this)
-        this.handleClose = this.handleClose.bind(this)
+        // this.delete = this.delete.bind(this);
+        // this.handleClickOpen = this.handleClickOpen.bind(this)
+        // this.handleClose = this.handleClose.bind(this)
 
         this.state = {
             description: "",
