@@ -4,22 +4,12 @@ import PipelineJobService from "../services/pipelinejob.service"
 import AttachmentService from "../services/attachment.service"
 import {
     Card,
-    Dialog, DialogActions, DialogContent, DialogContentText,
-    DialogTitle,
     Divider,
-    ListItem,
-    ListItemText,
-    Paper,
     Typography,
     withStyles
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from "@material-ui/icons/Search";
-import {IconButton} from "@mui/material";
-import {Link} from "react-router-dom";
-import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 
 const useStyles = theme => ({
     button: {
@@ -35,7 +25,6 @@ const useStyles = theme => ({
     },
     button1: {
         height: 30,
-        // backgroundColor: '#f50057',
     },
     mainGrid: {
         display: 'flex',
@@ -47,7 +36,6 @@ const useStyles = theme => ({
         padding: theme.spacing(2),
         color: "black",
         minHeight: 400,
-        // display: 'flex',
     },
     paper2: {
         margin: theme.spacing(3),
@@ -70,7 +58,7 @@ class PipelineResultsComponent extends Component {
         super(props);
 
         this.download = this.download.bind(this);
-        this.delete = this.delete.bind(this);
+        // this.delete = this.delete.bind(this);
         this.updatePipelineResults = this.updatePipelineResults.bind(this);
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this)
