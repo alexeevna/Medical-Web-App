@@ -12,6 +12,10 @@ class PipelineJobService {
     sendRequestForPipelineJob(username, pipelineId, fileId) {
         return axios.post(API_URL + username, {pipelineId, fileId},{ headers: authHeader() });
     }
+
+    deletePipelineJob(username, pipelineJobId, fileId) {
+        return axios.delete(API_URL + username + "/" + pipelineJobId + "/" + fileId,{ headers: authHeader() });
+    }
 }
 
 export default new PipelineJobService();

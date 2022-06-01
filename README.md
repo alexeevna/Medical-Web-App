@@ -31,6 +31,7 @@ The system is integrated with a bunch of services. The essential ones are SFTP s
     $ cd <path-to-cloned-repo>/src/main/docker/postgres
     $ docker build -t medwebpostgres .
     $ cd ../../../../med-web-app-front
+    $ npm install
     $ npm run build
     $ cd ..
     $ mvn compile jib:dockerBuild

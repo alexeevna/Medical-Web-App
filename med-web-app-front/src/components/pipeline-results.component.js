@@ -2,9 +2,24 @@ import React, {Component} from "react";
 import AuthService from "../services/auth.service";
 import PipelineJobService from "../services/pipelinejob.service"
 import AttachmentService from "../services/attachment.service"
-import {Card, withStyles} from "@material-ui/core";
+import {
+    Card,
+    Dialog, DialogActions, DialogContent, DialogContentText,
+    DialogTitle,
+    Divider,
+    ListItem,
+    ListItemText,
+    Paper,
+    Typography,
+    withStyles
+} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from "@material-ui/icons/Search";
+import {IconButton} from "@mui/material";
+import {Link} from "react-router-dom";
+import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 
 const useStyles = theme => ({
     button: {
@@ -15,7 +30,12 @@ const useStyles = theme => ({
         '&:hover': {
             backgroundColor: '#ff5983',
             color: '#fff',
-        }
+        },
+        fontsize: 2,
+    },
+    button1: {
+        height: 30,
+        // backgroundColor: '#f50057',
     },
     mainGrid: {
         display: 'flex',
@@ -24,8 +44,9 @@ const useStyles = theme => ({
     paper: {
         marginTop: theme.spacing(3),
         marginLeft: theme.spacing(1),
-        padding: theme.spacing(1),
+        padding: theme.spacing(2),
         color: "black",
+        minHeight: 400,
         // display: 'flex',
     },
     paper2: {
@@ -39,6 +60,9 @@ const useStyles = theme => ({
         flexDirection: 'column',
         display: 'flex',
     },
+    title: {
+        padding: theme.spacing(3),
+    },
 })
 
 class PipelineResultsComponent extends Component {
@@ -46,14 +70,17 @@ class PipelineResultsComponent extends Component {
         super(props);
 
         this.download = this.download.bind(this);
+        this.delete = this.delete.bind(this);
         this.updatePipelineResults = this.updatePipelineResults.bind(this);
-
+        this.handleClickOpen = this.handleClickOpen.bind(this)
+        this.handleClose = this.handleClose.bind(this)
         const user = AuthService.getCurrentUser();
 
         this.state = {
             currentUser: user,
             pipelineJobs: [],
-            message: ""
+            message: "",
+            open: false
         };
     }
 
@@ -72,6 +99,7 @@ class PipelineResultsComponent extends Component {
                     let outputFileName = el.outputFile !== undefined && el.outputFile !== null ? el.outputFile.initialName : "";
                     let outputFileId = el.outputFile !== undefined && el.outputFile !== null ? el.outputFile.id : "";
                     let pipelineDescription = el.pipeline !== undefined && el.pipeline !== null ? el.pipeline.description : "";
+                    // console.log(el);
                     let job = {
                         id: el.id,
                         pipelineName: pipelineDescription,
@@ -96,8 +124,14 @@ class PipelineResultsComponent extends Component {
     }
 
     download(fileId, initialFileName) {
-        AttachmentService.downloadAttachment(fileId, initialFileName);
+        AttachmentService.downloadAttachment(fileId, initialFileName).then();
     }
+
+    // delete(pipelineJobId, fileId) {
+    //     this.setState({open: false, pipelineJobId: this.state.pipelineJobs.filter(el => el.id !== pipelineJobId)})
+    //     PipelineJobService.deletePipelineJob(AuthService.getCurrentUser().username, pipelineJobId, fileId).then();
+    //     this.updatePipelineResults();
+    // }
 
     translateStatus(status) {
         if (status === 'COMPLETED_ERROR') {
@@ -111,43 +145,84 @@ class PipelineResultsComponent extends Component {
         }
     }
 
+    handleClickOpen() {
+        this.setState({open: true})
+    }
+
+    handleClose() {
+        this.setState({open: false})
+    }
+
     render() {
         const {pipelineJobs} = this.state;
         const {classes} = this.props
         return (
             <div>
                 <Grid xs={12} item className={classes.mainGrid}>
-                    <Grid xs={8} item>
+                    <Grid item xs/>
+                    <Grid xs={7} item>
                         <Card className={classes.paper}>
                             <div className="row">
-                                <div className=" col-sm-9 align-content-center top-buffer-10">
+                                <div className=" col-sm-12 align-content-center top-buffer-10">
+                                    <Typography component="h1" className={classes.title} variant="h4">
+                                        Результаты:
+                                    </Typography>
+                                    <div style={{marginLeft: 8, marginRight: 8}}>
+                                        <Divider/>
 
-                                    <header className="jumbotron align-text-center color-light-blue">
-                                        <h3><strong>Результаты:</strong></h3>
-                                    </header>
+                                        <div style={{marginTop: 10}}>
+                                            {pipelineJobs.map(el => (
+                                                <div key={el.id} className="row top-buffer-10">
 
-                                    <div className="pipeline-results-card color-light-blue">
-                                        {pipelineJobs.map(el => (
-                                            <div key={el.id}
-                                                 className="row color-light-blue top-buffer-10 bordered-box">
-                                                <div className="col-sm-3 line-break">{el.pipelineName}</div>
-                                                <div className="col-sm-3 line-break">{el.inputName}</div>
-                                                <div className="col-sm-3">{this.translateStatus(el.status)}</div>
-                                                <div className="col-sm-3">
-                                                    <button
-                                                        className="btn btn-primary btn-block color-dark-blue"
-                                                        disabled={el.status !== 'COMPLETED_OK'}
-                                                        onClick={() => this.download(el.outputId, el.outputName)}>Скачать
-                                                        результат
-                                                    </button>
+                                                    <div className="col-sm-3"
+                                                         style={{wordWrap: "break-word"}}>{el.pipelineName}</div>
+                                                    <div className="col-sm-3"
+                                                         style={{wordWrap: "break-word"}}>{el.inputName}</div>
+                                                    <div className="col-sm-2">{this.translateStatus(el.status)}</div>
+                                                    <div className="col-sm-3">
+                                                        <Button
+                                                            className={classes.button1}
+                                                            variant="contained"
+                                                            color="primary"
+                                                            disabled={el.status !== 'COMPLETED_OK'}
+                                                            onClick={() => this.download(el.outputId, el.outputName)}
+                                                        >
+                                                            <i className="fa fa-download"/>
+                                                            <Typography variant="button"
+                                                                        style={{marginLeft: 5}}>Скачать</Typography>
+                                                        </Button>
+                                                    </div>
+                                                    {/*<div className="col-sm-1">*/}
+                                                    {/*    <IconButton aria-label="delete"*/}
+                                                    {/*                size="small"*/}
+                                                    {/*                style={{width: 5, color: '#444',}}*/}
+                                                    {/*                onClick={() => this.handleClickOpen()}>*/}
+                                                    {/*        <DeleteIcon fontSize="small"/>*/}
+                                                    {/*    </IconButton>*/}
+                                                    {/*</div>*/}
+                                                    {/*<Dialog*/}
+                                                    {/*    open={this.state.open}*/}
+                                                    {/*    onClose={this.handleClose}*/}
+                                                    {/*    aria-labelledby="alert-dialog-title"*/}
+                                                    {/*    aria-describedby="alert-dialog-description"*/}
+                                                    {/*>*/}
+                                                    {/*    <DialogTitle id="alert-dialog-title">*/}
+                                                    {/*        {"Вы действительно хотите удалить результат анализа?"}*/}
+                                                    {/*    </DialogTitle>*/}
+                                                    {/*    <DialogActions>*/}
+                                                    {/*        <Button onClick={this.handleClose}>Нет</Button>*/}
+                                                    {/*        <Button onClick={() => this.delete(el.id, el.outputId)}*/}
+                                                    {/*                autoFocus>*/}
+                                                    {/*            Да*/}
+                                                    {/*        </Button>*/}
+                                                    {/*    </DialogActions>*/}
+                                                    {/*</Dialog>*/}
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                        </div>
                                     </div>
-
                                 </div>
 
-                                <div className="col-sm-1"></div>
                             </div>
                         </Card>
                     </Grid>
@@ -155,7 +230,7 @@ class PipelineResultsComponent extends Component {
                         <Card className={classes.paper2}>
                             <Grid className={classes.grid}>
                                 <Button href={"/pipelines/create"} className={classes.button}>
-                                    Запустить конвейеры
+                                    Запустить анализ
                                 </Button>
                             </Grid>
                         </Card>

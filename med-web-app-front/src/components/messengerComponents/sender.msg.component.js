@@ -12,7 +12,6 @@ import {
 import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import AuthService from "../../services/auth.service";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ChatService from "../../services/chat.service"
 import Button from "@material-ui/core/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -158,8 +157,8 @@ function SenderMsg(props) {
     return (
         <Grid>
 
-            <Paper className={classes.msgMy} onMouseOver={(e) => setChecked(true)}
-                   onMouseLeave={(e) => setChecked(false)}>
+            <Paper className={classes.msgMy} onMouseOver={() => setChecked(true)}
+                   onMouseLeave={() => setChecked(false)}>
                 <Grid>
                     <Grid style={{display: "flex"}}>
                         <Grid className={classes.txt}>
