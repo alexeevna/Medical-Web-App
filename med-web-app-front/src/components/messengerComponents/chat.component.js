@@ -246,11 +246,17 @@ function Chat(props) {
     async function sendMessage() {
         if (stompClient) {
             let fileNameAndStringBase64 = []
-            let pairFileNameBase64;
+            let pairFileNameBase64
+            let uid = null
             if (selectedFiles) {
                 for (let i = 0; i < selectedFiles.length; i++) {
                     if (selectedFiles[i].name.endsWith(".dcm")) {
-                        const anonymizedDicomBlobArrayBuff = await DicomAnonymizerService.anonymizeInstance(selectedFiles[i]);
+
+                        var dicomContAndUID = await DicomAnonymizerService.anonymizeInstance(selectedFiles[i]);
+                        var anonymizedDicomBlobArrayBuff = dicomContAndUID.dicom;
+                        uid = dicomContAndUID.UID;
+
+                        // const anonymizedDicomBlobArrayBuff = await DicomAnonymizerService.anonymizeInstance(selectedFiles[i]);
                         const blobDicom = new Blob([anonymizedDicomBlobArrayBuff])
                         let readerPromise = new Promise((resolve, reject) => {
                             let reader = new FileReader();
@@ -287,7 +293,8 @@ function Chat(props) {
                 senderName: AuthService.getCurrentUser().username,
                 attachmentsBlobForImageClient: selectedFiles,
                 localFiles: fileNameAndStringBase64,
-                sendDate: localISOTime
+                sendDate: localISOTime,
+                uid: uid
             }
             if (allMessages.get(selectedUser.username)) {
                 let msg = allMessages.get(selectedUser.username).messages
