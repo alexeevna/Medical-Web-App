@@ -43,14 +43,12 @@ import BallotIcon from '@material-ui/icons/Ballot'
 import ForumIcon from '@material-ui/icons/Forum'
 import SearchIcon from '@material-ui/icons/Search'
 import MessageIcon from '@material-ui/icons/Message'
-import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
-import Chat from "./components/messengerComponents/chat.component"
+import Chat from "./components/messenger_components/chat.component"
 import SockJS from "sockjs-client"
 import {over} from "stompjs"
 import UserService from "./services/user.service"
 import ChatService from "./services/chat.service"
-import AttachmentService from "./services/attachment.service";
 
 const drawerWidth = 240
 

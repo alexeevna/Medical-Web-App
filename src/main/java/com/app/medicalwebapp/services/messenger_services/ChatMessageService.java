@@ -1,13 +1,13 @@
-package com.app.medicalwebapp.services.messengerServices;
+package com.app.medicalwebapp.services.messenger_services;
 
 import com.app.medicalwebapp.controllers.requestbody.messenger.ChatFileRequest;
 import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageRequest;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
-import com.app.medicalwebapp.model.messengerModels.ChatFile;
-import com.app.medicalwebapp.model.messengerModels.ChatMessage;
-import com.app.medicalwebapp.model.messengerModels.StatusMessage;
-import com.app.medicalwebapp.repositories.messengerRepositories.ChatMessageRepository;
+import com.app.medicalwebapp.model.messenger_models.ChatFile;
+import com.app.medicalwebapp.model.messenger_models.ChatMessage;
+import com.app.medicalwebapp.model.messenger_models.StatusMessage;
+import com.app.medicalwebapp.repositories.messenger_repositories.ChatMessageRepository;
 import com.app.medicalwebapp.services.FileService;
 import com.app.medicalwebapp.utils.FileFormatResolver;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
-package com.app.medicalwebapp.repositories.messengerRepositories;
+package com.app.medicalwebapp.repositories.messenger_repositories;
 
-import com.app.medicalwebapp.model.messengerModels.Contact;
+import com.app.medicalwebapp.model.messenger_models.Contact;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

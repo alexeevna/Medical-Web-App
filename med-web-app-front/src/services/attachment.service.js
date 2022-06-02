@@ -6,11 +6,11 @@ const API_URL = process.env.REACT_APP_API_URL + '/api/files/';
 class AttachmentService {
 
     getAttachmentsForUser(username) {
-        return axios.get(API_URL + username, { headers: authHeader() });
+        return axios.get(API_URL + username, {headers: authHeader()});
     }
 
     getAttachmentsInfoForUser(username) {
-        return axios.get(API_URL + 'test/' + username, { headers: authHeader() });
+        return axios.get(API_URL + 'test/' + username, {headers: authHeader()});
     }
 
     uploadAttachment(file, fileName, isDicom, UID, onUploadProgress) {

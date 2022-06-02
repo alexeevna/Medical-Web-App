@@ -1,7 +1,7 @@
 package com.app.medicalwebapp.controllers.requestbody.messenger;
 
 import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.messengerModels.ChatMessage;
+import com.app.medicalwebapp.model.messenger_models.ChatMessage;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.util.Pair;

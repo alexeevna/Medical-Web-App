@@ -1,8 +1,7 @@
-package com.app.medicalwebapp.services.messengerServices;
+package com.app.medicalwebapp.services.messenger_services;
 
-import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.messengerModels.ChatFile;
-import com.app.medicalwebapp.repositories.messengerRepositories.ChatFileRepository;
+import com.app.medicalwebapp.model.messenger_models.ChatFile;
+import com.app.medicalwebapp.repositories.messenger_repositories.ChatFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

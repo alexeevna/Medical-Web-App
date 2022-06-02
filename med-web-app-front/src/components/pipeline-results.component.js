@@ -87,7 +87,6 @@ class PipelineResultsComponent extends Component {
                     let outputFileName = el.outputFile !== undefined && el.outputFile !== null ? el.outputFile.initialName : "";
                     let outputFileId = el.outputFile !== undefined && el.outputFile !== null ? el.outputFile.id : "";
                     let pipelineDescription = el.pipeline !== undefined && el.pipeline !== null ? el.pipeline.description : "";
-                    // console.log(el);
                     let job = {
                         id: el.id,
                         pipelineName: pipelineDescription,
