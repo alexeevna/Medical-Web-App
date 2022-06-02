@@ -1,9 +1,9 @@
-package com.app.medicalwebapp.services.messengerServices;
+package com.app.medicalwebapp.services.messenger_services;
 
 import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageRequest;
-import com.app.medicalwebapp.model.messengerModels.ChatMessage;
-import com.app.medicalwebapp.model.messengerModels.StatusMessage;
-import com.app.medicalwebapp.repositories.messengerRepositories.ChatMessageRepository;
+import com.app.medicalwebapp.model.messenger_models.ChatMessage;
+import com.app.medicalwebapp.model.messenger_models.StatusMessage;
+import com.app.medicalwebapp.repositories.messenger_repositories.ChatMessageRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;

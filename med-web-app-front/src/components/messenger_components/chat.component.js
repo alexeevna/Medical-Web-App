@@ -255,8 +255,6 @@ function Chat(props) {
                         var dicomContAndUID = await DicomAnonymizerService.anonymizeInstance(selectedFiles[i]);
                         var anonymizedDicomBlobArrayBuff = dicomContAndUID.dicom;
                         uid = dicomContAndUID.UID;
-
-                        // const anonymizedDicomBlobArrayBuff = await DicomAnonymizerService.anonymizeInstance(selectedFiles[i]);
                         const blobDicom = new Blob([anonymizedDicomBlobArrayBuff])
                         let readerPromise = new Promise((resolve, reject) => {
                             let reader = new FileReader();
