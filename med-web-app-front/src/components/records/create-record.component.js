@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import RecordService from "../services/record.service";
-import AttachmentService from "../services/attachment.service";
-import AuthService from "../services/auth.service";
-import TopicService from "../services/topic.service";
+import RecordService from "../../services/record.service";
+import AttachmentService from "../../services/attachment.service";
+import AuthService from "../../services/auth.service";
+import TopicService from "../../services/topic.service";
 import {withStyles} from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -82,7 +82,7 @@ const MenuProps = {
     },
 };
 
-class ReplyRecordForm extends Component {
+class CreateRecordComponent extends Component {
     constructor(props) {
         super(props);
         this.handleSubmitRecord = this.handleSubmitRecord.bind(this);
@@ -362,4 +362,4 @@ class ReplyRecordForm extends Component {
     }
 }
 
-export default withStyles(useStyles)(ReplyRecordForm)
+export default withStyles(useStyles)(CreateRecordComponent)

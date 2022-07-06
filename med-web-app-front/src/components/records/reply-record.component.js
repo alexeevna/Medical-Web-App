@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import RecordService from "../services/record.service";
-import AttachmentService from "../services/attachment.service";
-import AuthService from "../services/auth.service";
+import RecordService from "../../services/record.service";
+import AttachmentService from "../../services/attachment.service";
+import AuthService from "../../services/auth.service";
 import {Grid, withStyles} from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';

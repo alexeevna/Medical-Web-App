@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 import {Card, withStyles} from "@material-ui/core";
 
 const useStyles = theme => ({

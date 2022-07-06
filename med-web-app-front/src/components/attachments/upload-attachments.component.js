@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-import AuthService from "../services/auth.service";
-import AttachmentService from "../services/attachment.service";
-import DicomAnonymizerService from "../services/dicom-anonymizer.service"
+import AuthService from "../../services/auth.service";
+import AttachmentService from "../../services/attachment.service";
+import DicomAnonymizerService from "../../services/dicom-anonymizer.service"
 import Button from "@material-ui/core/Button";
 import {Card, withStyles} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";

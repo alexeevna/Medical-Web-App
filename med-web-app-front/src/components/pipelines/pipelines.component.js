@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import Select from 'react-select';
-import AuthService from "../services/auth.service";
-import PipelineService from "../services/pipeline.service"
-import PipelineJobService from "../services/pipelinejob.service"
-import AttachmentService from "../services/attachment.service"
+import AuthService from "../../services/auth.service";
+import PipelineService from "../../services/pipeline.service"
+import PipelineJobService from "../../services/pipelinejob.service"
+import AttachmentService from "../../services/attachment.service"
 import {Button, Divider, FormControl, Grid, Paper, Typography, withStyles} from "@material-ui/core";
+import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     paper: {
@@ -167,7 +168,7 @@ class PipelinesComponent extends Component {
         return (
             <Grid className={classes.mainGrid}>
                 <Grid container spacing={3}>
-                    <Grid item xs />
+                    <Grid item xs/>
                     <Grid item xs={6}>
                         <Paper className={classes.paper}>
                             <Typography className={classes.title} variant="h5">
@@ -210,7 +211,6 @@ class PipelinesComponent extends Component {
                             </form>
 
 
-
                             {this.state.submitted && (
                                 <div className="form-group">
                                     <div
@@ -228,26 +228,48 @@ class PipelinesComponent extends Component {
                     <Grid item xs={4}>
                         <Paper className={classes.paper2}>
                             <Grid className={classes.grid}>
-                                <Button variant="contained" href="/files/view"
-                                        className={classes.buttons}>
-                                    Мои файлы
-                                </Button>
-                                <Button variant="contained" href="/files/upload" className={classes.buttons}>
-                                    Загрузить файл
-                                </Button>
-                                <Button variant="contained" href="/pipelines/results" className={classes.buttons}>
-                                    Результаты
-                                </Button>
-                                <Button variant="contained" target="_blank" href="http://localhost:3000/local" className={classes.buttons}>
-                                    Открыть DICOM-файл
-                                </Button>
-                                <Button variant="contained" target="_blank" href="http://localhost:3000" className={classes.buttons}>
-                                    Мои файлы в OHIF
-                                </Button>
+                                <Link to={"/files/view"} style={{textDecoration: 'none'}}>
+                                    <Button className={classes.buttons}>
+                                        Мои файлы
+                                    </Button>
+                                </Link>
+
+                                <Link to={"/files/upload"} style={{textDecoration: 'none'}}>
+                                    <Button className={classes.buttons}>
+                                        Загрузить файл
+                                    </Button>
+                                </Link>
+
+                                <Link to={"/pipelines/results"} style={{textDecoration: 'none'}}>
+                                    <Button className={classes.buttons}>
+                                        Результаты
+                                    </Button>
+                                </Link>
+
+                                <a href={"http://localhost:3000/local"} target="_blank"
+                                      style={{textDecoration: 'none'}}>
+                                    <Button className={classes.buttons}>
+                                        Открыть DICOM-файл
+                                    </Button>
+                                </a>
+
+
+                                {/*For admin board:*/}
+                                {/*<a href={"http://localhost:3000"} target="_blank"*/}
+                                {/*   style={{textDecoration: 'none'}}>*/}
+                                {/*    <Button className={classes.buttons}>*/}
+                                {/*        Все файлы в OHIF*/}
+                                {/*    </Button>*/}
+                                {/*</a>*/}
+
+                                {/*For admin board:*/}
                                 {this.state.currentUser !== null && this.state.currentUser.username === "admin" &&
-                                (<Button href={"/pipelines/save"} className={classes.buttons}>
-                                    Сохранить конфигурацию
-                                </Button>)
+                                (<Link to={"/pipelines/save"} style={{textDecoration: 'none'}}>
+                                    <Button className={classes.buttons}>
+                                        Сохранить конфигурацию
+                                    </Button>
+                                </Link>)
+
                                 }
                             </Grid>
                         </Paper>

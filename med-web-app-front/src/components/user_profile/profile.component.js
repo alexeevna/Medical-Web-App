@@ -1,14 +1,14 @@
 import React, {useEffect, useRef, useState} from "react";
-import AuthService from "../services/auth.service";
-import ProfileService from "../services/profile.service";
+import AuthService from "../../services/auth.service";
+import ProfileService from "../../services/profile.service";
 import Grid from '@material-ui/core/Grid';
-import '../styles/Profile.css'
+import '../../styles/Profile.css'
 import Review from "./review.component"
 import {ButtonBase, Card, Collapse, Paper, TextField, Typography, withStyles} from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
 import {Link, useParams} from "react-router-dom";
-import UserService from "../services/user.service"
+import UserService from "../../services/user.service"
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 
 const useStyles = theme => ({

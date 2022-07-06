@@ -1,10 +1,11 @@
 import React, {Component} from "react";
-import AuthService from "../services/auth.service";
-import AttachmentService from "../services/attachment.service";
-import '../styles/Record.css'
-import {Button, Grid, Link, Paper, Tooltip, withStyles} from "@material-ui/core";
+import AuthService from "../../services/auth.service";
+import AttachmentService from "../../services/attachment.service";
+import '../../styles/Record.css'
+import {Button, Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {purple} from "@material-ui/core/colors";
+import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     palette: {
@@ -164,7 +165,7 @@ class RecordCardNew extends Component {
                 <Grid container item xs={12} sm direction={"column"} className={classes.mainGrid}>
                     <Grid container item className={classes.ggrid} xs direction={"row"} spacing={1}>
                         <Grid className={classes.gridCreatorName}>
-                            <Link variant={"subtitle2"} href={"/profile/" + this.record.creator.username}>
+                            <Link style={{color: "black"}} to={"/profile/" + this.record.creator.username}>
                                 {this.record.creator.username}
                             </Link>
                         </Grid>
@@ -182,7 +183,7 @@ class RecordCardNew extends Component {
                     <Grid className={classes.grid}>
                         {this.isPreview ? (
                             <Typography variant="h6">{/*gutterBottom*/}
-                                <Link href={"/records/thread/" + this.record.id}>
+                                <Link style={{color: "black"}} to={"/records/thread/" + this.record.id}>
                                     {this.record.title}
                                 </Link>
                             </Typography>
