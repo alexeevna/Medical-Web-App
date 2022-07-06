@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import RecordService from "../services/record.service";
+import RecordService from "../../services/record.service";
 import Pagination from "@material-ui/lab/Pagination";
 import SelectReact from 'react-select';
 import RecordCard from "./record-card.component";
 // import Topic from "./topic.component"
-import TopicService from "../services/topic.service";
+import TopicService from "../../services/topic.service";
 import {Card, Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";

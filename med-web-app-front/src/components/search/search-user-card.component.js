@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import '../styles/Search.css'
+import '../../styles/Search.css'
 import {TableCell, withStyles} from "@material-ui/core";
 import { Link } from "react-router-dom";
 const useStyles = theme => ({

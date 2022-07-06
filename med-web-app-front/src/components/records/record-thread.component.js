@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import RecordService from "../services/record.service";
+import RecordService from "../../services/record.service";
 import RecordCard from "./record-card.component";
 import ReplyRecordForm from "./reply-record.component";
 import {Card, Grid, withStyles} from "@material-ui/core";
-import ReviewCard from "./review-card.component";
+import ReviewCard from "../review-card.component";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 

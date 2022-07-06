@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import AuthService from "../services/auth.service";
-import AttachmentService from "../services/attachment.service";
+import AuthService from "../../services/auth.service";
+import AttachmentService from "../../services/attachment.service";
 import Button from "@material-ui/core/Button";
 import {Divider, Grid, Paper, Typography, withStyles} from "@material-ui/core";
 import {Link} from "react-router-dom";

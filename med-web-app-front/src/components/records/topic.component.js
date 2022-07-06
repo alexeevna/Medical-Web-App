@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import TopicService from "../services/topic.service";
+import TopicService from "../../services/topic.service";
 import TopicCard from "./topic-card.component";
 import {Card, Grid, withStyles} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";

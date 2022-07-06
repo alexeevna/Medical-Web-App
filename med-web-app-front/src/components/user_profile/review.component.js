@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-import ReviewService from "../services/review.service"
-import ReviewCard from "./review-card.component";
-import AuthService from "../services/auth.service";
+import ReviewService from "../../services/review.service"
+import ReviewCard from "../review-card.component";
+import AuthService from "../../services/auth.service";
 import {Card, Grid, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";

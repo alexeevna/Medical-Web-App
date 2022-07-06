@@ -337,7 +337,7 @@ function Chat(props) {
 
     function getDayOfWeek(yesterday1, messageTime, days) {
         yesterday1.setDate(yesterday1.getDate() - 1)
-        if (yesterday1.getDate() === messageTime.getDate()) {
+        if (yesterday1.getDate() === messageTime.getDate() && yesterday1.getMonth() === messageTime.getMonth()) {
             return days [messageTime.getDay()]
         } else {
             return false

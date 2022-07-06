@@ -1,12 +1,12 @@
-import React, {Component, useState} from 'react'
+import React, {useState} from 'react'
 import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
-import '../styles/Search.css'
-import {Card, Checkbox, FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core"
-import AuthService from "../services/auth.service"
+import '../../styles/Search.css'
+import {Card, FormControl, FormLabel, Radio, RadioGroup, withStyles} from "@material-ui/core"
+import AuthService from "../../services/auth.service"
 import {TextField, InputAdornment, IconButton} from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";

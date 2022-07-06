@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import AuthService from "../services/auth.service";
-import '../styles/Record.css'
+import AuthService from "../../services/auth.service";
+import '../../styles/Record.css'
 import {Card, Grid, withStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {Link} from "react-router-dom";
