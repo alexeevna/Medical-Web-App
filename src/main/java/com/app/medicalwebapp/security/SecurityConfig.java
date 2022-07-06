@@ -1,5 +1,6 @@
 package com.app.medicalwebapp.security;
 
+import com.app.medicalwebapp.repositories.UserRepository;
 import com.app.medicalwebapp.security.jwt.AuthExceptionProcessor;
 import com.app.medicalwebapp.security.jwt.OncePerRequestFilterImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.time.LocalDateTime;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -26,6 +29,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthExceptionProcessor unauthorizedHandler;
 
+    @Autowired
+    UserRepository userRepository;
+
+//    @Autowired
+//    PasswordEncoder encoder;
+
     @Bean
     public OncePerRequestFilterImpl authenticationJwtTokenFilter() {
         return new OncePerRequestFilterImpl();
@@ -35,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -55,7 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/mirf/**").permitAll()
                 .antMatchers("/api/test/all").permitAll()
+                .antMatchers("/api/ws/**").permitAll()
                 .antMatchers("/api/**").authenticated()
+                .antMatchers("/app/**").authenticated()
+                .antMatchers("/topic/**").authenticated()
                 .anyRequest().permitAll();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

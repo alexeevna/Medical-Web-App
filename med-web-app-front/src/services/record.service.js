@@ -11,35 +11,34 @@ class RecordService {
         this.createRequestParamsForSave = this.createRequestParamsForSave.bind(this);
     }
 
-    getAll(pageNum, pageSize, titlePart, topic) {
-        let parameters = this.createRequestParamsForGet(titlePart, pageNum, pageSize, topic);
+    getAll(page, pageSize, searchTitle, selectedTopicValue) {
+        let parameters = this.createRequestParamsForGet(page, pageSize, searchTitle, selectedTopicValue);
 
         return axios.get(API_URL + 'all/root',
             {headers: authHeader(), params: parameters});
     }
 
     getRecord(recordId) {
-        return axios.get(API_URL + recordId, { headers: authHeader() });
+        return axios.get(API_URL + recordId, {headers: authHeader()});
     }
 
     getAnswers(recordId) {
         return axios.get(API_URL + 'answers/' + recordId, {headers: authHeader()});
     }
 
-    saveRecord(title, content, topics, files, parentId= -1) {
-        let parameters = this.createRequestParamsForSave(title,content,topics, files);
-
-        console.log(parameters);
-        return axios.post(API_URL + 'create', {title, content, topics, files, parentId},{ headers: authHeader() });
+    saveRecord(title, content, topics, files, parentId = -1) {
+        // let parameters = this.createRequestParamsForSave(title,content,topics, files);
+        // console.log(parameters);
+        return axios.post(API_URL + 'create', {title, content, topics, files, parentId}, {headers: authHeader()});
     }
 
-    createRequestParamsForGet(searchTitle, page, pageSize, topicId) {
+    createRequestParamsForGet(page, pageSize, searchTitle, selectedTopicValue) {
         let params = {};
 
-        if (searchTitle) params["title"] = searchTitle;
+        if (searchTitle) params["searchTitle"] = searchTitle;
         if (page) params["page"] = page - 1;
-        if (pageSize) params["size"] = pageSize;
-        if (topicId) params["topicId"] = topicId;
+        if (pageSize) params["pageSize"] = pageSize;
+        if (selectedTopicValue) params["selectedTopicValue"] = selectedTopicValue;
 
         return params;
     }

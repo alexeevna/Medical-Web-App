@@ -63,10 +63,12 @@ public class PipelineExecutor {
             pipelineJob.setStartedTime(LocalDateTime.now());
             pipelineJobRepository.save(pipelineJob);
             mirfOrchestrator.processPipeline(sessionId, pipeline.getJsonConfig());
+            System.out.println("In try Pipeline Executor");
         } catch (Exception ex) {
             ex.printStackTrace();
             pipelineJob.setExecutionStatus(PipelineJobStatus.COMPLETED_ERROR);
             pipelineJobRepository.save(pipelineJob);
+            System.out.println("In catch Pipeline Executor");
             throw ex;
         }
     }

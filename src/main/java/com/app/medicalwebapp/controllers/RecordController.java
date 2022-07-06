@@ -1,6 +1,5 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.controllers.requestbody.RecordCreationRequest;
 import com.app.medicalwebapp.controllers.requestbody.RecordsPageResponse;
 import com.app.medicalwebapp.security.UserDetailsImpl;
@@ -11,16 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @CrossOrigin(origins = "*", maxAge = 604800)
 @RestController
@@ -34,17 +27,17 @@ public class RecordController {
 
     @GetMapping("/all/root")
     public ResponseEntity<?> getAllRootRecords(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) Long topicId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(name = "searchTitle", required = false) String searchTitle,
+            @RequestParam(name = "selectedTopicValue", required = false, defaultValue = "") String selectedTopicValue
     ) {
         try {
             RecordsPageResponse responseBody;
-            if (topicId == null) {
-                responseBody = recordService.getRecordsPage(page, size, title);
+            if (Objects.equals(selectedTopicValue, "")) {
+                responseBody = recordService.getRecordsPage(page, pageSize, searchTitle);
             } else {
-                responseBody = recordService.getRecordsPageByTopic(page, size, topicId);
+                responseBody = recordService.getRecordsPageByTopicAndTitle(page, pageSize, searchTitle, selectedTopicValue);
             }
             return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
@@ -85,7 +78,6 @@ public class RecordController {
         }
         return ResponseEntity.ok().build();
     }
-
 
 
     private Long getAuthenticatedUserId() {

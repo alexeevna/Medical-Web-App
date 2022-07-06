@@ -1,4 +1,5 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
 const API_URL = process.env.REACT_APP_API_URL + '/api/auth/';
 
@@ -10,7 +11,6 @@ class AuthService {
                 password
             })
             .then(response => {
-                console.log(response);
                 if (response.data.token) {
                     localStorage.setItem("user", JSON.stringify(response.data));
                 }
@@ -19,20 +19,26 @@ class AuthService {
             });
     }
 
-    logout() {
+    logout(username) {
+        axios.get(API_URL + "logout", {headers: authHeader(), params: {"username": username}}
+        ).then(r => console.log("logout"));
         localStorage.removeItem("user");
     }
 
-    register(username, password, chosenRole) {
+    register(username, initials, firstname, lastname, patronymic, password, chosenRole) {
         return axios.post(API_URL + "signup", {
             username,
+            initials,
+            firstname,
+            lastname,
+            patronymic,
             password,
             chosenRole
         });
     }
 
     checkTokenIsExpired(token) {
-        return axios.get(API_URL + "checktoken",  {params: {"token": token}})
+        return axios.get(API_URL + "checktoken", {params: {"token": token}})
     }
 
     getCurrentUser() {

@@ -31,11 +31,9 @@ The system is integrated with a bunch of services. The essential ones are SFTP s
     $ cd <path-to-cloned-repo>/src/main/docker/postgres
     $ docker build -t medwebpostgres .
     $ cd ../../../../med-web-app-front
+    $ npm install
     $ npm run build
     $ cd ..
-    $ docker run -d --name sftp           -p 4999:22   --rm atmoz/sftp  medwebuser:secretpassword:::upload
-    $ docker run -d --name medwebpostgres -p 5555:5555 --rm medwebpostgres
-    $ docker run -d --name ortanc         -p 8042:8042 --rm jodogne/orthanc
     $ mvn compile jib:dockerBuild
     $ docker-compose up
 Four essential containers should be up and running. (You can uncomment other containers in docker-compose.yml but I don't recommend to do it locally)

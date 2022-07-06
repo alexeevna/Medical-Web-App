@@ -1,18 +1,20 @@
 version: "3.5"
 
 services:
-#  orchestrator:
-#    image: orchestrator
-#    environment:
-#      - SERVER_PORT=5011
-#      - MEDICAL_WEB_APP_URL=medwebapp
-#    ports:
-#      - "5011:5011"
-#    networks:
-#      - app_net
+  orchestrator:
+    image: belobog/mirforchestrator1
+    environment:
+      - SERVER_PORT=5011
+      - MEDICAL_WEB_APP_URL=medwebapp
+      - MEDICAL_WEB_APP_PORT=7999
+#      - MEDICAL_WEB_APP_URL_SUCCESS=medwebapp:80/api/mirf/mirfSuccess
+    ports:
+      - "5011:5011"
+    networks:
+      - app_net
 
 #  ecgreaderblock:
-#    image: mirfblock
+#    image: ashvyrkova/mirfblock
 #    environment:
 #      - SERVER_PORT=8056
 #      - BLOCK_TYPE=ecgReaderAlg
@@ -24,7 +26,7 @@ services:
 #      - orchestrator
 #
 #  ecgbeatextractorblock:
-#    image: mirfblock
+#    image: ashvyrkova/mirfblock
 #    environment:
 #      - SERVER_PORT=8057
 #      - BLOCK_TYPE=ecgBeatExtractorAlg
@@ -34,9 +36,9 @@ services:
 #      - app_net
 #    depends_on:
 #      - orchestrator
-
+#
 #  dicomreaderblock:
-#    image: mirfblock
+#    image: ashvyrkova/mirfblockml
 #    environment:
 #      - SERVER_PORT=8058
 #      - BLOCK_TYPE=dicomImageSeriesReaderAlg
@@ -48,7 +50,7 @@ services:
 #      - orchestrator
 #
 #  addmaskblock:
-#    image: mirfblock
+#    image: ashvyrkova/mirfblockml
 #    environment:
 #      - SERVER_PORT=8059
 #      - BLOCK_TYPE=dicomAddCircleMaskAlg
@@ -60,7 +62,7 @@ services:
 #      - orchestrator
 #
 #  highlightedpdfalg:
-#    image: mirfblock
+#    image: ashvyrkova/mirfblockml
 #    environment:
 #      - SERVER_PORT=8060
 #      - BLOCK_TYPE=convertHighlightedDicomImagesToPdfAlg
@@ -72,7 +74,7 @@ services:
 #      - orchestrator
 #
 #  seriespdfalg:
-#    image: mirfblock
+#    image: ashvyrkova/mirfblockml
 #    environment:
 #      - SERVER_PORT=8061
 #      - BLOCK_TYPE=convertDicomImagesToPdfAlg
@@ -84,7 +86,7 @@ services:
 #      - orchestrator
 #
 #  pdfcreatoralg:
-#    image: mirfblock
+#    image: ashvyrkova/mirfblockml
 #    environment:
 #      - SERVER_PORT=8062
 #      - BLOCK_TYPE=pdfFileCreatorAlg
@@ -95,33 +97,47 @@ services:
 #    depends_on:
 #      - orchestrator
 
-#  pipelinealg:
-#    image: mirfblock
-#    environment:
-#      - SERVER_PORT=8063
-#      - BLOCK_TYPE=pipelineForDeveloping
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
-#      - mirfrepository
-#    command: ["sh", "wait-for-orchestrator.sh", "java","-jar","block-1.0-SNAPSHOT.jar"]
-#
-#  mirfrepository:
-#    image: mirfrepository
-#    environment:
-#      - SERVER_PORT=8050
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    ports:
-#      - "8050:8050"
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
-#    command: ["sh", "wait-for-orchestrator.sh", "java","-jar","repository-1.0-SNAPSHOT.jar"]
+  pipelinealg:
+    image: ashvyrkova/mirfblockml
+    environment:
+      - SERVER_PORT=8063
+      - BLOCK_TYPE=pipelineForDeveloping
+      - ORCHESTRATOR_HOST=orchestrator
+      - ORCHESTRATOR_PORT=5011
+    networks:
+      - app_net
+    depends_on:
+      - orchestrator
+      - mirfrepository
+    command: ["sh", "wait-for-orchestrator.sh", "java","-jar","block-1.0-SNAPSHOT.jar"]
+
+  ihdpipeline:
+    image: ashvyrkova/mirfblockml
+    environment:
+      - SERVER_PORT=8064
+      - BLOCK_TYPE=ihdClassifierAlg
+      - ORCHESTRATOR_HOST=orchestrator
+      - ORCHESTRATOR_PORT=5011
+    networks:
+      - app_net
+    depends_on:
+      - orchestrator
+      - mirfrepository
+    command: ["sh", "wait-for-orchestrator.sh", "java","-jar","block-1.0-SNAPSHOT.jar"]
+
+  mirfrepository:
+    image: ashvyrkova/mirfrepository
+    environment:
+      - SERVER_PORT=8050
+      - ORCHESTRATOR_HOST=orchestrator
+      - ORCHESTRATOR_PORT=5011
+    ports:
+      - "8050:8050"
+    networks:
+      - app_net
+    depends_on:
+      - orchestrator
+    command: ["sh", "wait-for-orchestrator.sh", "java","-jar","repository-1.0-SNAPSHOT.jar"]
 
 
 
@@ -137,6 +153,18 @@ services:
     networks:
       - app_net
 
+  testcontainerpostgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=secretpassword
+      - POSTGRES_DB=medwebappdb
+      - POSTGRES_PORT=1111
+      - PGPORT=1111
+    ports:
+      - "1111:1111"
+    networks:
+      - app_net
+
   sftp:
     image: atmoz/sftp
 #    volumes:
@@ -148,14 +176,27 @@ services:
       - app_net
 
   orthanc:
-    image: jodogne/orthanc
+    image: jodogne/orthanc-plugins
     #    volumes:
     #      - <host-dir>/upload:/home/foo/upload
     ports:
       - "8042:8042"
     networks:
       - app_net
+    command: /run/secrets/
+    secrets:
+      - orthanc.json
 
+  proxy:
+    image: nginx:1.15-alpine
+    ports:
+      - "8899:80"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - orthanc
+    networks:
+      - app_net
 
   medwebapp:
     image: ashvyrkova/medwebapp
@@ -172,12 +213,16 @@ services:
     ports:
       - "7999:7999"
     depends_on:
-#      - pipelinealg
-#      - mirfrepository
+      - pipelinealg
+      - mirfrepository
       - medwebpostgres
       - sftp
     networks:
       - app_net
+
+secrets:
+  orthanc.json:
+    file: orthanc.json
 
 networks:
   app_net:
