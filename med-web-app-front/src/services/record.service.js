@@ -19,17 +19,17 @@ class RecordService {
     }
 
     getRecord(recordId) {
-        return axios.get(API_URL + recordId, { headers: authHeader() });
+        return axios.get(API_URL + recordId, {headers: authHeader()});
     }
 
     getAnswers(recordId) {
         return axios.get(API_URL + 'answers/' + recordId, {headers: authHeader()});
     }
 
-    saveRecord(title, content, topics, files, parentId= -1) {
+    saveRecord(title, content, topics, files, parentId = -1) {
         // let parameters = this.createRequestParamsForSave(title,content,topics, files);
         // console.log(parameters);
-        return axios.post(API_URL + 'create', {title, content, topics, files, parentId},{ headers: authHeader() });
+        return axios.post(API_URL + 'create', {title, content, topics, files, parentId}, {headers: authHeader()});
     }
 
     createRequestParamsForGet(page, pageSize, searchTitle, selectedTopicValue) {

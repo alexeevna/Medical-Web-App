@@ -3,22 +3,22 @@ import {Switch, Route, Link, Redirect} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
-import Home from "./components/home.component"
-import HomePatient from "./components/home-patient.component"
-import HomeDoctor from "./components/home-doctor.component"
-import Profile from "./components/profile.component"
-import Search from "./components/search.component"
-import ViewAttachmentsComponent from "./components/view-attachments.component"
-import UploadAttachmentsComponent from "./components/upload-attachments.component"
-import PipelinesComponent from "./components/pipelines.component"
-import PipelineResultsComponent from "./components/pipeline-results.component"
-import ViewRecordsComponent from "./components/view-records.component"
-import CreateRecordComponent from "./components/create-record.component"
-import RecordThreadComponent from "./components/record-thread.component"
-import SavePipelineConfigComponent from "./components/save-pipeline-config.component"
-import TopicComponent from "./components/topic.component"
-import Register from "./components/register.component"
-import Login from "./components/login.component"
+import Home from "./components/main/home.component"
+import HomePatient from "./components/main/home-patient.component"
+import HomeDoctor from "./components/main/home-doctor.component"
+import Profile from "./components/user_profile/profile.component"
+import Search from "./components/search/search.component"
+import ViewAttachmentsComponent from "./components/attachments/view-attachments.component"
+import UploadAttachmentsComponent from "./components/attachments/upload-attachments.component"
+import PipelinesComponent from "./components/pipelines/pipelines.component"
+import PipelineResultsComponent from "./components/pipelines/pipeline-results.component"
+import ViewRecordsComponent from "./components/records/view-records.component"
+import CreateRecordComponent from "./components/records/create-record.component"
+import RecordThreadComponent from "./components/records/record-thread.component"
+import SavePipelineConfigComponent from "./components/pipelines/save-pipeline-config.component"
+import TopicComponent from "./components/records/topic.component"
+import Register from "./components/signin_signup/register.component"
+import Login from "./components/signin_signup/login.component"
 import NotExist from "./components/not-exist.component"
 import AuthService from "./services/auth.service"
 import {
@@ -43,14 +43,12 @@ import BallotIcon from '@material-ui/icons/Ballot'
 import ForumIcon from '@material-ui/icons/Forum'
 import SearchIcon from '@material-ui/icons/Search'
 import MessageIcon from '@material-ui/icons/Message'
-import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
-import Chat from "./components/messengerComponents/chat.component"
+import Chat from "./components/messenger/chat.component"
 import SockJS from "sockjs-client"
 import {over} from "stompjs"
 import UserService from "./services/user.service"
 import ChatService from "./services/chat.service"
-import AttachmentService from "./services/attachment.service";
 
 const drawerWidth = 240
 

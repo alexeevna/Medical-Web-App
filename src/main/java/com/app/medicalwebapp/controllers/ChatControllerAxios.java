@@ -3,7 +3,7 @@ package com.app.medicalwebapp.controllers;
 import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeletionTimeChatIdRequest;
 import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeletionRequest;
 import com.app.medicalwebapp.controllers.requestbody.messenger.MessagesRequest;
-import com.app.medicalwebapp.services.messengerServices.ChatMessageService;
+import com.app.medicalwebapp.services.messenger_services.ChatMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

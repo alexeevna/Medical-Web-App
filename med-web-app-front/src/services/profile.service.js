@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL + '/api/profile/';
 class ProfileService {
 
     getProfile(username) {
-        return axios.get(API_URL + username, { headers: authHeader() });
+        return axios.get(API_URL + username, {headers: authHeader()});
     }
 
 }
